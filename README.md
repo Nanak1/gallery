@@ -18,6 +18,13 @@ docker run \
   -d postgres
 ```
 
+Add user:
+
+```postgresql
+INSERT INTO "user" (id, username, password, admin, filter) 
+VALUES ('00000000-0000-0000-0000-000000000000', 'admin', encode(digest('admin', 'sha512'), 'hex'), true, false);
+```
+
 # Config
 
 Add `config.json` to root directory:
