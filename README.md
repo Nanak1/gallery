@@ -2,7 +2,7 @@
 
 Gallery Web Application for manage media in Nextcloud
 
-# DB
+## DB
 
 Example for Docker:
 
@@ -21,11 +21,11 @@ docker run \
 Add user:
 
 ```postgresql
-INSERT INTO "user" (id, username, password, admin, filter) 
+INSERT INTO "user" (id, username, password, admin, censored) 
 VALUES ('00000000-0000-0000-0000-000000000000', 'admin', encode(digest('admin', 'sha512'), 'hex'), true, false);
 ```
 
-# Config
+## Config
 
 Add `config.json` to root directory:
 
@@ -52,7 +52,7 @@ Add `config.json` to root directory:
 }
 ```
 
-# Nextcloud
+## Nextcloud
 
 ```shell script
 docker exec --user www-data nextcloud_app php occ files:scan --all --verbose

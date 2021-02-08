@@ -2,7 +2,7 @@ create extension pgcrypto;
 
 -- user
 
-create table public."user"
+create table "user"
 (
     id uuid default gen_random_uuid() not null
         constraint user_pk
@@ -10,42 +10,42 @@ create table public."user"
     username text not null,
     password text not null,
     admin boolean default false not null,
-    filter boolean default true not null
+    censored boolean default true not null
 );
 
-alter table public."user" owner to gallery;
+alter table "user" owner to gallery;
 
 create unique index user_id_uindex
-    on public."user" (id);
+    on "user" (id);
 
 create unique index user_username_uindex
-    on public."user" (username);
+    on "user" (username);
 
 -- session
 
-create table public.session
+create table session
 (
     id uuid default gen_random_uuid() not null
         constraint session_pk
             primary key,
     "user" uuid not null
         constraint session_user_id_fk
-            references public."user"
+            references "user"
             on update cascade on delete cascade,
     key text not null
 );
 
-alter table public.session owner to gallery;
+alter table session owner to gallery;
 
 create unique index session_id_uindex
-    on public.session (id);
+    on session (id);
 
 create unique index session_key_uindex
-    on public.session (key);
+    on session (key);
 
 -- photo
 
-create table public.photo
+create table photo
 (
     id uuid default gen_random_uuid() not null
         constraint photo_pk
@@ -58,17 +58,17 @@ create table public.photo
     preview bytea not null
 );
 
-alter table public.photo owner to gallery;
+alter table photo owner to gallery;
 
 create unique index photo_id_uindex
-    on public.photo (id);
+    on photo (id);
 
 create unique index photo_hash_uindex
-    on public.photo (hash);
+    on photo (hash);
 
 -- tag
 
-create table public.tag
+create table tag
 (
     id uuid default gen_random_uuid() not null
         constraint tag_pk
@@ -76,33 +76,32 @@ create table public.tag
     name text not null
 );
 
-alter table public.tag owner to gallery;
+alter table tag owner to gallery;
 
 create unique index tag_id_uindex
-    on public.tag (id);
+    on tag (id);
 
 create unique index tag_name_uindex
-    on public.tag (name);
+    on tag (name);
 
 -- label
 
-create table public.label
+create table label
 (
     id uuid default gen_random_uuid() not null
         constraint label_pk
             primary key,
     photo uuid not null
         constraint label_photo_id_fk
-            references public.photo
+            references photo
             on update cascade on delete cascade,
     tag uuid not null
         constraint label_tag_id_fk
-            references public.tag
+            references tag
             on update cascade on delete cascade
 );
 
-alter table public.label owner to gallery;
+alter table label owner to gallery;
 
 create unique index label_id_uindex
-    on public.label (id);
-
+    on label (id);

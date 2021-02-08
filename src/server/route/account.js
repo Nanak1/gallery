@@ -4,6 +4,11 @@ let config = require('../../../config.json');
 
 let router = express.Router();
 
+/**
+ * Вход
+ * @type {string} req.body.username - имя пользователя
+ * @type {string} req.body.password - пароль
+ */
 router.post('/account/login', (req, res) => {
 
     let sql = `SELECT * FROM "user" WHERE username = $1 AND password = encode(digest($2, 'sha512'), 'hex');`;
@@ -58,6 +63,10 @@ router.post('/account/login', (req, res) => {
 
 });
 
+/**
+ * Проверка доступа
+ * @type {string} req.cookies[config.session.key] - ключ сессии
+ */
 router.use((req, res, next) => {
 
     let key = req.cookies[config.session.key];
@@ -123,19 +132,9 @@ router.use((req, res, next) => {
 
 });
 
-router.get('/account/identification', async (req, res) => {
-
-    let user = Object.assign({}, req.user);
-
-    delete user.password;
-
-    res.send({
-        success: true,
-        user: user
-    });
-
-});
-
+/**
+ * Выход
+ */
 router.get('/account/logout', (req, res) => {
 
     let sql = `DELETE FROM session WHERE id = $1;`;
@@ -164,6 +163,101 @@ router.get('/account/logout', (req, res) => {
 
 });
 
+/**
+ * Запрос данных
+ */
+router.get('/account', async (req, res) => {
+
+    let user = Object.assign({}, req.user);
+
+    delete user.password;
+
+    res.send({
+        success: true,
+        user: user
+    });
+
+});
+
+/**
+ * Изменение данных
+ * @type {string} req.body.username - имя пользователя
+ * @type {boolean} req.body.admin - администратор
+ * @type {boolean} req.body.censored - цензура
+ */
+router.post('/account', async (req, res) => {
+
+    if (req.body.username) {
+
+        let f = () => {
+
+            let sql = `UPDATE "user" SET username = $2, admin = $3, censored = $4 WHERE id = $1;`;
+
+            db.gallery.query(sql, [
+                req.user.id,
+                req.body.username,
+                req.body.admin,
+                req.body.censored
+            ]).then(result => {
+
+                res.send({
+                    success: true,
+                    message: 'Пользователь успешно изменён'
+                });
+
+            }).catch(error => {
+
+                console.log(error);
+
+                res.send({
+                    success: false,
+                    message: 'Что-то пошло не так при изменении пользователя'
+                })
+
+            });
+
+        };
+
+        if (req.user.username !== req.body.username) {
+
+            let sql = `SELECT * FROM "user" WHERE username = $1;`;
+
+            db.gallery.query(sql, [
+                req.body.username
+            ]).then(result => {
+
+                if (result.rows[0]) res.send({
+                    success: false,
+                    message: 'Имя пользователя уже занято'
+                });
+                else f();
+
+            }).catch(error => {
+
+                console.log(error);
+
+                res.send({
+                    success: false,
+                    message: 'Что-то пошло не так при проверке имени пользователя'
+                })
+
+            });
+
+        } else f();
+
+    } else res.send({
+        success: false,
+        message: 'Имя пользователя не может быть пустым'
+    });
+
+});
+
+/**
+ * Изменение пароля
+ * @type {string} req.body.password - старый пароль
+ * @type {string} req.body.password1 - новый пароль
+ * @type {string} req.body.password2 - новый пароль ещё раз
+ */
 router.post('/account/password', (req, res) => {
 
     if (req.body.password1 === req.body.password2) {
@@ -222,73 +316,9 @@ router.post('/account/password', (req, res) => {
 
 });
 
-router.post('/account', async (req, res) => {
-
-    if (req.body.username) {
-
-        let f = () => {
-
-            let sql = `UPDATE "user" SET username = $2, admin = $3, filter = $4 WHERE id = $1;`;
-
-            db.gallery.query(sql, [
-                req.body.id,
-                req.body.username,
-                req.body.admin,
-                req.body.filter
-            ]).then(result => {
-
-                res.send({
-                    success: true,
-                    message: 'Пользователь успешно изменён'
-                });
-
-            }).catch(error => {
-
-                console.log(error);
-
-                res.send({
-                    success: false,
-                    message: 'Что-то пошло не так при изменении пользователя'
-                })
-
-            });
-
-        };
-
-        if (req.user.username !== req.body.username) {
-
-            let sql = `SELECT * FROM "user" WHERE username = $1;`;
-
-            db.gallery.query(sql, [
-                req.body.username
-            ]).then(result => {
-
-                if (result.rows[0]) res.send({
-                    success: false,
-                    message: 'Имя пользователя уже занято'
-                });
-                else f();
-
-            }).catch(error => {
-
-                console.log(error);
-
-                res.send({
-                    success: false,
-                    message: 'Что-то пошло не так при проверке имени пользователя'
-                })
-
-            });
-
-        } else f();
-
-    } else res.send({
-        success: false,
-        message: 'Имя пользователя не может быть пустым'
-    });
-
-});
-
+/**
+ * Запрос сессий
+ */
 router.get('/account/session', (req, res) => {
 
     let sql = `SELECT id, CASE WHEN key = $2 THEN TRUE ELSE FALSE END AS current FROM session WHERE "user" = $1;`;
@@ -316,6 +346,10 @@ router.get('/account/session', (req, res) => {
 
 });
 
+/**
+ * Удаление сессии
+ * @type {string} req.body.id - идентификатор сессии
+ */
 router.delete('/account/session/:id', (req, res) => {
 
     let sql = `DELETE FROM session WHERE id = $1 AND "user" = $2`;
