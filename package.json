@@ -1,0 +1,23 @@
+{
+  "name": "gallery",
+  "version": "1.0.0",
+  "description": "gallery web application for manage photo on nextcloud",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nanak1/gallery.git"
+  },
+  "author": "Nanaki",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nanak1/gallery/issues"
+  },
+  "homepage": "https://github.com/Nanak1/gallery#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.5.1"
+  }
+}
