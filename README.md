@@ -1,8 +1,10 @@
 # Gallery
 
-gallery web application for manage photo on nextcloud
+Gallery Web Application for manage media in Nextcloud
 
 # DB
+
+Example for Docker:
 
 ```shell script
 docker run \
@@ -17,6 +19,8 @@ docker run \
 ```
 
 # Config
+
+Add `config.json` to root directory:
 
 ```json
 {
