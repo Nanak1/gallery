@@ -64,5 +64,6 @@ app.get('/', (req, res) => {
  */
 
 app.use('/', require('./route/account'));
+app.use('/', require('./route/photo'));
 
 module.exports = app;
