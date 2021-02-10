@@ -6,13 +6,57 @@ let router = express.Router();
 /**
  * @type {number} req.query.count
  * @type {number} req.query.page
+ * @type {array} req.query.years - array of numbers
+ * @type {array} req.query.months - array of numbers
+ * @type {array} req.query.days - array of numbers
  */
 router.get('/photo', (req, res) => {
 
     let limit = parseInt(req.query.count);
     let offset = limit * (parseInt(req.query.page) - 1);
+
     let columns = req.user.censored ? 'id' : 'id, censored';
-    let sql = `SELECT ${columns} FROM photo ORDER BY date_create DESC LIMIT $1 OFFSET $2;`;
+    let filters = [];
+
+    if (req.query.years) {
+
+        let years = [];
+
+        req.query.years.forEach(year => {
+            years.push(`date_part('year', date_create) = ` + year);
+        });
+
+        filters.push('(' + years.join(' OR ') + ')');
+
+    }
+
+    if (req.query.months) {
+
+        let months = [];
+
+        req.query.months.forEach(month => {
+            months.push(`date_part('month', date_create) = ` + month);
+        });
+
+        filters.push('(' + months.join(' OR ') + ')');
+
+    }
+
+    if (req.query.days) {
+
+        let days = [];
+
+        req.query.days.forEach(day => {
+            days.push(`date_part('day', date_create) = ` + day);
+        });
+
+        filters.push('(' + days.join(' OR ') + ')');
+
+    }
+
+    let where = filters.length ? 'WHERE ' + filters.join(' AND ') : '';
+
+    let sql = `SELECT ${columns} FROM photo ${where} ORDER BY date_create DESC LIMIT $1 OFFSET $2;`;
 
     db.gallery.query(sql, [
         limit,
@@ -81,57 +125,6 @@ router.get('/photo/date_create/:part', (req, res) => {
     } else res.send({
         success: false,
         message: 'Не корректный запрос: ' + req.params.part
-    });
-
-});
-
-router.get('/photo/year', (req, res) => {
-
-    let where = req.user.censored ? 'WHERE censor IS FALSE' : '';
-
-    let sql = `SELECT DISTINCT date_part('year', date_create) AS year FROM photo ${where} ORDER BY year;`;
-
-    db.gallery.query(sql).then(result => {
-
-        res.send({
-            success: true,
-            years: result.rows.map(row => row.year)
-        });
-
-    });
-
-});
-
-router.get('/photo/month', (req, res) => {
-
-    let where = req.user.censored ? 'WHERE censor IS FALSE' : '';
-
-    let sql = `SELECT DISTINCT date_part('month', date_create) AS month FROM photo ${where} ORDER BY month;`;
-
-    db.gallery.query(sql).then(result => {
-
-        res.send({
-            success: true,
-            months: result.rows.map(row => row.month)
-        });
-
-    });
-
-});
-
-router.get('/photo/day', (req, res) => {
-
-    let where = req.user.censored ? 'WHERE censor IS FALSE' : '';
-
-    let sql = `SELECT DISTINCT date_part('day', date_create) AS day FROM photo ${where} ORDER BY day;`;
-
-    db.gallery.query(sql).then(result => {
-
-        res.send({
-            success: true,
-            days: result.rows.map(row => row.day)
-        });
-
     });
 
 });
