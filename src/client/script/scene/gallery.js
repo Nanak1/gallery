@@ -8,26 +8,41 @@ app.scene.gallery = {
     loading: false,
     finish: false,
 
-    columns: null,
-
     years: [],
     months: [],
     days: [],
 
+    columns: null,
+    resizeTimeoutId: null,
+
     show: () => new Promise((resolve, reject) => {
 
         document.getElementById('app').style.fontSize = '0';
-        app.scene.gallery.start().then(() => {
+        window.addEventListener('resize', app.scene.gallery.onResize);
 
-            app.activeScene = app.scene.gallery;
-            resolve();
+        app.scene.gallery.loadDateCreate('year').then(() => {
+            app.scene.gallery.loadDateCreate('month').then(() => {
+                app.scene.gallery.loadDateCreate('day').then(() => {
 
+                    app.scene.gallery.start().then(() => {
+
+                        app.activeScene = app.scene.gallery;
+                        resolve();
+
+                    });
+
+                });
+            });
         });
 
     }),
 
     close: () => new Promise((resolve, reject) => {
 
+        window.removeEventListener('resize', app.scene.gallery.onResize);
+        window.removeEventListener('scroll', app.scene.gallery.onScroll);
+
+        app.scene.gallery.resizeTimeoutId = null;
         app.activeScene = null;
         resolve();
 
@@ -48,21 +63,13 @@ app.scene.gallery = {
         document.getElementById('app').innerHTML = '';
         window.removeEventListener('scroll', app.scene.gallery.onScroll);
 
-        app.scene.gallery.loadDateCreate('year').then(() => {
-            app.scene.gallery.loadDateCreate('month').then(() => {
-                app.scene.gallery.loadDateCreate('day').then(() => {
+        app.scene.gallery.loadPage().then(() => {
+            app.scene.gallery.loadPage().then(() => {
 
-                    app.scene.gallery.loadPage().then(() => {
-                        app.scene.gallery.loadPage().then(() => {
+                if (!app.scene.gallery.finish) window.addEventListener('scroll', app.scene.gallery.onScroll);
 
-                            if (!app.scene.gallery.finish) window.addEventListener('scroll', app.scene.gallery.onScroll);
+                resolve();
 
-                            resolve();
-
-                        });
-                    });
-
-                });
             });
         });
 
@@ -146,6 +153,17 @@ app.scene.gallery = {
         if (window.scrollY + window.innerHeight > document.documentElement.offsetHeight - window.innerHeight) {
             app.scene.gallery.loadPage();
         }
+
+    },
+
+    onResize: () => {
+
+        clearTimeout(app.scene.gallery.resizeTimeoutId);
+        app.scene.gallery.resizeTimeoutId = setTimeout(() => {
+
+            app.scene.gallery.start();
+
+        }, 250);
 
     }
 
