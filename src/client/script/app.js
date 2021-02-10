@@ -16,6 +16,7 @@ window.addEventListener('load', () => {
 window.app = {
 
     tools: [
+        'format'
     ],
 
     scenes: [

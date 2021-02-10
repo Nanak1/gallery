@@ -17,15 +17,13 @@
   },
   "homepage": "https://github.com/Nanak1/gallery#readme",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.2",
+    "@mdi/font": "^5.9.55",
     "axios": "^0.21.1",
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",
     "file-saver": "^2.0.5",
-    "install": "^0.13.0",
     "materialize-css": "^1.0.0-rc.2",
-    "npm": "^7.5.2",
     "pg": "^8.5.1",
     "sharp": "^0.27.1"
   }

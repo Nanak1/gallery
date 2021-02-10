@@ -1,0 +1,15 @@
+.gallery-scrollbar-overlay {
+    overflow-y: overlay;
+}
+
+body::-webkit-scrollbar {
+    width: 4px;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: rgba(128, 128, 128, 0.8);
+}
+
+body::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(64, 64, 64, 0.8);
+}
