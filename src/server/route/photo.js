@@ -11,7 +11,8 @@ router.get('/photo', (req, res) => {
 
     let limit = parseInt(req.query.count);
     let offset = limit * (parseInt(req.query.page) - 1);
-    let sql = `SELECT id FROM photo ORDER BY date_create DESC LIMIT $1 OFFSET $2;`;
+    let columns = req.user.censored ? 'id, date_create' : 'id, date_create, censored';
+    let sql = `SELECT ${columns} FROM photo ORDER BY date_create DESC LIMIT $1 OFFSET $2;`;
 
     db.gallery.query(sql, [
         limit,
