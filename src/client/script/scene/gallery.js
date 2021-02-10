@@ -5,6 +5,7 @@ app.scene.gallery = {
     px: 256,
     page: 0,
 
+    loading: false,
     finish: false,
 
     columns: null,
@@ -57,9 +58,10 @@ app.scene.gallery = {
 
     loadPage: () => new Promise((resolve, reject) => {
 
-        if (app.scene.gallery.finish) resolve();
+        if (app.scene.gallery.loading || app.scene.gallery.finish) resolve();
         else {
 
+            app.scene.gallery.loading = true;
             app.scene.gallery.page++;
 
             let width = Math.ceil(window.innerWidth * window.devicePixelRatio);
@@ -73,8 +75,6 @@ app.scene.gallery = {
                     page: app.scene.gallery.page
                 }
             }).then(res => {
-
-                console.log(res.data.photos.length);
 
                 if (res.data.photos.length > 0) {
 
@@ -106,6 +106,7 @@ app.scene.gallery = {
 
                 }
 
+                app.scene.gallery.loading = false;
                 resolve();
 
             });
