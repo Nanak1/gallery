@@ -177,7 +177,8 @@ app.scene.gallery = {
 
         if (!app.scene.gallery.columns) {
 
-            let width = Math.ceil(window.innerWidth * window.devicePixelRatio);
+            let width = Math.ceil(window.innerWidth);
+            // let width = Math.ceil(window.innerWidth * window.devicePixelRatio);
 
             app.scene.gallery.columns = Math.ceil(width / app.scene.gallery.px);
 
@@ -208,8 +209,10 @@ app.scene.gallery = {
             app.scene.gallery.loading = true;
             app.scene.gallery.page++;
 
-            let width = Math.ceil(window.innerWidth * window.devicePixelRatio);
-            let height = Math.ceil(window.innerHeight * window.devicePixelRatio);
+            let width = Math.ceil(window.innerWidth);
+            // let width = Math.ceil(window.innerWidth * window.devicePixelRatio);
+            let height = Math.ceil(window.innerHeight);
+            // let height = Math.ceil(window.innerHeight * window.devicePixelRatio);
             let rows = Math.ceil(app.scene.gallery.columns * height / width);
             let count = app.scene.gallery.columns * rows;
 
