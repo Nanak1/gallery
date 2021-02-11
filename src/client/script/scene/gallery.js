@@ -167,7 +167,6 @@ app.scene.gallery = {
         axios.get('/photo/date_create/' + part).then(res => {
 
             app.scene.gallery.available[part + 's'] = res.data[part + 's'];
-            app.scene.gallery[part + 's'] = JSON.parse(JSON.stringify(res.data[part + 's']));
             resolve();
 
         });
@@ -331,7 +330,7 @@ app.scene.gallery = {
             document.getElementById('ctrl-year').innerHTML += '' +
 
                 '<label class="col s6 m2">' +
-                    '<input type="checkbox" checked="checked" value="' + year + '">' +
+                    '<input type="checkbox" value="' + year + '">' +
                     '<span>' + year + '</span>' +
                 '</label>';
 
@@ -362,7 +361,7 @@ app.scene.gallery = {
             document.getElementById('ctrl-month').innerHTML += '' +
 
                 '<label class="col s6 m2">' +
-                '<input type="checkbox" checked="checked" value="' + month + '">' +
+                '<input type="checkbox" value="' + month + '">' +
                 '<span>' + app.tool.format.MONTH_SHORT[month - 1].toUpperCase() + '</span>' +
                 '</label>';
 
@@ -393,7 +392,7 @@ app.scene.gallery = {
             document.getElementById('ctrl-day').innerHTML += '' +
 
                 '<label class="col s6 m2">' +
-                '<input type="checkbox" checked="checked" value="' + day + '">' +
+                '<input type="checkbox" value="' + day + '">' +
                 '<span>' + day + '</span>' +
                 '</label>';
 
