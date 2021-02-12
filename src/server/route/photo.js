@@ -98,6 +98,31 @@ router.get('/photo/thumbnail/:id', (req, res) => {
 });
 
 /**
+ * @type {string} req.params.id
+ */
+router.get('/photo/preview/:id', (req, res) => {
+
+    let sql = `SELECT preview FROM photo WHERE id = $1;`;
+
+    db.gallery.query(sql, [
+        req.params.id
+    ]).then(result => {
+
+        if (result.rows.length === 1) {
+
+            res.contentType('image/jpeg');
+            res.send(result.rows[0].preview);
+
+        } else res.send({
+            success: false,
+            message: 'Фотография не найдена'
+        });
+
+    });
+
+});
+
+/**
  * @type {string} req.params.part
  */
 router.get('/photo/date_create/:part', (req, res) => {
