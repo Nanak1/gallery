@@ -1,5 +1,7 @@
 let fs = require('fs');
 let crypto = require('crypto');
+
+let readdirp = require('readdirp');
 let sharp = require('sharp');
 let pg = require('pg');
 
@@ -19,76 +21,77 @@ let digest = (x, length) => {
     return x;
 
 };
-let getDateCreate = fileName => {
 
-    let dateCreate = fs.statSync(input + '/' + fileName).mtime;
+let getDateCreate = entry => {
+
+    let dateCreate = entry.stats.mtime;
 
     // 00000000_000000.jpg
 
-    if ((/^[0-9]{8}_[0-9]{6}.jpg/i).test(fileName)) {
+    if ((/^[0-9]{8}_[0-9]{6}.jpg/i).test(entry.basename)) {
 
-        dateCreate.setFullYear(parseInt(fileName.substr(0, 4)));
-        dateCreate.setMonth(parseInt(fileName.substr(4, 2)) - 1);
-        dateCreate.setDate(parseInt(fileName.substr(6, 2)));
-        dateCreate.setHours(parseInt(fileName.substr(9, 2)));
-        dateCreate.setMinutes(parseInt(fileName.substr(11, 2)));
-        dateCreate.setSeconds(parseInt(fileName.substr(13, 2)));
+        dateCreate.setFullYear(parseInt(entry.basename.substr(0, 4)));
+        dateCreate.setMonth(parseInt(entry.basename.substr(4, 2)) - 1);
+        dateCreate.setDate(parseInt(entry.basename.substr(6, 2)));
+        dateCreate.setHours(parseInt(entry.basename.substr(9, 2)));
+        dateCreate.setMinutes(parseInt(entry.basename.substr(11, 2)));
+        dateCreate.setSeconds(parseInt(entry.basename.substr(13, 2)));
         dateCreate.setMilliseconds(0);
 
     }
 
     // 00000000-000000.jpg
 
-    if ((/^[0-9]{8}-[0-9]{6}.jpg/i).test(fileName)) {
+    if ((/^[0-9]{8}-[0-9]{6}.jpg/i).test(entry.basename)) {
 
-        dateCreate.setFullYear(parseInt(fileName.substr(0, 4)));
-        dateCreate.setMonth(parseInt(fileName.substr(4, 2)) - 1);
-        dateCreate.setDate(parseInt(fileName.substr(6, 2)));
-        dateCreate.setHours(parseInt(fileName.substr(9, 2)));
-        dateCreate.setMinutes(parseInt(fileName.substr(11, 2)));
-        dateCreate.setSeconds(parseInt(fileName.substr(13, 2)));
+        dateCreate.setFullYear(parseInt(entry.basename.substr(0, 4)));
+        dateCreate.setMonth(parseInt(entry.basename.substr(4, 2)) - 1);
+        dateCreate.setDate(parseInt(entry.basename.substr(6, 2)));
+        dateCreate.setHours(parseInt(entry.basename.substr(9, 2)));
+        dateCreate.setMinutes(parseInt(entry.basename.substr(11, 2)));
+        dateCreate.setSeconds(parseInt(entry.basename.substr(13, 2)));
         dateCreate.setMilliseconds(0);
 
     }
 
     // XXX_00000000_000000.jpg
 
-    if ((/^[a-z]{3}_[0-9]{8}_[0-9]{6}.jpg/i).test(fileName)) {
+    if ((/^[a-z]{3}_[0-9]{8}_[0-9]{6}.jpg/i).test(entry.basename)) {
 
-        dateCreate.setFullYear(parseInt(fileName.substr(4, 4)));
-        dateCreate.setMonth(parseInt(fileName.substr(8, 2)) - 1);
-        dateCreate.setDate(parseInt(fileName.substr(10, 2)));
-        dateCreate.setHours(parseInt(fileName.substr(13, 2)));
-        dateCreate.setMinutes(parseInt(fileName.substr(15, 2)));
-        dateCreate.setSeconds(parseInt(fileName.substr(17, 2)));
+        dateCreate.setFullYear(parseInt(entry.basename.substr(4, 4)));
+        dateCreate.setMonth(parseInt(entry.basename.substr(8, 2)) - 1);
+        dateCreate.setDate(parseInt(entry.basename.substr(10, 2)));
+        dateCreate.setHours(parseInt(entry.basename.substr(13, 2)));
+        dateCreate.setMinutes(parseInt(entry.basename.substr(15, 2)));
+        dateCreate.setSeconds(parseInt(entry.basename.substr(17, 2)));
         dateCreate.setMilliseconds(0);
 
     }
 
     // XXX_00000000_000000_0.jpg
 
-    if ((/^[a-z]{3}_[0-9]{8}_[0-9]{6}_[0-9]{1}.jpg/i).test(fileName)) {
+    if ((/^[a-z]{3}_[0-9]{8}_[0-9]{6}_[0-9]{1}.jpg/i).test(entry.basename)) {
 
-        dateCreate.setFullYear(parseInt(fileName.substr(4, 4)));
-        dateCreate.setMonth(parseInt(fileName.substr(8, 2)) - 1);
-        dateCreate.setDate(parseInt(fileName.substr(10, 2)));
-        dateCreate.setHours(parseInt(fileName.substr(13, 2)));
-        dateCreate.setMinutes(parseInt(fileName.substr(15, 2)));
-        dateCreate.setSeconds(parseInt(fileName.substr(17, 2)));
+        dateCreate.setFullYear(parseInt(entry.basename.substr(4, 4)));
+        dateCreate.setMonth(parseInt(entry.basename.substr(8, 2)) - 1);
+        dateCreate.setDate(parseInt(entry.basename.substr(10, 2)));
+        dateCreate.setHours(parseInt(entry.basename.substr(13, 2)));
+        dateCreate.setMinutes(parseInt(entry.basename.substr(15, 2)));
+        dateCreate.setSeconds(parseInt(entry.basename.substr(17, 2)));
         dateCreate.setMilliseconds(0);
 
     }
 
     // XXXXX_0000-00-00_00-00-00.jpg
 
-    if ((/^[a-z]{5}_[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.jpg/i).test(fileName)) {
+    if ((/^[a-z]{5}_[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}.jpg/i).test(entry.basename)) {
 
-        dateCreate.setFullYear(parseInt(fileName.substr(6, 4)));
-        dateCreate.setMonth(parseInt(fileName.substr(11, 2)) - 1);
-        dateCreate.setDate(parseInt(fileName.substr(14, 2)));
-        dateCreate.setHours(parseInt(fileName.substr(17, 2)));
-        dateCreate.setMinutes(parseInt(fileName.substr(20, 2)));
-        dateCreate.setSeconds(parseInt(fileName.substr(23, 2)));
+        dateCreate.setFullYear(parseInt(entry.basename.substr(6, 4)));
+        dateCreate.setMonth(parseInt(entry.basename.substr(11, 2)) - 1);
+        dateCreate.setDate(parseInt(entry.basename.substr(14, 2)));
+        dateCreate.setHours(parseInt(entry.basename.substr(17, 2)));
+        dateCreate.setMinutes(parseInt(entry.basename.substr(20, 2)));
+        dateCreate.setSeconds(parseInt(entry.basename.substr(23, 2)));
         dateCreate.setMilliseconds(0);
 
     }
@@ -97,31 +100,28 @@ let getDateCreate = fileName => {
 
 };
 
-let fileNames = fs.readdirSync(input, {
-    encoding: 'utf8',
-    withFileTypes: false
-});
-
-(async () => {
+readdirp.promise(input, {
+    alwaysStat: true
+}).then(async entries => {
 
     // await pool.query('TRUNCATE TABLE photo CASCADE;');
 
-    for (let i = 0; i < fileNames.length; i++) {
+    for (let i = 0; i < entries.length; i++) {
 
-        let index = digest(i + 1, fileNames.length.toString().length);
-        let fileName = fileNames[i];
+        let entry = entries[i];
+        let index = digest(i + 1, entries.length.toString().length);
 
         try {
 
             // date_create
 
-            let dateCreate = getDateCreate(fileName);
+            let dateCreate = getDateCreate(entry);
 
             // thumbnail
 
-            let fileData = fs.readFileSync(input + '/' + fileName);
+            let file = fs.readFileSync(entry.fullPath);
 
-            let thumbnail = await sharp(fileData).resize({
+            let thumbnail = await sharp(file).rotate().resize({
                 width: 256,
                 height: 256,
                 fit: 'cover'
@@ -129,7 +129,7 @@ let fileNames = fs.readdirSync(input, {
 
             // preview
 
-            let preview = await sharp(fileData).resize({
+            let preview = await sharp(file).rotate().resize({
                 width: 1024,
                 height: 1024,
                 fit: 'inside'
@@ -139,7 +139,7 @@ let fileNames = fs.readdirSync(input, {
 
             let hash = crypto.createHash('sha512');
 
-            hash.update(fileData);
+            hash.update(file);
 
             // insert
 
@@ -167,17 +167,19 @@ let fileNames = fs.readdirSync(input, {
             let fileNameNew = year + '-' + month + '-' + day + ' ' + hours + '-' + minutes + '-' + seconds + ' ' + result.rows[0].id + '.jpg';
             let dest = output + '/' + year + '/' + month + '/' + fileNameNew;
 
-            fs.copyFileSync(input + '/' + fileName, dest);
-            fs.rmSync(input + '/' + fileName);
+            fs.copyFileSync(entry.fullPath, dest);
+            fs.rmSync(entry.fullPath);
 
-            console.log(`[${index}/${fileNames.length}]`, fileName, '>', year + '/' + month + '/' + fileNameNew);
+            console.log(`[${index}/${entries.length}]`, entry.basename, '>', year + '/' + month + '/' + fileNameNew);
 
         } catch (error) {
 
-            console.log(`[${index}/${fileNames.length}]`, fileName, error);
+            console.log(`[${index}/${entries.length}]`, entry.basename, error);
 
         }
 
     }
 
-})();
+    console.log(new Date());
+
+});
