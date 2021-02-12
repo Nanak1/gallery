@@ -34,8 +34,8 @@ app.scene.gallery = {
                 'style="position: fixed; left: 50%; bottom: 8px; margin-left: -28px;"' +
             '><i class="mdi mdi-image-search"></i></button>' +
 
-            '<div id="ctrl-modal" class="modal modal-fixed-footer">' +
-                '<div class="modal-content">' +
+            '<div id="ctrl-modal" class="gallery-modal">' +
+                '<div class="gallery-modal-content">' +
                     '<h4>Управление</h4>' +
 
                     '<div>' +
@@ -99,8 +99,8 @@ app.scene.gallery = {
                     '<div id="ctrl-day" class="row"></div>' +
 
                 '</div>' +
-                '<div class="modal-footer">' +
-                    '<button class="modal-close btn-flat waves-effect waves-red">Отмена</button>' +
+                '<div class="gallery-modal-footer">' +
+                    '<button id="ctrl-close" class="btn-flat waves-effect waves-red">Отмена</button>' +
                     ' ' +
                     '<button id="ctrl-apply" class="btn-flat waves-effect waves-green">Применить</button>' +
                 '</div>' +
@@ -267,10 +267,6 @@ app.scene.gallery = {
 
     initCtrl: () => {
 
-        // ctrl window
-
-        M.Modal.init(document.getElementById('ctrl-modal'));
-
         // ctrl columns
 
         document.getElementById('ctrl-columns').innerText = app.scene.gallery.columns;
@@ -395,10 +391,17 @@ app.scene.gallery = {
             document.getElementById('ctrl-day').innerHTML += '' +
 
                 '<label class="col s6 m2">' +
-                '<input type="checkbox" value="' + day + '">' +
-                '<span>' + day + '</span>' +
+                    '<input type="checkbox" value="' + day + '">' +
+                    '<span>' + day + '</span>' +
                 '</label>';
 
+        });
+
+        // ctrl close
+
+        document.getElementById('ctrl-close').addEventListener('click', () => {
+            document.body.style.overflow = '';
+            document.getElementById('ctrl-modal').style.display = 'none';
         });
 
         // ctrl apply
@@ -425,7 +428,9 @@ app.scene.gallery = {
             app.scene.gallery.days = [];
             chDay.forEach(checkbox => app.scene.gallery.days.push(parseInt(checkbox.value)));
 
-            M.Modal.getInstance(document.getElementById('ctrl-modal')).close();
+            document.body.style.overflow = '';
+            document.getElementById('ctrl-modal').style.display = 'none';
+
             app.scene.gallery.startGallery();
 
         });
@@ -435,7 +440,8 @@ app.scene.gallery = {
         let button = document.getElementById('ctrl-button');
 
         button.addEventListener('click', () => {
-            M.Modal.getInstance(document.getElementById('ctrl-modal')).open();
+            document.body.style.overflow = 'hidden';
+            document.getElementById('ctrl-modal').style.display = 'block';
         });
 
         button.classList.remove('scale-out');
