@@ -109,16 +109,16 @@ router.get('/photo/date_create/:part', (req, res) => {
     ].includes(req.params.part)) {
 
         let where = req.user.censored ? 'WHERE censored IS FALSE' : '';
-        let sql = `SELECT DISTINCT date_part($1, date_create) AS p FROM photo ${where} ORDER BY p;`;
+        let sql = `SELECT DISTINCT date_part($1, date_create) AS value, count(*)::int AS count FROM photo ${where} GROUP BY date_part($1, date_create) ORDER BY value;`;
 
         db.gallery.query(sql, [
             req.params.part
         ]).then(result => {
 
-            let data = {success: true};
-
-            data[req.params.part + 's'] = result.rows.map(row => row.p);
-            res.send(data);
+            res.send({
+                success: true,
+                [req.params.part + 's']: result.rows
+            });
 
         });
 

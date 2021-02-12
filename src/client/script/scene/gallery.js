@@ -328,9 +328,11 @@ app.scene.gallery = {
 
             document.getElementById('ctrl-year').innerHTML += '' +
 
-                '<label class="col s6 m2">' +
-                    '<input type="checkbox" value="' + year + '">' +
-                    '<span>' + year + '</span>' +
+                '<label class="col s6 m4 l3 xl2">' +
+                    '<input type="checkbox" value="' + year.value + '">' +
+                    '<span style="width: 100%;">' + year.value + ' ' +
+                        '<span class="right grey-text text-lighten-1">(' + year.count + ')</span>' +
+                    '</span>' +
                 '</label>';
 
         });
@@ -359,9 +361,11 @@ app.scene.gallery = {
 
             document.getElementById('ctrl-month').innerHTML += '' +
 
-                '<label class="col s6 m2">' +
-                '<input type="checkbox" value="' + month + '">' +
-                '<span>' + app.tool.format.MONTH_SHORT[month - 1].toUpperCase() + '</span>' +
+                '<label class="col s6 m4 l3 xl2">' +
+                    '<input type="checkbox" value="' + month.value + '">' +
+                    '<span style="width: 100%;">' + app.tool.format.MONTH_SHORT[month.value - 1].toUpperCase() + ' ' +
+                        '<span class="right grey-text text-lighten-1">(' + month.count + ')</span>' +
+                    '</span>' +
                 '</label>';
 
         });
@@ -390,9 +394,11 @@ app.scene.gallery = {
 
             document.getElementById('ctrl-day').innerHTML += '' +
 
-                '<label class="col s6 m2">' +
-                    '<input type="checkbox" value="' + day + '">' +
-                    '<span>' + day + '</span>' +
+                '<label class="col s6 m4 l3 xl2">' +
+                    '<input type="checkbox" value="' + day.value + '">' +
+                    '<span style="width: 100%;">' + day.value + ' ' +
+                        '<span class="right grey-text text-lighten-1">(' + day.count + ')</span>' +
+                    '</span>' +
                 '</label>';
 
         });
