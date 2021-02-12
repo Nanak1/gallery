@@ -14,8 +14,9 @@ router.get('/photo', (req, res) => {
 
     let limit = parseInt(req.query.count);
     let offset = limit * (parseInt(req.query.page) - 1);
+    let sort_column = req.query.sort_column || 'date_create';
+    let sort_direction = req.query.sort_direction || 'DESC';
 
-    let columns = req.user.censored ? 'id' : 'id, censored';
     let filters = [];
 
     if (req.query.years) {
@@ -56,7 +57,7 @@ router.get('/photo', (req, res) => {
 
     let where = filters.length ? 'WHERE ' + filters.join(' AND ') : '';
 
-    let sql = `SELECT ${columns} FROM photo ${where} ORDER BY date_create DESC LIMIT $1 OFFSET $2;`;
+    let sql = `SELECT id, date_create, date_import, censored FROM photo ${where} ORDER BY ${sort_column} ${sort_direction} LIMIT $1 OFFSET $2;`;
 
     db.gallery.query(sql, [
         limit,
