@@ -4,29 +4,7 @@ app.scene.account_login = {
 
     show: () => new Promise((resolve, reject) => {
 
-        document.getElementById('app').innerHTML = '' +
-
-            '<div class="container">' +
-            '<div class="row">' +
-            '<div class="col s12 offset-m2 m8 offset-l3 l6 offset-xl4 xl4">' +
-
-            '<h3>Вход</h3>' +
-
-            '<div class="input-field">' +
-            '<input id="username" type="text">' +
-            '<label for="username">Имя пользователя</label>' +
-            '</div>' +
-
-            '<div class="input-field">' +
-            '<input id="password" type="password">' +
-            '<label for="password">Пароль</label>' +
-            '</div>' +
-
-            '<a id="login" class="waves-effect waves-light btn">Войти</a>' +
-
-            '</div>' +
-            '</div>' +
-            '</div>';
+        document.getElementById('app').innerHTML = app.scene.account_login.getHTML();
 
 
         document.getElementById('login').addEventListener('click', app.scene.account_login.onClick);
@@ -40,10 +18,47 @@ app.scene.account_login = {
 
     close: () => new Promise((resolve, reject) => {
 
+        // before clear
+
+        // clear
+
+        document.getElementById('app').innerHTML = '';
+
+        // after clear
+
+        // end
+
         app.activeScene = null;
         resolve();
 
     }),
+
+    getHTML: () => {
+
+        return '' +
+            '<div class="container">' +
+                '<div class="row">' +
+                    '<div class="col s12 offset-m2 m8 offset-l3 l6 offset-xl4 xl4">' +
+
+                        '<h3>Вход</h3>' +
+
+                        '<div class="input-field">' +
+                            '<input id="username" type="text">' +
+                            '<label for="username">Имя пользователя</label>' +
+                        '</div>' +
+
+                        '<div class="input-field">' +
+                            '<input id="password" type="password">' +
+                            '<label for="password">Пароль</label>' +
+                        '</div>' +
+
+                        '<button id="login" class="waves-effect waves-light btn">Войти</button>' +
+
+                    '</div>' +
+                '</div>' +
+            '</div>';
+
+    },
 
     onKeyUp: event => {
 
