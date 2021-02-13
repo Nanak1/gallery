@@ -239,19 +239,19 @@ app.scene.gallery = {
 
         html += '<div id="photos" style="font-size: 0;"></div>';
 
-        html += app.scene.gallery.getMenuButton();
-        html += app.scene.gallery.getViewButton();
         html += app.scene.gallery.getEditButton();
-        html += app.scene.gallery.getCalendarButton();
+        html += app.scene.gallery.getViewButton();
         html += app.scene.gallery.getSearchButton();
+        html += app.scene.gallery.getCalendarButton();
+        html += app.scene.gallery.getMenuButton();
 
         return html;
 
     },
 
-    // menu
+    // edit
 
-    getMenuButton: () => {
+    getEditButton: () => {
 
         let padding = 8;
         let diameter = 56;
@@ -259,11 +259,11 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="menu-button" ' +
+                'id="edit-button" ' +
                 'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
                 'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px;"' +
             '>' +
-                '<i class="mdi mdi-menu"></i>' +
+                '<i class="mdi mdi-pencil"></i>' +
             '</button>';
 
     },
@@ -454,15 +454,18 @@ app.scene.gallery = {
             })();
 
             document.body.style.overflow = 'hidden';
-            document.getElementById('view-modal').style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('view-modal').style.display = 'block';
+            }, 200);
 
         });
 
     },
 
-    // edit
+    // search
 
-    getEditButton: () => {
+    getSearchButton: () => {
 
         let padding = 8;
         let diameter = 56;
@@ -470,11 +473,11 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="edit-button" ' +
+                'id="search-button" ' +
                 'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
                 'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px;"' +
             '>' +
-                '<i class="mdi mdi-pencil"></i>' +
+                '<i class="mdi mdi-magnify"></i>' +
             '</button>';
 
     },
@@ -734,15 +737,18 @@ app.scene.gallery = {
             })();
 
             document.body.style.overflow = 'hidden';
-            document.getElementById('calendar-modal').style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('calendar-modal').style.display = 'block';
+            }, 200);
 
         });
 
     },
 
-    // search
+    // menu
 
-    getSearchButton: () => {
+    getMenuButton: () => {
 
         let padding = 8;
         let diameter = 56;
@@ -750,11 +756,11 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-            'id="search-button" ' +
-            'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-            'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px;"' +
+                'id="menu-button" ' +
+                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px;"' +
             '>' +
-            '<i class="mdi mdi-magnify"></i>' +
+                '<i class="mdi mdi-cog"></i>' +
             '</button>';
 
     },
