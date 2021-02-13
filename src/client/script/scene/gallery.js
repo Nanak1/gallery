@@ -9,6 +9,7 @@ app.scene.gallery = {
     finish: false,
 
     photos: [],
+    selected: [],
 
     years: [],
     months: [],
@@ -175,23 +176,33 @@ app.scene.gallery = {
                     app.scene.gallery.photos.push(... res.data.photos);
 
                     let percent = 100 / app.scene.gallery.columns;
-                    let html = '';
+                    let el = document.getElementById('photos');
 
                     res.data.photos.forEach(photo => {
 
-                        let params = [
-                            `src="/photo/thumbnail/${photo.id}"`,
-                            `width="256"`,
-                            `height="256"`,
-                            `style="width: ${percent}%; height: ${percent}%;"`
-                        ];
+                        let src = '/photo/thumbnail/' + photo.id;
 
-                        html += `<img ${params.join(' ')}>`;
+                        el.insertAdjacentHTML('beforeend', '' +
+                            '<img ' +
+                                'alt="' + photo.id + '"' +
+                                'src="' + src + '" ' +
+                                'width="256" ' +
+                                'height="256" ' +
+                                'style="' +
+                                    'width: ' + percent + '%; ' +
+                                    'height: ' + percent + '%;' +
+                                '"' +
+                            '>'
+                        );
+
+                        document.querySelector(
+                            '[src="' + src + '"]'
+                        ).addEventListener(
+                            'click',
+                            app.scene.gallery.onClickThumbnail
+                        );
 
                     });
-
-
-                    document.getElementById('photos').innerHTML += html;
 
                 }
 
@@ -764,5 +775,64 @@ app.scene.gallery = {
             '</button>';
 
     },
+
+    // preview
+
+    getPreviewModal: () => {
+
+        return '' +
+            '<div ' +
+                'id="preview-modal" ' +
+                'class="gallery-preview" ' +
+                'style="' +
+                    'background-image: url(/photo/preview/' + app.scene.gallery.selected[0] + ');' +
+                '"' +
+            '>' +
+                '<button ' +
+                    'id="preview-close" ' +
+                    'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                    'style="position: fixed; left: 50%; bottom: 8px; margin-left: -28px;"' +
+                '>' +
+                    '<i class="mdi mdi-close"></i>' +
+                '</button>' +
+            '</div>';
+
+    },
+
+    onClickThumbnail: event => {
+
+        let id = event.target.src.split('/')[5];
+
+        app.scene.gallery.selected.push(id);
+
+        if (app.scene.gallery.selected.length === 1) {
+
+            app.scene.gallery.hideButtons();
+            setTimeout(() => {
+
+                document.body.insertAdjacentHTML('afterbegin', app.scene.gallery.getPreviewModal());
+
+                document.getElementById('preview-close').addEventListener('click', () => {
+
+                    document.getElementById('preview-modal').remove();
+                    document.body.style.overflow = '';
+                    app.scene.gallery.selected = [];
+
+                    app.scene.gallery.showButtons();
+
+                });
+
+                document.getElementById('preview-modal').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+
+                setTimeout(() => {
+                    document.getElementById('preview-close').classList.remove('scale-out');
+                });
+
+            }, 200);
+
+        }
+
+    }
 
 };
