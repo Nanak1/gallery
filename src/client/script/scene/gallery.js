@@ -16,7 +16,7 @@ app.scene.gallery = {
     days: [],
 
     columns: null,
-    resizeTimeoutId: null,
+    orientation: null,
 
     sort: {
         column: 'date_create',
@@ -37,9 +37,11 @@ app.scene.gallery = {
             app.scene.gallery.loadDateCreate('month').then(() => {
                 app.scene.gallery.loadDateCreate('day').then(() => {
 
-                    window.addEventListener('resize', app.scene.gallery.onResize);
                     document.body.classList.add('gallery-scrollbar-overlay');
                     document.getElementById('app').innerHTML = app.scene.gallery.getHTML();
+
+                    window.addEventListener('orientationchange', app.scene.gallery.onOrientationChange);
+                    app.scene.gallery.orientation = window.screen.orientation.type;
 
                     app.scene.gallery.reload().then(() => {
 
@@ -63,7 +65,7 @@ app.scene.gallery = {
 
         // before clear
 
-        window.removeEventListener('resize', app.scene.gallery.onResize);
+        window.removeEventListener('orientationchange', app.scene.gallery.onOrientationChange);
         window.removeEventListener('scroll', app.scene.gallery.onScroll);
 
         // clear
@@ -73,7 +75,6 @@ app.scene.gallery = {
         // after clear
 
         document.body.classList.remove('gallery-scrollbar-overlay');
-        app.scene.gallery.resizeTimeoutId = null;
 
         // end
 
@@ -92,14 +93,59 @@ app.scene.gallery = {
 
     },
 
-    onResize: () => {
+    onOrientationChange: () => {
 
-        clearTimeout(app.scene.gallery.resizeTimeoutId);
-        app.scene.gallery.resizeTimeoutId = setTimeout(() => {
+        if (
+            app.scene.gallery.orientation.includes('portrait') &&
+            window.screen.orientation.type.includes('landscape') ||
+            app.scene.gallery.orientation.includes('landscape') &&
+            window.screen.orientation.type.includes('portrait')
+        ) {
 
-            app.scene.gallery.reload();
+            // столбцы и строки меняются местами
 
-        }, 250);
+            let columns = app.scene.gallery.columns;
+
+            app.scene.gallery.columns = app.scene.gallery.rows;
+            app.scene.gallery.rows = columns;
+
+            // проверка на наличие фотографий
+
+            if (app.scene.gallery.photos.length) {
+
+                // поиск фотографии для выравнивания после смены ориентации
+
+                let img = null;
+                let nodes = document.getElementById('photos').childNodes;
+
+                for (let i = 0; !img && i < nodes.length; i++) {
+
+                    if (nodes[i].offsetTop >= window.scrollY) img = nodes[i];
+
+                }
+
+                // обновление ширины и высоты фотографий в сетке
+
+                let percent = 100 / app.scene.gallery.columns;
+
+                nodes.forEach(img => {
+
+                    img.style.width = percent + '%';
+                    img.style.height = percent + '%';
+
+                });
+
+                // выравнивание по фотографии
+
+                setTimeout(() => {
+                    img.scrollIntoView();
+                }, 100);
+
+            }
+
+        }
+
+        app.scene.gallery.orientation = window.screen.orientation.type;
 
     },
 
@@ -119,12 +165,15 @@ app.scene.gallery = {
     reload: () => new Promise((resolve, reject) => {
 
         if (!app.scene.gallery.columns) {
+            app.scene.gallery.columns = Math.ceil(
+                window.innerWidth / app.scene.gallery.px
+            );
+        }
 
-            let dpr = app.scene.gallery.devicePixelRatio ? window.devicePixelRatio : 1;
-            let width = Math.ceil(window.innerWidth * dpr);
-
-            app.scene.gallery.columns = Math.ceil(width / app.scene.gallery.px);
-
+        if (!app.scene.gallery.rows) {
+            app.scene.gallery.rows = Math.ceil(
+                app.scene.gallery.columns * window.innerHeight / window.innerWidth
+            );
         }
 
         app.scene.gallery.page = 0;
@@ -153,11 +202,7 @@ app.scene.gallery = {
             app.scene.gallery.loading = true;
             app.scene.gallery.page++;
 
-            let dpr = app.scene.gallery.devicePixelRatio ? window.devicePixelRatio : 1;
-            let width = Math.ceil(window.innerWidth * dpr);
-            let height = Math.ceil(window.innerHeight * dpr);
-            let rows = Math.ceil(app.scene.gallery.columns * height / width);
-            let count = app.scene.gallery.columns * rows;
+            let count = app.scene.gallery.columns * app.scene.gallery.rows;
 
             axios.get('/photo', {
                 params: {
@@ -189,6 +234,7 @@ app.scene.gallery = {
                                 'width="256" ' +
                                 'height="256" ' +
                                 'style="' +
+                                    'cursor: zoom-in; ' +
                                     'width: ' + percent + '%; ' +
                                     'height: ' + percent + '%;' +
                                 '"' +
@@ -468,7 +514,7 @@ app.scene.gallery = {
 
             setTimeout(() => {
                 document.getElementById('view-modal').style.display = 'block';
-            }, 200);
+            }, 250);
 
         });
 
@@ -751,7 +797,7 @@ app.scene.gallery = {
 
             setTimeout(() => {
                 document.getElementById('calendar-modal').style.display = 'block';
-            }, 200);
+            }, 250);
 
         });
 
@@ -778,6 +824,36 @@ app.scene.gallery = {
 
     // preview
 
+    onClickThumbnail: event => {
+
+        let id = event.target.src.split('/')[5];
+
+        app.scene.gallery.selected.push(id);
+
+        if (app.scene.gallery.selected.length === 1) {
+
+            document.body.style.overflow = 'hidden';
+            app.scene.gallery.hideButtons();
+
+            setTimeout(() => {
+
+                document.body.insertAdjacentHTML('afterbegin', app.scene.gallery.getPreviewModal());
+
+                app.scene.gallery.initPreviewModal();
+                app.scene.gallery.initPreviewLeftButton();
+                app.scene.gallery.initPreviewCloseButton();
+                app.scene.gallery.initPreviewRightButton();
+
+                setTimeout(() => app.scene.gallery.showPreviewButtons(), 100);
+
+            }, 250);
+
+        }
+
+    },
+
+    // preview modal
+
     getPreviewModal: () => {
 
         return '' +
@@ -787,51 +863,205 @@ app.scene.gallery = {
                 'style="' +
                     'background-image: url(/photo/preview/' + app.scene.gallery.selected[0] + ');' +
                 '"' +
-            '>' +
-                '<button ' +
-                    'id="preview-close" ' +
-                    'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                    'style="position: fixed; left: 50%; bottom: 8px; margin-left: -28px;"' +
-                '>' +
-                    '<i class="mdi mdi-close"></i>' +
-                '</button>' +
-            '</div>';
+            '></div>' +
+            app.scene.gallery.getPreviewLeftButton() +
+            app.scene.gallery.getPreviewEditButton() +
+            app.scene.gallery.getPreviewCloseButton() +
+            app.scene.gallery.getPreviewDeleteButton() +
+            app.scene.gallery.getPreviewRightButton();
 
     },
 
-    onClickThumbnail: event => {
+    initPreviewModal: () => {
 
-        let id = event.target.src.split('/')[5];
+        document.getElementById('preview-modal').addEventListener('click', () => {
 
-        app.scene.gallery.selected.push(id);
+            document.getElementById('preview-close-button').classList.contains('scale-out') ?
+                app.scene.gallery.showPreviewButtons() :
+                app.scene.gallery.hidePreviewButtons();
 
-        if (app.scene.gallery.selected.length === 1) {
+        });
 
-            app.scene.gallery.hideButtons();
+    },
+
+    // preview left
+
+    getPreviewLeftButton: () => {
+
+        let padding = 8;
+        let diameter = 56;
+        let left = 0 - Math.round(diameter / 2) - padding - diameter - padding - diameter;
+
+        return '' +
+            '<button ' +
+                'id="preview-left-button" ' +
+                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 3;"' +
+            '>' +
+                '<i class="mdi mdi-arrow-left"></i>' +
+            '</button>';
+
+    },
+
+    initPreviewLeftButton: () => {
+
+        document.getElementById('preview-left-button').addEventListener('click', () => {
+
+            let id = app.scene.gallery.selected[0];
+            let photo = app.scene.gallery.photos.find(photo => photo.id === id);
+            let index = app.scene.gallery.photos.indexOf(photo);
+
+            if (index > 0) {
+
+                id = app.scene.gallery.photos[index - 1].id;
+                document.getElementById('preview-modal').style.backgroundImage = 'url(/photo/preview/' + id + ')';
+                app.scene.gallery.selected = [id];
+
+            }
+
+        });
+
+    },
+
+    // preview edit
+
+    getPreviewEditButton: () => {
+
+        let padding = 8;
+        let diameter = 56;
+        let left = 0 - Math.round(diameter / 2) - padding - diameter;
+
+        return '' +
+            '<button ' +
+                'id="preview-edit-button" ' +
+                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 3;"' +
+            '>' +
+                '<i class="mdi mdi-pencil"></i>' +
+            '</button>';
+
+    },
+
+    // preview close
+
+    getPreviewCloseButton: () => {
+
+        let padding = 8;
+        let diameter = 56;
+        let left = 0 - Math.round(diameter / 2);
+
+        return '' +
+            '<button ' +
+                'id="preview-close-button" ' +
+                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 3;"' +
+            '>' +
+                '<i class="mdi mdi-close"></i>' +
+            '</button>';
+
+    },
+
+    initPreviewCloseButton: () => {
+
+        document.getElementById('preview-close-button').addEventListener('click', () => {
+
+            app.scene.gallery.hidePreviewButtons();
             setTimeout(() => {
 
-                document.body.insertAdjacentHTML('afterbegin', app.scene.gallery.getPreviewModal());
+                document.getElementById('preview-modal').remove();
+                document.getElementById('preview-left-button').remove();
+                document.getElementById('preview-edit-button').remove();
+                document.getElementById('preview-close-button').remove();
+                document.getElementById('preview-delete-button').remove();
+                document.getElementById('preview-right-button').remove();
+                document.body.style.overflow = '';
+                app.scene.gallery.selected = [];
 
-                document.getElementById('preview-close').addEventListener('click', () => {
+                app.scene.gallery.showButtons();
 
-                    document.getElementById('preview-modal').remove();
-                    document.body.style.overflow = '';
-                    app.scene.gallery.selected = [];
+            }, 250);
 
-                    app.scene.gallery.showButtons();
+        });
 
-                });
+    },
 
-                document.getElementById('preview-modal').style.display = 'block';
-                document.body.style.overflow = 'hidden';
+    // preview delete
 
-                setTimeout(() => {
-                    document.getElementById('preview-close').classList.remove('scale-out');
-                });
+    getPreviewDeleteButton: () => {
 
-            }, 200);
+        let padding = 8;
+        let diameter = 56;
+        let left = Math.round(diameter / 2) + padding;
 
-        }
+        return '' +
+            '<button ' +
+                'id="preview-delete-button" ' +
+                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 3;"' +
+            '>' +
+                '<i class="mdi mdi-delete"></i>' +
+            '</button>';
+
+    },
+
+    // preview right
+
+    getPreviewRightButton: () => {
+
+        let padding = 8;
+        let diameter = 56;
+        let left = Math.round(diameter / 2) + padding + diameter + padding;
+
+        return '' +
+            '<button ' +
+                'id="preview-right-button" ' +
+                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 3;"' +
+            '>' +
+                '<i class="mdi mdi-arrow-right"></i>' +
+            '</button>';
+
+    },
+
+    initPreviewRightButton: () => {
+
+        document.getElementById('preview-right-button').addEventListener('click', () => {
+
+            let id = app.scene.gallery.selected[0];
+            let photo = app.scene.gallery.photos.find(photo => photo.id === id);
+            let index = app.scene.gallery.photos.indexOf(photo);
+
+            if (index < app.scene.gallery.photos.length - 1) {
+
+                id = app.scene.gallery.photos[index + 1].id;
+                document.getElementById('preview-modal').style.backgroundImage = 'url(/photo/preview/' + id + ')';
+                app.scene.gallery.selected = [id];
+
+            }
+
+        });
+
+    },
+
+    // preview tools
+
+    showPreviewButtons: () => {
+
+        document.getElementById('preview-left-button').classList.remove('scale-out');
+        document.getElementById('preview-edit-button').classList.remove('scale-out');
+        document.getElementById('preview-close-button').classList.remove('scale-out');
+        document.getElementById('preview-delete-button').classList.remove('scale-out');
+        document.getElementById('preview-right-button').classList.remove('scale-out');
+
+    },
+
+    hidePreviewButtons: () => {
+
+        document.getElementById('preview-left-button').classList.add('scale-out');
+        document.getElementById('preview-edit-button').classList.add('scale-out');
+        document.getElementById('preview-close-button').classList.add('scale-out');
+        document.getElementById('preview-delete-button').classList.add('scale-out');
+        document.getElementById('preview-right-button').classList.add('scale-out');
 
     }
 
