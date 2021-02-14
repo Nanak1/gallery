@@ -272,21 +272,21 @@ app.scene.gallery = {
 
     showButtons: () => {
 
-        document.getElementById('menu-button').classList.remove('scale-out');
+        document.getElementById('select-button').classList.remove('scale-out');
         document.getElementById('view-button').classList.remove('scale-out');
-        document.getElementById('edit-button').classList.remove('scale-out');
-        document.getElementById('calendar-button').classList.remove('scale-out');
         document.getElementById('search-button').classList.remove('scale-out');
+        document.getElementById('calendar-button').classList.remove('scale-out');
+        document.getElementById('menu-button').classList.remove('scale-out');
 
     },
 
     hideButtons: () => {
 
-        document.getElementById('menu-button').classList.add('scale-out');
+        document.getElementById('select-button').classList.add('scale-out');
         document.getElementById('view-button').classList.add('scale-out');
-        document.getElementById('edit-button').classList.add('scale-out');
-        document.getElementById('calendar-button').classList.add('scale-out');
         document.getElementById('search-button').classList.add('scale-out');
+        document.getElementById('calendar-button').classList.add('scale-out');
+        document.getElementById('menu-button').classList.add('scale-out');
 
     },
 
@@ -296,7 +296,7 @@ app.scene.gallery = {
 
         html += '<div id="photos" style="font-size: 0;"></div>';
 
-        html += app.scene.gallery.getEditButton();
+        html += app.scene.gallery.getSelectButton();
         html += app.scene.gallery.getViewButton();
         html += app.scene.gallery.getSearchButton();
         html += app.scene.gallery.getCalendarButton();
@@ -306,9 +306,9 @@ app.scene.gallery = {
 
     },
 
-    // edit
+    // select
 
-    getEditButton: () => {
+    getSelectButton: () => {
 
         let padding = 8;
         let diameter = 56;
@@ -316,11 +316,11 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="edit-button" ' +
+                'id="select-button" ' +
                 'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
                 'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px;"' +
             '>' +
-                '<i class="mdi mdi-pencil"></i>' +
+                '<i class="mdi mdi-selection"></i>' +
             '</button>';
 
     },
