@@ -2,8 +2,16 @@ app.scene.gallery = {
 
     id: 'gallery',
 
+    sortDirection: 'DESC',
+    sortColumn: 'date_create',
+
     px: 256,
     page: 0,
+
+    columns: null,
+    rows: null,
+
+    orientation: null,
 
     loading: false,
     finish: false,
@@ -15,20 +23,9 @@ app.scene.gallery = {
     months: [],
     days: [],
 
-    columns: null,
-    rows: null,
-    orientation: null,
-
-    sort: {
-        column: 'date_create',
-        direction: 'DESC'
-    },
-
-    available: {
-        years: [],
-        months: [],
-        days: []
-    },
+    _years: [],
+    _months: [],
+    _days: [],
 
     // methods
 
@@ -38,18 +35,72 @@ app.scene.gallery = {
             app.scene.gallery.loadDateCreate('month').then(() => {
                 app.scene.gallery.loadDateCreate('day').then(() => {
 
+                    // html
+
+                    let html = '<div id="photos" style="font-size: 0;"></div>';
+
+                    html += app.scene.gallery.getPreviewModalHTML();
+
+                    html += app.scene.gallery.getMenuButtonHTML();
+
+                    html += app.scene.gallery.getViewButtonHTML();
+                    html += app.scene.gallery.getCalendarButtonHTML();
+                    html += app.scene.gallery.getSearchButtonHTML();
+                    html += app.scene.gallery.getSelectButtonHTML();
+
+                    html += app.scene.gallery.getDeleteButtonHTML();
+                    html += app.scene.gallery.getEditButtonHTML();
+                    html += app.scene.gallery.getDownloadButtonHTML();
+                    html += app.scene.gallery.getBackButtonHTML();
+
+                    html += app.scene.gallery.getAllButtonHTML();
+
+                    html += app.scene.gallery.getLeftButtonHTML();
+                    html += app.scene.gallery.getRightButtonHTML();
+
+                    document.getElementById('app').innerHTML = html;
                     document.body.classList.add('gallery-scrollbar-overlay');
-                    document.getElementById('app').innerHTML = app.scene.gallery.getHTML();
+
+                    app.scene.gallery.initPreview();
+
+                    app.scene.gallery.initMenu();
+
+                    app.scene.gallery.initView();
+                    app.scene.gallery.initCalendar();
+                    app.scene.gallery.initSearch();
+                    app.scene.gallery.initSelect();
+
+                    app.scene.gallery.initDelete();
+                    app.scene.gallery.initEdit();
+                    app.scene.gallery.initDownload();
+                    app.scene.gallery.initBack();
+
+                    app.scene.gallery.initAll();
+
+                    app.scene.gallery.initLeft();
+                    app.scene.gallery.initRight();
+
+                    // orientation
 
                     window.addEventListener('orientationchange', app.scene.gallery.onOrientationChange);
                     app.scene.gallery.orientation = window.screen.orientation.type;
 
+                    // reload
+
                     app.scene.gallery.reload().then(() => {
 
-                        app.scene.gallery.initView();
-                        app.scene.gallery.initCalendar();
+                        // show ui
 
-                        app.scene.gallery.showButtons();
+                        [
+                            'menu-button',
+
+                            'view-button',
+                            'calendar-button',
+                            'search-button',
+                            'select-button'
+                        ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+
+                        // end
 
                         app.activeScene = app.scene.gallery;
                         resolve();
@@ -81,6 +132,162 @@ app.scene.gallery = {
 
         app.activeScene = null;
         resolve();
+
+    }),
+
+    loadDateCreate: part => new Promise((resolve, reject) => {
+
+        axios.get('/photo/date_create/' + part).then(res => {
+
+            app.scene.gallery['_' + part + 's'] = res.data[part + 's'];
+            resolve();
+
+        });
+
+    }),
+
+    reload: () => new Promise((resolve, reject) => {
+
+        if (!app.scene.gallery.columns) {
+            app.scene.gallery.columns = Math.ceil(
+                window.innerWidth / app.scene.gallery.px
+            );
+        }
+
+        if (!app.scene.gallery.rows) {
+            app.scene.gallery.rows = Math.ceil(
+                app.scene.gallery.columns * window.innerHeight / window.innerWidth
+            );
+        }
+
+        app.scene.gallery.page = 0;
+        app.scene.gallery.photos = [];
+        app.scene.gallery.finish = false;
+        document.getElementById('photos').innerHTML = '';
+        window.removeEventListener('scroll', app.scene.gallery.onScroll);
+
+        app.scene.gallery.loadPage().then(() => {
+            app.scene.gallery.loadPage().then(() => {
+
+                if (!app.scene.gallery.finish) window.addEventListener('scroll', app.scene.gallery.onScroll);
+
+                resolve();
+
+            });
+        });
+
+    }),
+
+    loadPage: () => new Promise((resolve, reject) => {
+
+        if (app.scene.gallery.loading || app.scene.gallery.finish) resolve();
+        else {
+
+            app.scene.gallery.loading = true;
+            app.scene.gallery.page++;
+
+            let count = app.scene.gallery.columns * app.scene.gallery.rows;
+
+            axios.get('/photo', {
+                params: {
+                    count: count,
+                    page: app.scene.gallery.page,
+                    sort_direction: app.scene.gallery.sortDirection,
+                    sort_column: app.scene.gallery.sortColumn,
+                    years: app.scene.gallery.years,
+                    months: app.scene.gallery.months,
+                    days: app.scene.gallery.days
+                }
+            }).then(res => {
+
+                if (res.data.photos.length > 0) {
+
+                    app.scene.gallery.photos.push(... res.data.photos);
+
+                    let percent = 100 / app.scene.gallery.columns;
+                    let el = document.getElementById('photos');
+
+                    res.data.photos.forEach(photo => {
+
+                        let src = '/photo/thumbnail/' + photo.id;
+
+                        el.insertAdjacentHTML('beforeend', '' +
+                            '<img ' +
+                                'alt="' + photo.id + '"' +
+                                'src="' + src + '" ' +
+                                'width="256" ' +
+                                'height="256" ' +
+                                'style="' +
+                                    'cursor: zoom-in; ' +
+                                    'width: ' + percent + '%; ' +
+                                    'height: ' + percent + '%;' +
+                                '"' +
+                            '>'
+                        );
+
+                        document.querySelector(
+                            '[src="' + src + '"]'
+                        ).addEventListener('click', event => {
+
+                            let id = event.target.src.split('/')[5];
+
+                            app.scene.gallery.selected.push(id);
+
+                            if (app.scene.gallery.selected.length === 1) {
+
+                                document.body.style.overflow = 'hidden';
+
+                                [
+                                    'view-button',
+                                    'calendar-button',
+                                    'search-button',
+                                    'select-button'
+                                ].forEach(button => document.getElementById(button).classList.add('scale-out'));
+
+                                setTimeout(() => {
+
+                                    let el = document.getElementById('preview-modal');
+
+                                    el.style.backgroundImage = 'url(/photo/preview/' + id + ')';
+                                    el.style.display = 'block';
+
+                                    setTimeout(() => {
+
+                                        [
+                                            'delete-button',
+                                            'edit-button',
+                                            'download-button',
+                                            'back-button',
+
+                                            'left-button',
+                                            'right-button'
+                                        ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+
+                                    }, 100);
+
+                                }, 250);
+
+                            }
+
+                        });
+
+                    });
+
+                }
+
+                if (res.data.photos.length < count) {
+
+                    window.removeEventListener('scroll', app.scene.gallery.onScroll);
+                    app.scene.gallery.finish = true;
+
+                }
+
+                app.scene.gallery.loading = false;
+                resolve();
+
+            });
+
+        }
 
     }),
 
@@ -150,189 +357,71 @@ app.scene.gallery = {
 
     },
 
-    // grid
+    // preview
 
-    loadDateCreate: part => new Promise((resolve, reject) => {
+    getPreviewModalHTML: () => {
 
-        axios.get('/photo/date_create/' + part).then(res => {
+        return '' +
+            '<div ' +
+                'id="preview-modal" ' +
+                'class="gallery-preview" ' +
+                'style="' +
+                    'background-image: url(/src/client/image/favicon.png);' +
+                '"' +
+            '></div>';
 
-            app.scene.gallery.available[part + 's'] = res.data[part + 's'];
-            resolve();
+    },
+
+    initPreview: () => {
+
+        document.getElementById('preview-modal').addEventListener('click', () => {
+
+            let f = document.getElementById('menu-button').classList.contains('scale-out') ? 'remove' : 'add';
+
+            [
+                'menu-button',
+
+                'delete-button',
+                'edit-button',
+                'download-button',
+                'back-button',
+
+                'left-button',
+                'right-button'
+            ].forEach(button => document.getElementById(button).classList[f]('scale-out'));
 
         });
 
-    }),
-
-    reload: () => new Promise((resolve, reject) => {
-
-        if (!app.scene.gallery.columns) {
-            app.scene.gallery.columns = Math.ceil(
-                window.innerWidth / app.scene.gallery.px
-            );
-        }
-
-        if (!app.scene.gallery.rows) {
-            app.scene.gallery.rows = Math.ceil(
-                app.scene.gallery.columns * window.innerHeight / window.innerWidth
-            );
-        }
-
-        app.scene.gallery.page = 0;
-        app.scene.gallery.photos = [];
-        app.scene.gallery.finish = false;
-        document.getElementById('photos').innerHTML = '';
-        window.removeEventListener('scroll', app.scene.gallery.onScroll);
-
-        app.scene.gallery.loadPage().then(() => {
-            app.scene.gallery.loadPage().then(() => {
-
-                if (!app.scene.gallery.finish) window.addEventListener('scroll', app.scene.gallery.onScroll);
-
-                resolve();
-
-            });
-        });
-
-    }),
-
-    loadPage: () => new Promise((resolve, reject) => {
-
-        if (app.scene.gallery.loading || app.scene.gallery.finish) resolve();
-        else {
-
-            app.scene.gallery.loading = true;
-            app.scene.gallery.page++;
-
-            let count = app.scene.gallery.columns * app.scene.gallery.rows;
-
-            axios.get('/photo', {
-                params: {
-                    count: count,
-                    page: app.scene.gallery.page,
-                    sort_column: app.scene.gallery.sort.column,
-                    sort_direction: app.scene.gallery.sort.direction,
-                    years: app.scene.gallery.years,
-                    months: app.scene.gallery.months,
-                    days: app.scene.gallery.days
-                }
-            }).then(res => {
-
-                if (res.data.photos.length > 0) {
-
-                    app.scene.gallery.photos.push(... res.data.photos);
-
-                    let percent = 100 / app.scene.gallery.columns;
-                    let el = document.getElementById('photos');
-
-                    res.data.photos.forEach(photo => {
-
-                        let src = '/photo/thumbnail/' + photo.id;
-
-                        el.insertAdjacentHTML('beforeend', '' +
-                            '<img ' +
-                                'alt="' + photo.id + '"' +
-                                'src="' + src + '" ' +
-                                'width="256" ' +
-                                'height="256" ' +
-                                'style="' +
-                                    'cursor: zoom-in; ' +
-                                    'width: ' + percent + '%; ' +
-                                    'height: ' + percent + '%;' +
-                                '"' +
-                            '>'
-                        );
-
-                        document.querySelector(
-                            '[src="' + src + '"]'
-                        ).addEventListener(
-                            'click',
-                            app.scene.gallery.onClickThumbnail
-                        );
-
-                    });
-
-                }
-
-                if (res.data.photos.length < count) {
-
-                    window.removeEventListener('scroll', app.scene.gallery.onScroll);
-                    app.scene.gallery.finish = true;
-
-                }
-
-                app.scene.gallery.loading = false;
-                resolve();
-
-            });
-
-        }
-
-    }),
-
-    // tools
-
-    showButtons: () => {
-
-        document.getElementById('select-button').classList.remove('scale-out');
-        document.getElementById('view-button').classList.remove('scale-out');
-        document.getElementById('search-button').classList.remove('scale-out');
-        document.getElementById('calendar-button').classList.remove('scale-out');
-        document.getElementById('menu-button').classList.remove('scale-out');
-
     },
 
-    hideButtons: () => {
+    // menu
 
-        document.getElementById('select-button').classList.add('scale-out');
-        document.getElementById('view-button').classList.add('scale-out');
-        document.getElementById('search-button').classList.add('scale-out');
-        document.getElementById('calendar-button').classList.add('scale-out');
-        document.getElementById('menu-button').classList.add('scale-out');
-
-    },
-
-    getHTML: () => {
-
-        let html = '';
-
-        html += '<div id="photos" style="font-size: 0;"></div>';
-
-        html += app.scene.gallery.getSelectButton();
-        html += app.scene.gallery.getViewButton();
-        html += app.scene.gallery.getSearchButton();
-        html += app.scene.gallery.getCalendarButton();
-        html += app.scene.gallery.getMenuButton();
-
-        return html;
-
-    },
-
-    // select
-
-    getSelectButton: () => {
-
-        let padding = 8;
-        let diameter = 56;
-        let left = 0 - Math.round(diameter / 2) - padding - diameter - padding - diameter;
+    getMenuButtonHTML: () => {
 
         return '' +
             '<button ' +
-                'id="select-button" ' +
+                'id="menu-button" ' +
                 'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px;"' +
+                'style="position: fixed; left: 8px; top: 8px;"' +
             '>' +
-                '<i class="mdi mdi-selection"></i>' +
+                '<i class="mdi mdi-menu"></i>' +
             '</button>';
+
+    },
+
+    initMenu: () => {
+
+        console.log('init menu');
 
     },
 
     // view
 
-    getViewButton: () => {
+    getViewButtonHTML: () => {
 
         let padding = 8;
         let diameter = 56;
-        let left = 0 - Math.round(diameter / 2) - padding - diameter;
+        let left = 0 - diameter - Math.round(padding / 2) - diameter - padding;
 
         return '' +
             '<button ' +
@@ -345,7 +434,7 @@ app.scene.gallery = {
 
     },
 
-    getViewModal: () => {
+    getViewModalHTML: () => {
 
         return '' +
             '<div id="view-modal" class="gallery-modal">' +
@@ -420,8 +509,16 @@ app.scene.gallery = {
 
         document.getElementById('view-button').addEventListener('click', () => {
 
-            app.scene.gallery.hideButtons();
-            document.body.insertAdjacentHTML('afterbegin', app.scene.gallery.getViewModal());
+            [
+                'menu-button',
+
+                'view-button',
+                'calendar-button',
+                'search-button',
+                'select-button'
+            ].forEach(button => document.getElementById(button).classList.add('scale-out'));
+
+            document.body.insertAdjacentHTML('afterbegin', app.scene.gallery.getViewModalHTML());
 
             (() => {
 
@@ -465,13 +562,13 @@ app.scene.gallery = {
                 // sort direction
 
                 document.querySelector(
-                    '[name=sort-direction][value=' + app.scene.gallery.sort.direction + ']'
+                    '[name=sort-direction][value=' + app.scene.gallery.sortDirection + ']'
                 ).checked = true;
 
                 // sort column
 
                 document.querySelector(
-                    '[name=sort-column][value=' + app.scene.gallery.sort.column + ']'
+                    '[name=sort-column][value=' + app.scene.gallery.sortColumn + ']'
                 ).checked = true;
 
                 // cancel
@@ -481,7 +578,14 @@ app.scene.gallery = {
                     document.getElementById('view-modal').remove();
                     document.body.style.overflow = '';
 
-                    app.scene.gallery.showButtons();
+                    [
+                        'menu-button',
+
+                        'view-button',
+                        'calendar-button',
+                        'search-button',
+                        'select-button'
+                    ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
                 });
 
@@ -496,11 +600,11 @@ app.scene.gallery = {
 
                     // sort direction
 
-                    app.scene.gallery.sort.direction = document.querySelector('[name=sort-direction]:checked').value
+                    app.scene.gallery.sortDirection = document.querySelector('[name=sort-direction]:checked').value
 
                     // sort column
 
-                    app.scene.gallery.sort.column = document.querySelector('[name=sort-column]:checked').value
+                    app.scene.gallery.sortColumn = document.querySelector('[name=sort-column]:checked').value
 
                     // apply
 
@@ -522,32 +626,13 @@ app.scene.gallery = {
 
     },
 
-    // search
-
-    getSearchButton: () => {
-
-        let padding = 8;
-        let diameter = 56;
-        let left = 0 - Math.round(diameter / 2);
-
-        return '' +
-            '<button ' +
-                'id="search-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px;"' +
-            '>' +
-                '<i class="mdi mdi-magnify"></i>' +
-            '</button>';
-
-    },
-
     // calendar
 
-    getCalendarButton: () => {
+    getCalendarButtonHTML: () => {
 
         let padding = 8;
         let diameter = 56;
-        let left = Math.round(diameter / 2) + padding;
+        let left = 0 - diameter - Math.round(padding / 2);
 
         return '' +
             '<button ' +
@@ -560,7 +645,7 @@ app.scene.gallery = {
 
     },
 
-    getCalendarModal: () => {
+    getCalendarModalHTML: () => {
 
         return '' +
             '<div id="calendar-modal" class="gallery-modal">' +
@@ -627,8 +712,16 @@ app.scene.gallery = {
 
         document.getElementById('calendar-button').addEventListener('click', () => {
 
-            app.scene.gallery.hideButtons();
-            document.body.insertAdjacentHTML('afterbegin', app.scene.gallery.getCalendarModal());
+            [
+                'menu-button',
+
+                'view-button',
+                'calendar-button',
+                'search-button',
+                'select-button'
+            ].forEach(button => document.getElementById(button).classList.add('scale-out'));
+
+            document.body.insertAdjacentHTML('afterbegin', app.scene.gallery.getCalendarModalHTML());
 
             (() => {
 
@@ -652,7 +745,7 @@ app.scene.gallery = {
 
                 });
 
-                app.scene.gallery.available.years.forEach(year => {
+                app.scene.gallery._years.forEach(year => {
 
                     let checked = app.scene.gallery.years.includes(year.value) ? ' checked' : '';
 
@@ -690,7 +783,7 @@ app.scene.gallery = {
 
                 });
 
-                app.scene.gallery.available.months.forEach(month => {
+                app.scene.gallery._months.forEach(month => {
 
                     let checked = app.scene.gallery.months.includes(month.value) ? ' checked' : '';
 
@@ -728,7 +821,7 @@ app.scene.gallery = {
 
                 });
 
-                app.scene.gallery.available.days.forEach(day => {
+                app.scene.gallery._days.forEach(day => {
 
                     let checked = app.scene.gallery.days.includes(day.value) ? ' checked' : '';
 
@@ -753,7 +846,14 @@ app.scene.gallery = {
                     document.getElementById('calendar-modal').remove();
                     document.body.style.overflow = '';
 
-                    app.scene.gallery.showButtons();
+                    [
+                        'menu-button',
+
+                        'view-button',
+                        'calendar-button',
+                        'search-button',
+                        'select-button'
+                    ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
                 });
 
@@ -805,109 +905,247 @@ app.scene.gallery = {
 
     },
 
-    // menu
+    // search
 
-    getMenuButton: () => {
+    getSearchButtonHTML: () => {
 
         let padding = 8;
-        let diameter = 56;
-        let left = Math.round(diameter / 2) + padding + diameter + padding;
+        let left = Math.round(padding / 2);
 
         return '' +
             '<button ' +
-                'id="menu-button" ' +
+                'id="search-button" ' +
                 'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
                 'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px;"' +
             '>' +
-                '<i class="mdi mdi-cog"></i>' +
+                '<i class="mdi mdi-magnify"></i>' +
             '</button>';
 
     },
 
-    // preview
+    initSearch: () => {
 
-    onClickThumbnail: event => {
+        console.log('init search');
 
-        let id = event.target.src.split('/')[5];
+    },
 
-        app.scene.gallery.selected.push(id);
+    // select
 
-        if (app.scene.gallery.selected.length === 1) {
+    getSelectButtonHTML: () => {
 
-            document.body.style.overflow = 'hidden';
-            app.scene.gallery.hideButtons();
+        let padding = 8;
+        let diameter = 56;
+        let left = Math.round(padding / 2) + diameter + padding;
+
+        return '' +
+            '<button ' +
+                'id="select-button" ' +
+                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px;"' +
+            '>' +
+                '<i class="mdi mdi-selection"></i>' +
+            '</button>';
+
+    },
+
+    initSelect: () => {
+
+        document.getElementById('select-button').addEventListener('click', () => {
+
+            [
+                'view-button',
+                'calendar-button',
+                'search-button',
+                'select-button'
+            ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
             setTimeout(() => {
 
-                document.body.insertAdjacentHTML('afterbegin', app.scene.gallery.getPreviewModal());
+                [
+                    'delete-button',
+                    'edit-button',
+                    'download-button',
+                    'back-button',
 
-                app.scene.gallery.initPreviewModal();
-                app.scene.gallery.initPreviewLeftButton();
-                app.scene.gallery.initPreviewCloseButton();
-                app.scene.gallery.initPreviewRightButton();
-
-                setTimeout(() => app.scene.gallery.showPreviewButtons(), 100);
+                    'all-button'
+                ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
             }, 250);
-
-        }
-
-    },
-
-    // preview modal
-
-    getPreviewModal: () => {
-
-        return '' +
-            '<div ' +
-                'id="preview-modal" ' +
-                'class="gallery-preview" ' +
-                'style="' +
-                    'background-image: url(/photo/preview/' + app.scene.gallery.selected[0] + ');' +
-                '"' +
-            '></div>' +
-            app.scene.gallery.getPreviewLeftButton() +
-            app.scene.gallery.getPreviewEditButton() +
-            app.scene.gallery.getPreviewCloseButton() +
-            app.scene.gallery.getPreviewDeleteButton() +
-            app.scene.gallery.getPreviewRightButton();
-
-    },
-
-    initPreviewModal: () => {
-
-        document.getElementById('preview-modal').addEventListener('click', () => {
-
-            document.getElementById('preview-close-button').classList.contains('scale-out') ?
-                app.scene.gallery.showPreviewButtons() :
-                app.scene.gallery.hidePreviewButtons();
 
         });
 
     },
 
-    // preview left
+    // delete
 
-    getPreviewLeftButton: () => {
+    getDeleteButtonHTML: () => {
 
         let padding = 8;
         let diameter = 56;
-        let left = 0 - Math.round(diameter / 2) - padding - diameter - padding - diameter;
+        let left = 0 - diameter - Math.round(padding / 2) - diameter - padding;
 
         return '' +
             '<button ' +
-                'id="preview-left-button" ' +
+                'id="delete-button" ' +
+                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 2;"' +
+            '>' +
+                '<i class="mdi mdi-delete"></i>' +
+            '</button>';
+
+    },
+
+    initDelete: () => {
+
+        console.log('init delete');
+
+    },
+
+    // edit
+
+    getEditButtonHTML: () => {
+
+        let padding = 8;
+        let diameter = 56;
+        let left = 0 - diameter - Math.round(padding / 2);
+
+        return '' +
+            '<button ' +
+                'id="edit-button" ' +
+                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 2;"' +
+            '>' +
+                '<i class="mdi mdi-pencil"></i>' +
+            '</button>';
+
+    },
+
+    initEdit: () => {
+
+        console.log('init edit');
+
+    },
+
+    // download
+
+    getDownloadButtonHTML: () => {
+
+        let padding = 8;
+        let left = Math.round(padding / 2);
+
+        return '' +
+            '<button ' +
+                'id="download-button" ' +
+                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 2;"' +
+            '>' +
+                '<i class="mdi mdi-download"></i>' +
+            '</button>';
+
+    },
+
+    initDownload: () => {
+
+        console.log('init download');
+
+    },
+
+    // back
+
+    getBackButtonHTML: () => {
+
+        let padding = 8;
+        let diameter = 56;
+        let left = Math.round(padding / 2) + diameter + padding;
+
+        return '' +
+            '<button ' +
+                'id="back-button" ' +
                 'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 3;"' +
+                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 2;"' +
+            '>' +
+                '<i class="mdi mdi-close"></i>' +
+            '</button>';
+
+    },
+
+    initBack: () => {
+
+        document.getElementById('back-button').addEventListener('click', () => {
+
+            let img = document.getElementById('preview-modal');
+            let buttons = [];
+
+            if (img.style.display === 'block') buttons.push('left-button', 'right-button');
+            else buttons.push('all-button');
+
+            [
+                'delete-button',
+                'edit-button',
+                'download-button',
+                'back-button',
+
+                ... buttons
+            ].forEach(button => document.getElementById(button).classList.add('scale-out'));
+
+            setTimeout(() => {
+
+                img.style.display = '';
+                document.body.style.overflow = '';
+                app.scene.gallery.selected = [];
+
+                [
+                    'view-button',
+                    'calendar-button',
+                    'search-button',
+                    'select-button'
+                ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+
+            }, 250);
+
+        });
+
+    },
+
+    // all
+
+    getAllButtonHTML: () => {
+
+        return '' +
+            '<button ' +
+                'id="all-button" ' +
+                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'style="position: fixed; top: 8px; right: 8px; z-index: 2;"' +
+            '>' +
+                '<i class="mdi mdi-check-all"></i>' +
+            '</button>';
+
+    },
+
+    initAll: () => {
+
+        console.log('init all');
+
+    },
+
+    // left
+
+    getLeftButtonHTML: () => {
+
+        return '' +
+            '<button ' +
+                'id="left-button" ' +
+                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'style="position: fixed; top: 50%; left: 8px; z-index: 2;"' +
             '>' +
                 '<i class="mdi mdi-arrow-left"></i>' +
             '</button>';
 
     },
 
-    initPreviewLeftButton: () => {
+    initLeft: () => {
 
-        document.getElementById('preview-left-button').addEventListener('click', () => {
+        document.getElementById('left-button').addEventListener('click', () => {
 
             let id = app.scene.gallery.selected[0];
             let photo = app.scene.gallery.photos.find(photo => photo.id === id);
@@ -925,109 +1163,24 @@ app.scene.gallery = {
 
     },
 
-    // preview edit
+    // right
 
-    getPreviewEditButton: () => {
-
-        let padding = 8;
-        let diameter = 56;
-        let left = 0 - Math.round(diameter / 2) - padding - diameter;
+    getRightButtonHTML: () => {
 
         return '' +
             '<button ' +
-                'id="preview-edit-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 3;"' +
-            '>' +
-                '<i class="mdi mdi-pencil"></i>' +
-            '</button>';
-
-    },
-
-    // preview close
-
-    getPreviewCloseButton: () => {
-
-        let padding = 8;
-        let diameter = 56;
-        let left = 0 - Math.round(diameter / 2);
-
-        return '' +
-            '<button ' +
-                'id="preview-close-button" ' +
+                'id="right-button" ' +
                 'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 3;"' +
-            '>' +
-                '<i class="mdi mdi-close"></i>' +
-            '</button>';
-
-    },
-
-    initPreviewCloseButton: () => {
-
-        document.getElementById('preview-close-button').addEventListener('click', () => {
-
-            app.scene.gallery.hidePreviewButtons();
-            setTimeout(() => {
-
-                document.getElementById('preview-modal').remove();
-                document.getElementById('preview-left-button').remove();
-                document.getElementById('preview-edit-button').remove();
-                document.getElementById('preview-close-button').remove();
-                document.getElementById('preview-delete-button').remove();
-                document.getElementById('preview-right-button').remove();
-                document.body.style.overflow = '';
-                app.scene.gallery.selected = [];
-
-                app.scene.gallery.showButtons();
-
-            }, 250);
-
-        });
-
-    },
-
-    // preview delete
-
-    getPreviewDeleteButton: () => {
-
-        let padding = 8;
-        let diameter = 56;
-        let left = Math.round(diameter / 2) + padding;
-
-        return '' +
-            '<button ' +
-                'id="preview-delete-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 3;"' +
-            '>' +
-                '<i class="mdi mdi-delete"></i>' +
-            '</button>';
-
-    },
-
-    // preview right
-
-    getPreviewRightButton: () => {
-
-        let padding = 8;
-        let diameter = 56;
-        let left = Math.round(diameter / 2) + padding + diameter + padding;
-
-        return '' +
-            '<button ' +
-                'id="preview-right-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 3;"' +
+                'style="position: fixed; top: 50%; right: 8px; z-index: 2;"' +
             '>' +
                 '<i class="mdi mdi-arrow-right"></i>' +
             '</button>';
 
     },
 
-    initPreviewRightButton: () => {
+    initRight: () => {
 
-        document.getElementById('preview-right-button').addEventListener('click', () => {
+        document.getElementById('right-button').addEventListener('click', () => {
 
             let id = app.scene.gallery.selected[0];
             let photo = app.scene.gallery.photos.find(photo => photo.id === id);
@@ -1042,28 +1195,6 @@ app.scene.gallery = {
             }
 
         });
-
-    },
-
-    // preview tools
-
-    showPreviewButtons: () => {
-
-        document.getElementById('preview-left-button').classList.remove('scale-out');
-        document.getElementById('preview-edit-button').classList.remove('scale-out');
-        document.getElementById('preview-close-button').classList.remove('scale-out');
-        document.getElementById('preview-delete-button').classList.remove('scale-out');
-        document.getElementById('preview-right-button').classList.remove('scale-out');
-
-    },
-
-    hidePreviewButtons: () => {
-
-        document.getElementById('preview-left-button').classList.add('scale-out');
-        document.getElementById('preview-edit-button').classList.add('scale-out');
-        document.getElementById('preview-close-button').classList.add('scale-out');
-        document.getElementById('preview-delete-button').classList.add('scale-out');
-        document.getElementById('preview-right-button').classList.add('scale-out');
 
     }
 
