@@ -16,6 +16,7 @@ app.scene.gallery = {
     days: [],
 
     columns: null,
+    rows: null,
     orientation: null,
 
     sort: {
@@ -491,6 +492,7 @@ app.scene.gallery = {
                     // columns
 
                     app.scene.gallery.columns = parseInt(document.getElementById('view-columns').innerText);
+                    app.scene.gallery.rows = null;
 
                     // sort direction
 
