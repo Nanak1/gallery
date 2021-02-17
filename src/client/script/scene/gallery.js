@@ -162,6 +162,7 @@ app.scene.gallery = {
 
         app.scene.gallery.page = 0;
         app.scene.gallery.photos = [];
+        app.scene.gallery.selected = [];
         app.scene.gallery.finish = false;
         document.getElementById('photos').innerHTML = '';
         window.removeEventListener('scroll', app.scene.gallery.onScroll);
@@ -231,9 +232,11 @@ app.scene.gallery = {
 
                             let id = event.target.src.split('/')[5];
 
-                            app.scene.gallery.selected.push(id);
+                            if (!app.scene.gallery.selected.includes(id)) app.scene.gallery.selected.push(id);
 
-                            if (app.scene.gallery.selected.length === 1) {
+                            // preview || select
+
+                            if (document.getElementById('all-button').classList.contains('scale-out')) {
 
                                 document.body.style.overflow = 'hidden';
 
@@ -267,7 +270,12 @@ app.scene.gallery = {
 
                                 }, 250);
 
+                            } else {
+
+                                console.log(app.scene.gallery.selected);
+
                             }
+
 
                         });
 
