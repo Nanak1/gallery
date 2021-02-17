@@ -1,0 +1,18 @@
+.photo {
+    position: relative;
+    float: left;
+    cursor: zoom-in;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.photo:before {
+    content: '';
+    float: left;
+    padding-top: 100%;
+}
+
+.photo.select {
+    background-size: 75%;
+}
