@@ -1089,11 +1089,16 @@ app.scene.gallery = {
 
         document.getElementById('back-button').addEventListener('click', () => {
 
-            let img = document.getElementById('preview-modal');
+            let el = document.getElementById('preview-modal');
             let buttons = [];
 
-            if (img.style.display === 'block') buttons.push('left-button', 'right-button');
-            else buttons.push('all-button');
+            if (el.style.display === 'block') buttons.push('left-button', 'right-button');
+            else {
+
+                buttons.push('all-button');
+                app.scene.gallery.selected.forEach(id => document.querySelector('[data-id="' + id + '"]').classList.remove('select'));
+
+            }
 
             [
                 'delete-button',
@@ -1106,7 +1111,7 @@ app.scene.gallery = {
 
             setTimeout(() => {
 
-                img.style.display = '';
+                el.style.display = '';
                 document.body.style.overflow = '';
                 app.scene.gallery.selected = [];
 
