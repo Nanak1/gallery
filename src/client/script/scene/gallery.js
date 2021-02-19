@@ -37,7 +37,7 @@ app.scene.gallery = {
 
                     // html
 
-                    let html = '<div id="photos" style="font-size: 0;"></div>';
+                    let html = '<div id="photos"></div>';
 
                     html += app.scene.gallery.getPreviewModalHTML();
 
@@ -162,6 +162,7 @@ app.scene.gallery = {
 
         app.scene.gallery.page = 0;
         app.scene.gallery.photos = [];
+        app.scene.gallery.selected = [];
         app.scene.gallery.finish = false;
         document.getElementById('photos').innerHTML = '';
         window.removeEventListener('scroll', app.scene.gallery.onScroll);
@@ -204,37 +205,32 @@ app.scene.gallery = {
 
                     app.scene.gallery.photos.push(... res.data.photos);
 
-                    let percent = 100 / app.scene.gallery.columns;
+                    let width = 100 / app.scene.gallery.columns;
                     let el = document.getElementById('photos');
 
                     res.data.photos.forEach(photo => {
 
-                        let src = '/photo/thumbnail/' + photo.id;
+                        let url = '/photo/thumbnail/' + photo.id;
 
                         el.insertAdjacentHTML('beforeend', '' +
-                            '<img ' +
-                                'alt="' + photo.id + '"' +
-                                'src="' + src + '" ' +
-                                'width="256" ' +
-                                'height="256" ' +
-                                'style="' +
-                                    'cursor: zoom-in; ' +
-                                    'width: ' + percent + '%; ' +
-                                    'height: ' + percent + '%;' +
-                                '"' +
-                            '>'
+                            '<div ' +
+                                'data-id="' + photo.id + '" ' +
+                                'class="photo" ' +
+                                'style="width: ' + width + '%; background-image: url(' + url + ');"' +
+                            '></div>'
                         );
 
-                        document.querySelector(
-                            '[src="' + src + '"]'
+                        el.querySelector(
+                            '[data-id="' + photo.id + '"]'
                         ).addEventListener('click', event => {
 
-                            let id = event.target.src.split('/')[5];
+                            let id = event.target.dataset.id;
 
-                            app.scene.gallery.selected.push(id);
+                            if (document.getElementById('all-button').classList.contains('scale-out')) {
 
-                            if (app.scene.gallery.selected.length === 1) {
+                                // photo:preview
 
+                                app.scene.gallery.selected = [id];
                                 document.body.style.overflow = 'hidden';
 
                                 [
@@ -266,6 +262,24 @@ app.scene.gallery = {
                                     }, 100);
 
                                 }, 250);
+
+                            } else {
+
+                                // photo:select
+
+                                if (app.scene.gallery.selected.includes(id)) {
+
+                                    app.scene.gallery.selected.splice(app.scene.gallery.selected.indexOf(id), 1);
+                                    event.target.classList.remove('select');
+
+                                } else {
+
+                                    app.scene.gallery.selected.push(id);
+                                    event.target.classList.add('select');
+
+                                }
+
+                                console.log(app.scene.gallery.selected);
 
                             }
 
@@ -1100,6 +1114,8 @@ app.scene.gallery = {
     initBack: () => {
 
         document.getElementById('back-button').addEventListener('click', () => {
+
+            app.scene.gallery.selected.forEach(id => document.querySelector('[data-id="' + id + '"]').classList.remove('select'));
 
             [
                 'delete-button',
