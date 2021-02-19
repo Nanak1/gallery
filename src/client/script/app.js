@@ -4,8 +4,12 @@ window.addEventListener('load', () => {
 
         axios.get('/account').then(res => {
 
-            if (res.data.success) app.scene.gallery.show();
-            else app.scene.account_login.show();
+            if (res.data.success) {
+
+                app.account = res.data.account;
+                app.scene.gallery.show();
+
+            } else app.scene.account_login.show();
 
         });
 
@@ -16,7 +20,8 @@ window.addEventListener('load', () => {
 window.app = {
 
     tools: [
-        'format'
+        'format',
+        'toolbar'
     ],
 
     scenes: [

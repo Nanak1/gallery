@@ -9,6 +9,7 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+    transition: transform 0.2s;
 }
 
 .photo:before {
@@ -18,5 +19,5 @@
 }
 
 .photo.select {
-    background-size: 75%;
+    transform: scale(0.8);
 }

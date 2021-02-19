@@ -9,8 +9,21 @@ create table "user"
             primary key,
     username text not null,
     password text not null,
-    admin boolean default false not null,
-    censored boolean default true not null
+    censored boolean default true not null,
+    access_photo_edit boolean default false not null,
+    access_photo_delete boolean default false not null,
+    access_cloud boolean default false not null,
+    cloud_username text default ''::text not null,
+    cloud_password text default ''::text not null,
+    cloud_scan text default ''::text not null,
+    cloud_sync text default ''::text not null,
+    access_user_add boolean default false not null,
+    access_user_edit boolean default false not null,
+    access_user_delete boolean default false not null,
+    access_tag_add boolean default false not null,
+    access_tag_edit boolean default false not null,
+    access_tag_delete boolean default false not null,
+    access_system boolean default false not null
 );
 
 alter table "user" owner to gallery;

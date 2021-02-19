@@ -30,6 +30,17 @@ app.tool.format = {
 
         return unit;
 
+    },
+
+    number2String: (number, size, char) => {
+
+        char = char || '0';
+        number = number.toString();
+
+        while (number.length < size) number = char + number;
+
+        return number;
+
     }
 
 };

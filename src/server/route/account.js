@@ -89,7 +89,7 @@ router.use((req, res, next) => {
                     req.session.user
                 ]).then(result => {
 
-                    req.user = result.rows[0];
+                    req.account = result.rows[0];
                     next();
 
                 }).catch(error => {
@@ -168,13 +168,18 @@ router.get('/account/logout', (req, res) => {
  */
 router.get('/account', async (req, res) => {
 
-    let user = Object.assign({}, req.user);
+    let account = Object.assign({}, req.account);
 
-    delete user.password;
+    delete account.id;
+    delete account.password;
+    delete account.cloud_username;
+    delete account.cloud_password;
+    delete account.cloud_scan;
+    delete account.cloud_sync;
 
     res.send({
         success: true,
-        user: user
+        account: account
     });
 
 });
@@ -182,8 +187,6 @@ router.get('/account', async (req, res) => {
 /**
  * Изменение данных
  * @type {string} req.body.username - имя пользователя
- * @type {boolean} req.body.admin - администратор
- * @type {boolean} req.body.censored - цензура
  */
 router.post('/account', async (req, res) => {
 
@@ -191,13 +194,11 @@ router.post('/account', async (req, res) => {
 
         let f = () => {
 
-            let sql = `UPDATE "user" SET username = $2, admin = $3, censored = $4 WHERE id = $1;`;
+            let sql = `UPDATE "user" SET username = $2 WHERE id = $1;`;
 
             db.gallery.query(sql, [
-                req.user.id,
-                req.body.username,
-                req.body.admin,
-                req.body.censored
+                req.account.id,
+                req.body.username
             ]).then(result => {
 
                 res.send({
@@ -218,7 +219,7 @@ router.post('/account', async (req, res) => {
 
         };
 
-        if (req.user.username !== req.body.username) {
+        if (req.account.username !== req.body.username) {
 
             let sql = `SELECT * FROM "user" WHERE username = $1;`;
 
@@ -265,7 +266,7 @@ router.post('/account/password', (req, res) => {
         let sql = `SELECT * FROM "user" WHERE id = $1 AND password = encode(digest($2, 'sha512'), 'hex');`;
 
         db.gallery.query(sql, [
-            req.user.id,
+            req.account.id,
             req.body.password
         ]).then(result => {
 
@@ -274,7 +275,7 @@ router.post('/account/password', (req, res) => {
                 let sql = `UPDATE "user" SET password = encode(digest($2, 'sha512'), 'hex') WHERE id = $1;`;
 
                 db.gallery.query(sql, [
-                    req.user.id,
+                    req.account.id,
                     req.body.password1
                 ]).then(() => {
 
@@ -324,7 +325,7 @@ router.get('/account/session', (req, res) => {
     let sql = `SELECT id, CASE WHEN key = $2 THEN TRUE ELSE FALSE END AS current FROM session WHERE "user" = $1;`;
 
     db.gallery.query(sql, [
-        req.user.id,
+        req.account.id,
         req.session.key
     ]).then(result => {
 
@@ -356,7 +357,7 @@ router.delete('/account/session/:id', (req, res) => {
 
     db.query('mpe', sql, [
         req.body.id,
-        req.user.id
+        req.account.id
     ]).then(result => {
 
         res.send({

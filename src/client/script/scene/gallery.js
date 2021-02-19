@@ -43,15 +43,23 @@ app.scene.gallery = {
 
                     html += app.scene.gallery.getMenuButtonHTML();
 
-                    html += app.scene.gallery.getViewButtonHTML();
-                    html += app.scene.gallery.getCalendarButtonHTML();
-                    html += app.scene.gallery.getSearchButtonHTML();
-                    html += app.scene.gallery.getSelectButtonHTML();
+                    html += app.tool.toolbar.getHTML('toolbar-view', [
+                        app.scene.gallery.getViewButtonHTML(),
+                        app.scene.gallery.getCalendarButtonHTML(),
+                        app.scene.gallery.getSearchButtonHTML(),
+                        app.scene.gallery.getSelectButtonHTML()
+                    ]);
 
-                    html += app.scene.gallery.getDeleteButtonHTML();
-                    html += app.scene.gallery.getEditButtonHTML();
-                    html += app.scene.gallery.getDownloadButtonHTML();
-                    html += app.scene.gallery.getBackButtonHTML();
+                    let buttons = [];
+
+                    if (app.account.access_photo_delete) buttons.push(app.scene.gallery.getDeleteButtonHTML());
+                    if (app.account.access_photo_edit) buttons.push(app.scene.gallery.getEditButtonHTML());
+
+                    html += app.tool.toolbar.getHTML('toolbar-edit', [
+                        ... buttons,
+                        app.scene.gallery.getDownloadButtonHTML(),
+                        app.scene.gallery.getBackButtonHTML()
+                    ], 'none');
 
                     html += app.scene.gallery.getAllButtonHTML();
 
@@ -246,12 +254,18 @@ app.scene.gallery = {
 
                                     el.style.backgroundImage = 'url(/photo/preview/' + id + ')';
                                     el.style.display = 'block';
+                                    document.getElementById('toolbar-view').style.display = 'none';
+                                    document.getElementById('toolbar-edit').style.display = 'block';
 
                                     setTimeout(() => {
 
+                                        let buttons = [];
+
+                                        if (app.account.access_photo_delete) buttons.push('delete-button');
+                                        if (app.account.access_photo_edit) buttons.push('edit-button');
+
                                         [
-                                            'delete-button',
-                                            'edit-button',
+                                            ... buttons,
                                             'download-button',
                                             'back-button',
 
@@ -259,9 +273,9 @@ app.scene.gallery = {
                                             'right-button'
                                         ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
-                                    }, 100);
+                                    }, 50);
 
-                                }, 250);
+                                }, 200);
 
                             } else {
 
@@ -392,11 +406,15 @@ app.scene.gallery = {
 
             let f = document.getElementById('menu-button').classList.contains('scale-out') ? 'remove' : 'add';
 
+            let buttons = [];
+
+            if (app.account.access_photo_delete) buttons.push('delete-button');
+            if (app.account.access_photo_edit) buttons.push('edit-button');
+
             [
                 'menu-button',
 
-                'delete-button',
-                'edit-button',
+                ... buttons,
                 'download-button',
                 'back-button',
 
@@ -427,6 +445,11 @@ app.scene.gallery = {
 
         document.getElementById('menu-button').addEventListener('click', () => {
 
+            let buttons = [];
+
+            if (app.account.access_photo_delete) buttons.push('delete-button');
+            if (app.account.access_photo_edit) buttons.push('edit-button');
+
             [
                 'menu-button',
 
@@ -435,8 +458,7 @@ app.scene.gallery = {
                 'search-button',
                 'select-button',
 
-                'delete-button',
-                'edit-button',
+                ... buttons,
                 'download-button',
                 'back-button',
 
@@ -461,15 +483,10 @@ app.scene.gallery = {
 
     getViewButtonHTML: () => {
 
-        let padding = 8;
-        let diameter = 56;
-        let left = 0 - diameter - Math.round(padding / 2) - diameter - padding;
-
         return '' +
             '<button ' +
                 'id="view-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px;"' +
+                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-view-grid"></i>' +
             '</button>';
@@ -672,15 +689,10 @@ app.scene.gallery = {
 
     getCalendarButtonHTML: () => {
 
-        let padding = 8;
-        let diameter = 56;
-        let left = 0 - diameter - Math.round(padding / 2);
-
         return '' +
             '<button ' +
                 'id="calendar-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px;"' +
+                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-calendar"></i>' +
             '</button>';
@@ -951,14 +963,10 @@ app.scene.gallery = {
 
     getSearchButtonHTML: () => {
 
-        let padding = 8;
-        let left = Math.round(padding / 2);
-
         return '' +
             '<button ' +
                 'id="search-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px;"' +
+                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-magnify"></i>' +
             '</button>';
@@ -975,15 +983,10 @@ app.scene.gallery = {
 
     getSelectButtonHTML: () => {
 
-        let padding = 8;
-        let diameter = 56;
-        let left = Math.round(padding / 2) + diameter + padding;
-
         return '' +
             '<button ' +
                 'id="select-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px;"' +
+                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-selection"></i>' +
             '</button>';
@@ -1001,20 +1004,30 @@ app.scene.gallery = {
                 'select-button'
             ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
-            document.getElementById('photos').style.cursor = 'pointer';
-
             setTimeout(() => {
 
-                [
-                    'delete-button',
-                    'edit-button',
-                    'download-button',
-                    'back-button',
+                document.getElementById('photos').style.cursor = 'pointer';
+                document.getElementById('toolbar-view').style.display = 'none';
+                document.getElementById('toolbar-edit').style.display = 'block';
 
-                    'all-button'
-                ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+                setTimeout(() => {
 
-            }, 250);
+                    let buttons = [];
+
+                    if (app.account.access_photo_delete) buttons.push('delete-button');
+                    if (app.account.access_photo_edit) buttons.push('edit-button');
+
+                    [
+                        ... buttons,
+                        'download-button',
+                        'back-button',
+
+                        'all-button'
+                    ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+
+                }, 50);
+
+            }, 200);
 
         });
 
@@ -1024,15 +1037,10 @@ app.scene.gallery = {
 
     getDeleteButtonHTML: () => {
 
-        let padding = 8;
-        let diameter = 56;
-        let left = 0 - diameter - Math.round(padding / 2) - diameter - padding;
-
         return '' +
             '<button ' +
                 'id="delete-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 2;"' +
+                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-delete"></i>' +
             '</button>';
@@ -1049,15 +1057,10 @@ app.scene.gallery = {
 
     getEditButtonHTML: () => {
 
-        let padding = 8;
-        let diameter = 56;
-        let left = 0 - diameter - Math.round(padding / 2);
-
         return '' +
             '<button ' +
                 'id="edit-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 2;"' +
+                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-pencil"></i>' +
             '</button>';
@@ -1074,14 +1077,10 @@ app.scene.gallery = {
 
     getDownloadButtonHTML: () => {
 
-        let padding = 8;
-        let left = Math.round(padding / 2);
-
         return '' +
             '<button ' +
                 'id="download-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 2;"' +
+                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-download"></i>' +
             '</button>';
@@ -1098,15 +1097,10 @@ app.scene.gallery = {
 
     getBackButtonHTML: () => {
 
-        let padding = 8;
-        let diameter = 56;
-        let left = Math.round(padding / 2) + diameter + padding;
-
         return '' +
             '<button ' +
                 'id="back-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
-                'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 2;"' +
+                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-close"></i>' +
             '</button>';
@@ -1119,9 +1113,13 @@ app.scene.gallery = {
 
             app.scene.gallery.selected.forEach(id => document.querySelector('[data-id="' + id + '"]').classList.remove('select'));
 
+            let buttons = [];
+
+            if (app.account.access_photo_delete) buttons.push('delete-button');
+            if (app.account.access_photo_edit) buttons.push('edit-button');
+
             [
-                'delete-button',
-                'edit-button',
+                ... buttons,
                 'download-button',
                 'back-button',
 
@@ -1131,21 +1129,27 @@ app.scene.gallery = {
                 'right-button'
             ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
-            document.getElementById('preview-modal').style.display = '';
-            document.getElementById('photos').style.cursor = '';
-            document.body.style.overflow = '';
-            app.scene.gallery.selected = [];
-
             setTimeout(() => {
 
-                [
-                    'view-button',
-                    'calendar-button',
-                    'search-button',
-                    'select-button'
-                ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+                document.getElementById('preview-modal').style.display = '';
+                document.getElementById('photos').style.cursor = '';
+                document.getElementById('toolbar-edit').style.display = 'none';
+                document.getElementById('toolbar-view').style.display = 'block';
+                document.body.style.overflow = '';
+                app.scene.gallery.selected = [];
 
-            }, 250);
+                setTimeout(() => {
+
+                    [
+                        'view-button',
+                        'calendar-button',
+                        'search-button',
+                        'select-button'
+                    ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+
+                }, 50);
+
+            }, 200);
 
         });
 
