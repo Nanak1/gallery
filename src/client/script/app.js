@@ -7,7 +7,13 @@ window.addEventListener('load', () => {
             if (res.data.success) {
 
                 app.account = res.data.account;
-                app.scene.gallery.show();
+
+                axios.get('/user').then(res => {
+
+                    app.users = res.data.users;
+                    app.scene.gallery.show();
+
+                });
 
             } else app.scene.account_login.show();
 

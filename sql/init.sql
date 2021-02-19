@@ -23,7 +23,8 @@ create table "user"
     access_tag_add boolean default false not null,
     access_tag_edit boolean default false not null,
     access_tag_delete boolean default false not null,
-    access_system boolean default false not null
+    access_system boolean default false not null,
+    access_user_cloud boolean default false not null
 );
 
 alter table "user" owner to gallery;

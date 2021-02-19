@@ -21,8 +21,8 @@ docker run \
 Add user:
 
 ```postgresql
-INSERT INTO "user" (id, username, password, admin, censored) 
-VALUES ('00000000-0000-0000-0000-000000000000', 'admin', encode(digest('admin', 'sha512'), 'hex'), true, false);
+INSERT INTO "user" (id, username, password) 
+VALUES ('00000000-0000-0000-0000-000000000000', 'admin', encode(digest('admin', 'sha512'), 'hex'));
 ```
 
 ## Config
@@ -48,6 +48,10 @@ Add `config.json` to root directory:
       "user": "gallery",
       "password": "gallery"
     }
+  },
+  "cloud": {
+    "dir": "/var/lib/docker/volumes/nextcloud_app/_data/data",
+    "webdav": "https://cloud.example.org/remote.php/dav"
   }
 }
 ```

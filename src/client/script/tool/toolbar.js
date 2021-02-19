@@ -3,21 +3,6 @@ app.tool.toolbar = {
     padding: 8,
     diameter: 56,
 
-    getMarginLeft: (position, size) => {
-
-        let width = app.tool.toolbar.diameter * size + app.tool.toolbar.padding * (size - 1);
-        let left = 0;
-
-        for (let i = 1; i < position; i++) {
-
-            left = left + app.tool.toolbar.diameter + app.tool.toolbar.padding;
-
-        }
-
-        return -1 * Math.round(width / 2) + left;
-
-    },
-
     getHTML: (id, buttons, display) => {
 
         display = display || 'block';

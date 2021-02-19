@@ -170,12 +170,8 @@ router.get('/account', async (req, res) => {
 
     let account = Object.assign({}, req.account);
 
-    delete account.id;
     delete account.password;
-    delete account.cloud_username;
     delete account.cloud_password;
-    delete account.cloud_scan;
-    delete account.cloud_sync;
 
     res.send({
         success: true,
