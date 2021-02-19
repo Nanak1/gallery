@@ -1001,6 +1001,8 @@ app.scene.gallery = {
                 'select-button'
             ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
+            document.getElementById('photos').style.cursor = 'pointer';
+
             setTimeout(() => {
 
                 [
@@ -1129,11 +1131,12 @@ app.scene.gallery = {
                 'right-button'
             ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
-            setTimeout(() => {
+            document.getElementById('preview-modal').style.display = '';
+            document.getElementById('photos').style.cursor = '';
+            document.body.style.overflow = '';
+            app.scene.gallery.selected = [];
 
-                document.getElementById('preview-modal').style.display = '';
-                document.body.style.overflow = '';
-                app.scene.gallery.selected = [];
+            setTimeout(() => {
 
                 [
                     'view-button',

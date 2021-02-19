@@ -1,7 +1,11 @@
+#photos {
+    cursor: zoom-in;
+    -webkit-tap-highlight-color: transparent;
+}
+
 .photo {
     position: relative;
     float: left;
-    cursor: zoom-in;
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
