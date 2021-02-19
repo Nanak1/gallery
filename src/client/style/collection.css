@@ -1,0 +1,34 @@
+.gallery-collection .collection-item {
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.87);
+    font-size: 14px;
+    font-weight: 500;
+    height: 48px;
+    line-height: 48px;
+    padding: 0 32px;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.gallery-collection .collection-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.gallery-collection .collection-item .mdi {
+    font-size: 24px;
+    float: left;
+    height: 48px;
+    line-height: 48px;
+    margin: 0 32px 0 0;
+    width: 24px;
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.gallery-collection .collection-item.disabled {
+    cursor: not-allowed;
+    color: rgba(0, 0, 0, 0.44);
+}
+
+.gallery-collection .collection-item.disabled .mdi {
+    color: rgba(0, 0, 0, 0.27);
+}

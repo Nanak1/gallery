@@ -401,7 +401,7 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="menu-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
                 'style="position: fixed; left: 8px; top: 8px;"' +
             '>' +
                 '<i class="mdi mdi-menu"></i>' +
@@ -411,7 +411,35 @@ app.scene.gallery = {
 
     initMenu: () => {
 
-        console.log('init menu');
+        document.getElementById('menu-button').addEventListener('click', () => {
+
+            [
+                'menu-button',
+
+                'view-button',
+                'calendar-button',
+                'search-button',
+                'select-button',
+
+                'delete-button',
+                'edit-button',
+                'download-button',
+                'back-button',
+
+                'all-button',
+
+                'left-button',
+                'right-button'
+            ].forEach(button => document.getElementById(button).classList.add('scale-out'));
+
+            setTimeout(() => {
+
+                app.scene.gallery.close();
+                app.scene.menu.show();
+
+            }, 250);
+
+        });
 
     },
 
@@ -1073,24 +1101,21 @@ app.scene.gallery = {
 
         document.getElementById('back-button').addEventListener('click', () => {
 
-            let img = document.getElementById('preview-modal');
-            let buttons = [];
-
-            if (img.style.display === 'block') buttons.push('left-button', 'right-button');
-            else buttons.push('all-button');
-
             [
                 'delete-button',
                 'edit-button',
                 'download-button',
                 'back-button',
 
-                ... buttons
+                'all-button',
+
+                'left-button',
+                'right-button'
             ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
             setTimeout(() => {
 
-                img.style.display = '';
+                document.getElementById('preview-modal').style.display = '';
                 document.body.style.overflow = '';
                 app.scene.gallery.selected = [];
 

@@ -6,10 +6,7 @@ app.scene.account_login = {
 
         document.getElementById('app').innerHTML = app.scene.account_login.getHTML();
 
-
-        document.getElementById('login').addEventListener('click', app.scene.account_login.onClick);
-        document.getElementById('username').addEventListener('keyup', app.scene.account_login.onKeyUp);
-        document.getElementById('password').addEventListener('keyup', app.scene.account_login.onKeyUp);
+        app.scene.account_login.init();
 
         app.activeScene = app.scene.account_login;
         resolve();
@@ -60,13 +57,26 @@ app.scene.account_login = {
 
     },
 
-    onKeyUp: event => {
+    init: () => {
 
-        if (event.code === 'Enter') app.scene.account_login.onClick();
+        [
+            'username',
+            'password'
+        ].forEach(id => {
+
+            document.getElementById(id).addEventListener('keyup', event => {
+
+                if (event.code === 'Enter') app.scene.account_login.login();
+
+            });
+
+        })
+
+        document.getElementById('login').addEventListener('click', app.scene.account_login.login);
 
     },
 
-    onClick: () => {
+    login: () => {
 
         axios.post('/account/login', {
             username: document.getElementById('username').value,

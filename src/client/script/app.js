@@ -21,7 +21,8 @@ window.app = {
 
     scenes: [
         'account_login',
-        'gallery'
+        'gallery',
+        'menu'
     ],
 
     tool: {},
