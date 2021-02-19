@@ -26,6 +26,7 @@ window.app = {
 
     scenes: [
         'account_login',
+        'cloud',
         'gallery',
         'menu'
     ],

@@ -1,24 +1,23 @@
-app.scene.menu = {
+app.scene.cloud = {
 
-    id: 'menu',
+    id: 'cloud',
 
     show: () => new Promise((resolve, reject) => {
 
         let html = '';
 
-        html += app.scene.menu.getMenuHTML();
-        html += app.scene.menu.getBackButtonHTML();
+        html += app.scene.cloud.getMenuHTML();
+        html += app.scene.cloud.getBackButtonHTML();
 
         document.getElementById('app').innerHTML = html;
 
-        app.scene.menu.initCloud();
-        app.scene.menu.initBack();
+        app.scene.cloud.initBack();
 
         setTimeout(() => {
 
             document.getElementById('back-button').classList.remove('scale-out');
 
-            app.activeScene = app.scene.menu;
+            app.activeScene = app.scene.cloud;
             resolve();
 
         }, 100);
@@ -49,38 +48,11 @@ app.scene.menu = {
                 '<div class="row">' +
                     '<div class="col s12 offset-m2 m8 offset-l3 l6 offset-xl4 xl4">' +
 
-                        '<h3>Меню</h3>' +
-
-                        '<div class="collection gallery-collection">' +
-                            '<div class="collection-item disabled"><i class="mdi mdi-account"></i>Аккаунт</div>' +
-                            '<div class="collection-item disabled"><i class="mdi mdi-account-multiple"></i>Пользователи</div>' +
-                            '<div class="collection-item disabled"><i class="mdi mdi-tag"></i>Теги</div>' +
-                            '<div id="cloud-button" class="collection-item"><i class="mdi mdi-cloud"></i>Облако</div>' +
-                            '<div class="collection-item disabled"><i class="mdi mdi-cog"></i>Система</div>' +
-                        '</div>' +
+                        '<h3>Облако</h3>' +
 
                     '</div>' +
                 '</div>' +
             '</div>';
-
-    },
-
-    // cloud
-
-    initCloud: () => {
-
-        document.getElementById('cloud-button').addEventListener('click', () => {
-
-            document.getElementById('back-button').classList.add('scale-out');
-
-            setTimeout(() => {
-
-                app.scene.menu.close();
-                app.scene.cloud.show();
-
-            }, 250);
-
-        });
 
     },
 
@@ -111,8 +83,8 @@ app.scene.menu = {
 
             setTimeout(() => {
 
-                app.scene.menu.close();
-                app.scene.gallery.show();
+                app.scene.cloud.close();
+                app.scene.menu.show();
 
             }, 250);
 
