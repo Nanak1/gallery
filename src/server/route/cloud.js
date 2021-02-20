@@ -10,18 +10,16 @@ router.get('/cloud', (req, res) => {
     let dir = config.cloud.dir + '/' + req.account.cloud_username + '/files/' + req.account.cloud_scan;
 
     // TODO: debug
-    if (process.platform === 'win32') dir = 'D:/nextcloud/Тестовая папка/От сюда';
+    if (process.platform === 'win32') dir = 'D:/nextcloud/' + req.account.cloud_scan;
 
-    readdirp.promise(dir, {
-        alwaysStat: true
-    }).then(entries => {
+    readdirp.promise(dir).then(entries => {
 
         res.send({
             success: true,
             files: entries.map(entry => entry.path.split('\\').join('/'))
         });
 
-    })
+    });
 
 });
 

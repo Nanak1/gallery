@@ -49,11 +49,25 @@ app.scene.account_login = {
                             '<label for="password">Пароль</label>' +
                         '</div>' +
 
-                        '<button id="login" class="waves-effect waves-light btn">Войти</button>' +
-
                     '</div>' +
                 '</div>' +
-            '</div>';
+            '</div>' + app.tool.toolbar.getHTML('login-view', [
+
+                '<button ' +
+                    'id="mask" ' +
+                    'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                '>' +
+                    '<i class="mdi mdi-form-textbox-password"></i>' +
+                '</button>',
+
+                '<button ' +
+                    'id="login" ' +
+                    'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                '>' +
+                    '<i class="mdi mdi-login-variant"></i>' +
+                '</button>'
+
+            ]);
 
     },
 
@@ -72,7 +86,24 @@ app.scene.account_login = {
 
         })
 
+        document.getElementById('mask').addEventListener('click', () => {
+
+            let el = document.getElementById('password');
+
+            el.type = el.type === 'password' ? 'text' : 'password';
+
+        });
+
         document.getElementById('login').addEventListener('click', app.scene.account_login.login);
+
+        setTimeout(() => {
+
+            [
+                'mask',
+                'login'
+            ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+
+        }, 100);
 
     },
 
@@ -86,7 +117,7 @@ app.scene.account_login = {
             if (res.data.success) {
 
                 app.scene.account_login.close();
-                app.scene.gallery.show();
+                app.init();
 
             } else M.toast({
                 html: res.data.message

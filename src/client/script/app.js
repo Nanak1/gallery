@@ -1,25 +1,6 @@
 window.addEventListener('load', () => {
 
-    app.init().then(() => {
-
-        axios.get('/account').then(res => {
-
-            if (res.data.success) {
-
-                app.account = res.data.account;
-
-                axios.get('/user').then(res => {
-
-                    app.users = res.data.users;
-                    app.scene.gallery.show();
-
-                });
-
-            } else app.scene.account_login.show();
-
-        });
-
-    });
+    app.init();
 
 });
 
@@ -44,35 +25,70 @@ window.app = {
 
     init: () => new Promise(async (resolve, reject) => {
 
-        /**
-         * Инструменты
-         */
+        // Инструменты
 
-        for (let i = 0; i < app.tools.length; i++) {
+        if (app.tools) {
 
-            let tool = app.tools[i];
+            for (let i = 0; i < app.tools.length; i++) {
 
-            if (!app.tool[tool]) await app.loadScript('/src/client/script/tool/' + tool + '.js');
+                let tool = app.tools[i];
 
-        }
+                if (!app.tool[tool]) await app.loadScript('/src/client/script/tool/' + tool + '.js');
 
-        delete app.tools;
+            }
 
-        /**
-         * Сцены
-         */
-
-        for (let i = 0; i < app.scenes.length; i++) {
-
-            let scene = app.scenes[i];
-
-            if (!app.scene[scene]) await app.loadScript('/src/client/script/scene/' + scene + '.js');
+            delete app.tools;
 
         }
 
-        delete app.scenes;
+        // Сцены
 
-        resolve();
+        if (app.scenes) {
+
+            for (let i = 0; i < app.scenes.length; i++) {
+
+                let scene = app.scenes[i];
+
+                if (!app.scene[scene]) await app.loadScript('/src/client/script/scene/' + scene + '.js');
+
+            }
+
+            delete app.scenes;
+
+        }
+
+        // аккаунт
+
+        axios.get('/account').then(res => {
+
+            if (res.data.success) {
+
+                app.account = res.data.account;
+
+                // пользователи
+
+                axios.get('/user').then(res => {
+
+                    if (res.data.success) {
+
+                        app.users = res.data.users;
+
+                        // TODO: загрузка завершена
+                        // app.scene.gallery.show().then(() => resolve());
+                        app.scene.cloud.show().then(resolve);
+
+                    } else app.scene.account_login.show().then(() => {
+
+                        M.toast({html: 'Что-то пошло не так о_О'});
+                        resolve();
+
+                    });
+
+                });
+
+            } else app.scene.account_login.show().then(resolve);
+
+        });
 
     }),
 
