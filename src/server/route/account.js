@@ -1,5 +1,7 @@
 let express = require('express');
+
 let db = require('../db');
+
 let config = require('../../../config.json');
 
 let router = express.Router();

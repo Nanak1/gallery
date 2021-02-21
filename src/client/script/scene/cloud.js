@@ -2,15 +2,20 @@ app.scene.cloud = {
 
     id: 'cloud',
 
+    user: null,
+    files: [],
+
     show: username => new Promise((resolve, reject) => {
 
         app.scene.cloud.user = username ? app.users.find(user => user.username === username) : app.account;
+        app.scene.cloud.files = [];
+
         document.getElementById('app').innerHTML = app.scene.cloud.getCloudHTML();
 
-        axios.get('/cloud', {
-            params: {
-                username: username
-            }
+        // cloud::scan
+
+        axios.post('/cloud/scan', {
+            username: app.scene.cloud.user.username
         }).then(res => {
 
             if (res.data.success) {
@@ -19,11 +24,11 @@ app.scene.cloud = {
 
                 // cloud
 
-                document.getElementById('photo-count').innerText = app.scene.cloud.files.length;
-                document.getElementById('photo-count-unit').innerText = app.tool.format.getUnitEnding(
+                document.getElementById('scan-count').innerText = app.scene.cloud.files.length.toString();
+                document.getElementById('scan-count-unit').innerText = app.tool.format.getUnitEnding(
                     app.scene.cloud.files.length,
-                    'фотография',
                     'фотографии',
+                    'фотографий',
                     'фотографий'
                 );
 
@@ -42,7 +47,7 @@ app.scene.cloud = {
 
                 let buttons = [];
 
-                if (app.account.access_cloud) buttons.push(app.scene.cloud.getSyncButtonHTML());
+                if (app.account['access_cloud']) buttons.push(app.scene.cloud.getSyncButtonHTML());
 
                 let toolbar = app.tool.toolbar.getHTML('toolbar-cloud', [
                     ... buttons,
@@ -53,13 +58,14 @@ app.scene.cloud = {
 
                 // init
 
+                app.scene.cloud.initSync();
                 app.scene.cloud.initBack();
 
                 setTimeout(() => {
 
                     let buttons = [];
 
-                    if (app.account.access_cloud) buttons.push('sync-button');
+                    if (app.account['access_cloud']) buttons.push('sync-button');
 
                     [
                         ... buttons,
@@ -71,7 +77,9 @@ app.scene.cloud = {
 
                 }, 100);
 
-            }
+            } else M.toast({
+                html: res.data.message
+            });
 
         });
 
@@ -113,16 +121,22 @@ app.scene.cloud = {
                                 '<div>' + app.scene.cloud.user.username + '</div>' +
                             '</div>' +
                             '<div class="collection-item">' +
-                                '<div class="grey-text">Сканирование</div>' +
+                                '<div class="grey-text">Директория поиска</div>' +
                                 '<div>' + app.scene.cloud.user.cloud_scan.split('/').join(slash) + '</div>' +
                             '</div>' +
                             '<div class="collection-item">' +
-                                '<div class="grey-text">Синхронизация</div>' +
+                                '<div class="grey-text">Директория результата</div>' +
                                 '<div>' + app.scene.cloud.user.cloud_sync.split('/').join(slash) + '</div>' +
                             '</div>' +
                             '<div class="collection-item">' +
-                                '<div class="grey-text">Найдено</div>' +
-                                '<div><span id="photo-count">...</span> <span id="photo-count-unit"></span></div>' +
+                                '<div class="grey-text">Синхронизировано</div>' +
+                                '<div>' +
+                                    '<snan id="sync-count">0</snan>' +
+                                    ' из ' +
+                                    '<span id="scan-count">?</span>' +
+                                    ' ' +
+                                    '<span id="scan-count-unit">...</span>' +
+                                '</div>' +
                             '</div>' +
                         '</div>' +
 
@@ -141,7 +155,7 @@ app.scene.cloud = {
 
         app.scene.cloud.files.forEach(file => {
 
-            html += '<div class="collection-item">' + file.split('/').join(slash) + '</div>';
+            html += '<div data-file="' + file + '" class="collection-item">' + file.split('/').join(slash) + '</div>';
 
         });
 
@@ -156,10 +170,39 @@ app.scene.cloud = {
         return '' +
             '<button ' +
                 'id="sync-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-sync"></i>' +
             '</button>';
+
+    },
+
+    initSync: () => {
+
+        document.getElementById('sync-button').addEventListener('click', () => {
+
+            [
+                'sync-button',
+                'back-button'
+            ].forEach(button => document.getElementById(button).classList.add('scale-out'));
+
+            setTimeout(() => {
+
+                for (let i = 0; i < app.scene.cloud.files.length; i++) {
+
+                    let file = app.scene.cloud.files[i];
+
+                    console.log(file);
+
+                    // cloud::read
+
+                    // cloud::move
+
+                }
+
+            }, 200);
+
+        });
 
     },
 
@@ -183,7 +226,7 @@ app.scene.cloud = {
 
             let buttons = [];
 
-            if (app.account.access_cloud) buttons.push('sync-button');
+            if (app.account['access_cloud']) buttons.push('sync-button');
 
             [
                 ... buttons,

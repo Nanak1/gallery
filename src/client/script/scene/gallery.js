@@ -52,8 +52,8 @@ app.scene.gallery = {
 
                     let buttons = [];
 
-                    if (app.account.access_photo_delete) buttons.push(app.scene.gallery.getDeleteButtonHTML());
-                    if (app.account.access_photo_edit) buttons.push(app.scene.gallery.getEditButtonHTML());
+                    if (app.account['access_photo_delete']) buttons.push(app.scene.gallery.getDeleteButtonHTML());
+                    if (app.account['access_photo_edit']) buttons.push(app.scene.gallery.getEditButtonHTML());
 
                     html += app.tool.toolbar.getHTML('toolbar-edit', [
                         ... buttons,
@@ -261,8 +261,8 @@ app.scene.gallery = {
 
                                         let buttons = [];
 
-                                        if (app.account.access_photo_delete) buttons.push('delete-button');
-                                        if (app.account.access_photo_edit) buttons.push('edit-button');
+                                        if (app.account['access_photo_delete']) buttons.push('delete-button');
+                                        if (app.account['access_photo_edit']) buttons.push('edit-button');
 
                                         [
                                             ... buttons,
@@ -408,8 +408,8 @@ app.scene.gallery = {
 
             let buttons = [];
 
-            if (app.account.access_photo_delete) buttons.push('delete-button');
-            if (app.account.access_photo_edit) buttons.push('edit-button');
+            if (app.account['access_photo_delete']) buttons.push('delete-button');
+            if (app.account['access_photo_edit']) buttons.push('edit-button');
 
             [
                 'menu-button',
@@ -447,8 +447,8 @@ app.scene.gallery = {
 
             let buttons = [];
 
-            if (app.account.access_photo_delete) buttons.push('delete-button');
-            if (app.account.access_photo_edit) buttons.push('edit-button');
+            if (app.account['access_photo_delete']) buttons.push('delete-button');
+            if (app.account['access_photo_edit']) buttons.push('edit-button');
 
             [
                 'menu-button',
@@ -1014,8 +1014,8 @@ app.scene.gallery = {
 
                     let buttons = [];
 
-                    if (app.account.access_photo_delete) buttons.push('delete-button');
-                    if (app.account.access_photo_edit) buttons.push('edit-button');
+                    if (app.account['access_photo_delete']) buttons.push('delete-button');
+                    if (app.account['access_photo_edit']) buttons.push('edit-button');
 
                     [
                         ... buttons,
@@ -1115,8 +1115,8 @@ app.scene.gallery = {
 
             let buttons = [];
 
-            if (app.account.access_photo_delete) buttons.push('delete-button');
-            if (app.account.access_photo_edit) buttons.push('edit-button');
+            if (app.account['access_photo_delete']) buttons.push('delete-button');
+            if (app.account['access_photo_edit']) buttons.push('edit-button');
 
             [
                 ... buttons,

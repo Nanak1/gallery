@@ -1,4 +1,5 @@
 let pg = require('pg');
+
 let config = require('../../config.json');
 
 module.exports = {

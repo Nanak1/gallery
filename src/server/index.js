@@ -1,6 +1,7 @@
 let http = require('http');
 
 let app = require('./app');
+
 let config = require('../../config.json');
 
 let server = http.createServer(app);
