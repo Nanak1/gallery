@@ -50,7 +50,7 @@ app.scene.cloud = {
 
                 let buttons = [];
 
-                if (app.account['access_cloud']) buttons.push(app.scene.cloud.getSyncButtonHTML());
+                if (app.account['access_cloud'] && app.scene.cloud.files.length) buttons.push(app.scene.cloud.getSyncButtonHTML());
 
                 let toolbar = app.tool.toolbar.getHTML('toolbar-cloud', [
                     ... buttons,
@@ -61,14 +61,14 @@ app.scene.cloud = {
 
                 // init
 
-                if (app.account['access_cloud']) app.scene.cloud.initSync();
+                if (app.account['access_cloud'] && app.scene.cloud.files.length) app.scene.cloud.initSync();
                 app.scene.cloud.initBack();
 
                 setTimeout(() => {
 
                     let buttons = [];
 
-                    if (app.account['access_cloud']) buttons.push('sync-button');
+                    if (app.account['access_cloud'] && app.scene.cloud.files.length) buttons.push('sync-button');
 
                     [
                         ... buttons,
@@ -357,7 +357,7 @@ app.scene.cloud = {
 
             let buttons = [];
 
-            if (app.account['access_cloud']) buttons.push('sync-button');
+            if (app.account['access_cloud'] && app.scene.cloud.files.length) buttons.push('sync-button');
 
             [
                 ... buttons,
