@@ -285,7 +285,7 @@ app.scene.cloud = {
 
                                     if (res.data.success) {
 
-                                        status(el, 'green-text', 'mdi-checkbox-marked-circle-outline', 'Завершено');
+                                        status(el, 'green-text', 'mdi-cloud-check', 'Завершено');
                                         end();
 
                                     } else {
