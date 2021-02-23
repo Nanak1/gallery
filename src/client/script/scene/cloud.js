@@ -14,8 +14,10 @@ app.scene.cloud = {
 
         // cloud::scan
 
-        axios.post('/cloud/scan', {
-            username: app.scene.cloud.user.username
+        axios.get('/cloud', {
+            params: {
+                username: app.scene.cloud.user.username
+            }
         }).then(res => {
 
             if (res.data.success) {
@@ -191,10 +193,26 @@ app.scene.cloud = {
                 for (let i = 0; i < app.scene.cloud.files.length; i++) {
 
                     let file = app.scene.cloud.files[i];
+                    let el = document.querySelector(`[data-file="${file}"]`);
 
-                    console.log(file);
+                    el.classList.add('yellow');
+
+                    axios({
+                        method: 'MOVE',
+                        url: '/cloud',
+                        data: {
+                            username: app.scene.cloud.user.username,
+                            file: file
+                        }
+                    }).then(res => {
+                        console.log('then', res.data);
+                    }).catch(error => {
+                        console.log('error', error);
+                    });
 
                     // cloud::read
+
+
 
                     // cloud::move
 

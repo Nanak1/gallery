@@ -1,7 +1,9 @@
 let express = require('express');
 let readdirp = require('readdirp');
+let axios = require('axios');
 
 let db = require('../db');
+let cloud = require('../tool/cloud');
 
 let config = require('../../../config.json');
 
@@ -11,13 +13,13 @@ let router = express.Router();
  * Сканирование
  * @type {string} req.body.username - имя пользователя
  */
-router.post('/cloud/scan', async (req, res) => {
+router.get('/cloud', async (req, res) => {
 
-    let user = req.body.username === req.account.username ? req.account : (
+    let user = req.query.username === req.account.username ? req.account : (
         await db.gallery.query(
             `SELECT * FROM "user" WHERE username = $1;`,
             [
-                req.body.username
+                req.query.username
             ]
         )
     ).rows[0];
@@ -47,11 +49,44 @@ router.post('/cloud/scan', async (req, res) => {
 
 });
 
-router.post('/cloud', (req, res) => {
+router.all('/cloud', async (req, res, next) => {
 
-    res.send({
-        success: true
-    });
+    if (req.method === 'MOVE') {
+
+        let user = req.body.username === req.account.username ? req.account : (
+            await db.gallery.query(
+                `SELECT * FROM "user" WHERE username = $1;`,
+                [
+                    req.body.username
+                ]
+            )
+        ).rows[0];
+
+        if (user) {
+
+            let from = user.cloud_scan + '/' + req.body.file;
+            let to = 'п1/п2/п3/IMG_20210213_101322.jpg';
+
+            cloud.moveFile(user, from, to).then(() => {
+
+                res.send({
+                    success: true
+                });
+
+            }).catch(() => {
+
+                res.send({
+                    success: false
+                });
+
+            });
+
+        } else res.send({
+            success: false,
+            message: 'Пользователь не найден'
+        });
+
+    } else next();
 
 });
 
