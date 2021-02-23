@@ -6,7 +6,7 @@ module.exports = {
 
         let nodes = path.split('/');
 
-        return nodes[path.length - 1];
+        return nodes[nodes.length - 1];
 
     },
 
@@ -32,9 +32,17 @@ module.exports = {
                 let minutes = dateCreate.getMinutes();
                 let seconds = dateCreate.getSeconds();
 
-                // 00000000_000000.jpg || 00000000-000000.jpg
+                // 00000000_000000.jpg
+                // 00000000_000000_0.jpg
+                // 00000000-000000.jpg
+                // 00000000-000000_0.jpg
 
-                if ((/^[0-9]{8}[_|-][0-9]{6}.jpg$/i).test(baseName)) {
+                if (
+                    (/^[0-9]{8}_[0-9]{6}.jpg$/i).test(baseName) ||
+                    (/^[0-9]{8}_[0-9]{6}_[0-9].jpg$/i).test(baseName) ||
+                    (/^[0-9]{8}-[0-9]{6}.jpg$/i).test(baseName) ||
+                    (/^[0-9]{8}-[0-9]{6}_[0-9].jpg$/i).test(baseName)
+                ) {
 
                     year = parseInt(baseName.substr(0, 4));
                     month = parseInt(baseName.substr(4, 2)) - 1;
@@ -45,9 +53,17 @@ module.exports = {
 
                 }
 
-                // XXX_00000000_000000.jpg || XXX_00000000_000000_0.jpg
+                // XXX_00000000_000000.jpg
+                // XXX_00000000_000000_0.jpg
+                // XXX_00000000_000000_XXXXX0.jpg
+                // XXX_00000000_000000_XXXXX00.jpg
 
-                if ((/^[a-z]{3}_[0-9]{8}_[0-9]{6}.jpg$|^[a-z]{3}_[0-9]{8}_[0-9]{6}_[0-9].jpg$/i).test(baseName)) {
+                if (
+                    (/^[a-z]{3}_[0-9]{8}_[0-9]{6}.jpg$/i).test(baseName) ||
+                    (/^[a-z]{3}_[0-9]{8}_[0-9]{6}_[0-9].jpg$/i).test(baseName) ||
+                    (/^[a-z]{3}_[0-9]{8}_[0-9]{6}_[a-z]{5}[0-9].jpg$/i).test(baseName) ||
+                    (/^[a-z]{3}_[0-9]{8}_[0-9]{6}_[a-z]{5}[0-9]{2}.jpg$/i).test(baseName)
+                ) {
 
                     year = parseInt(baseName.substr(4, 4));
                     month = parseInt(baseName.substr(8, 2)) - 1;
@@ -55,6 +71,23 @@ module.exports = {
                     hours = parseInt(baseName.substr(13, 2));
                     minutes = parseInt(baseName.substr(15, 2));
                     seconds = parseInt(baseName.substr(17, 2));
+
+                }
+
+                // XXXX_00000000_000000.jpg
+                // XXXX_00000000_000000_0.jpg
+
+                if (
+                    (/^[a-z]{4}_[0-9]{8}_[0-9]{6}.jpg$/i).test(baseName) ||
+                    (/^[a-z]{4}_[0-9]{8}_[0-9]{6}_[0-9].jpg$/i).test(baseName)
+                ) {
+
+                    year = parseInt(baseName.substr(5, 4));
+                    month = parseInt(baseName.substr(9, 2)) - 1;
+                    date = parseInt(baseName.substr(11, 2));
+                    hours = parseInt(baseName.substr(14, 2));
+                    minutes = parseInt(baseName.substr(16, 2));
+                    seconds = parseInt(baseName.substr(18, 2));
 
                 }
 
