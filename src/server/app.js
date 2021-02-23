@@ -1,4 +1,4 @@
-let fs = require('fs');
+let fs = require('fs/promises');
 let path = require('path');
 let express = require('express');
 let cookieParser = require('cookie-parser');
@@ -37,23 +37,21 @@ app.use('/src/client/script', express.static(path.join(__dirname, '../client/scr
 app.use('/src/client/style', express.static(path.join(__dirname, '../client/style')));
 app.get('/', (req, res) => {
 
-    fs.readFile(path.join(__dirname, '../client/index.html'), 'utf8', (error, html) => {
+    fs.readFile(path.join(__dirname, '../client/index.html'), {
+        encoding: 'utf8'
+    }).then(html => {
 
-        if (error) {
+        res.set('Content-Type', 'text/html');
+        res.send(html);
 
-            console.log(error);
+    }).catch(error => {
 
-            res.send({
-                success: false,
-                message: 'Ошибка, что-то пошло не так'
-            });
+        console.log(error);
 
-        } else {
-
-            res.set('Content-Type', 'text/html');
-            res.send(html);
-
-        }
+        res.send({
+            success: false,
+            message: 'Что-то пошло не так'
+        });
 
     });
 

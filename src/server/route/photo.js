@@ -1,10 +1,17 @@
 let express = require('express');
+let sharp = require('sharp');
+let fs = require('fs/promises');
+let crypto = require('crypto');
 
 let db = require('../db');
+let format = require('../tool/format');
+
+let config = require('../../../config.json');
 
 let router = express.Router();
 
 /**
+ * Выборка фильтрованного списка фотографий по страницам
  * @type {number} req.query.count
  * @type {number} req.query.page
  * @type {array} req.query.years - array of numbers
@@ -75,6 +82,7 @@ router.get('/photo', (req, res) => {
 });
 
 /**
+ * Выборка файла миниатюры
  * @type {string} req.params.id
  */
 router.get('/photo/thumbnail/:id', (req, res) => {
@@ -100,6 +108,7 @@ router.get('/photo/thumbnail/:id', (req, res) => {
 });
 
 /**
+ * Выборка файла предпросмотра
  * @type {string} req.params.id
  */
 router.get('/photo/preview/:id', (req, res) => {
@@ -125,6 +134,7 @@ router.get('/photo/preview/:id', (req, res) => {
 });
 
 /**
+ * Выборка всех найденных частей даты создания
  * @type {string} req.params.part
  */
 router.get('/photo/date_create/:part', (req, res) => {
@@ -152,6 +162,75 @@ router.get('/photo/date_create/:part', (req, res) => {
     } else res.send({
         success: false,
         message: 'Не корректный запрос: ' + req.params.part
+    });
+
+});
+
+/**
+ * Добавление фотографии из облака
+ * @type {string} req.body.username
+ * @type {string} req.body.file
+ */
+router.post('/photo/cloud', async (req, res) => {
+
+    let user = req.body.username === req.account.username ? req.account : (
+        await db.gallery.query(
+            `SELECT * FROM "user" WHERE username = $1;`,
+            [
+                req.body.username
+            ]
+        )
+    ).rows[0];
+
+    if (user) {
+
+        let fullPath = config.cloud.dir + '/' + user.cloud_username + '/files/' + user.cloud_scan + '/' + req.body.file;
+
+        // TODO: отладка под Windows
+        if (process.platform === 'win32') fullPath = 'D:/nextcloud/' + user.cloud_scan + '/' + req.body.file;
+
+        let hash = crypto.createHash('sha512');
+        let file = await fs.readFile(fullPath);
+
+        hash.update(file);
+
+        let sql = 'INSERT INTO photo (hash, date_create, censored, thumbnail, preview) VALUES ($1, $2, $3, $4, $5) RETURNING id;';
+
+        db.gallery.query(sql, [
+            hash.digest('hex'),
+            await format.getDateCreate(fullPath),
+            false,
+            await sharp(file).rotate().resize(config.photo.thumbnail).toBuffer(),
+            await sharp(file).rotate().resize(config.photo.preview).toBuffer()
+        ]).then(result => {
+
+            res.send({
+                success: true,
+                id: result.rows[0].id
+            });
+
+        }).catch(error => {
+
+            if (error.code === '23505') res.send({
+                success: true,
+                status: 'HASH_ALREADY_EXIST'
+            });
+            else {
+
+                console.log(error);
+
+                res.send({
+                    success: false,
+                    message: 'Что-то пошло не так'
+                });
+
+            }
+
+        });
+
+    } else res.send({
+        success: false,
+        message: 'Пользователь не найден'
     });
 
 });

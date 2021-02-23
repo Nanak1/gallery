@@ -26,37 +26,9 @@ let getDateCreate = entry => {
 
     let dateCreate = entry.stats.mtime;
 
-    // 00000000_000000.jpg
-
-    if ((/^[0-9]{8}_[0-9]{6}.jpg/i).test(entry.basename)) {
-
-        dateCreate.setFullYear(parseInt(entry.basename.substr(0, 4)));
-        dateCreate.setMonth(parseInt(entry.basename.substr(4, 2)) - 1);
-        dateCreate.setDate(parseInt(entry.basename.substr(6, 2)));
-        dateCreate.setHours(parseInt(entry.basename.substr(9, 2)));
-        dateCreate.setMinutes(parseInt(entry.basename.substr(11, 2)));
-        dateCreate.setSeconds(parseInt(entry.basename.substr(13, 2)));
-        dateCreate.setMilliseconds(0);
-
-    }
-
-    // 00000000-000000.jpg
-
-    if ((/^[0-9]{8}-[0-9]{6}.jpg/i).test(entry.basename)) {
-
-        dateCreate.setFullYear(parseInt(entry.basename.substr(0, 4)));
-        dateCreate.setMonth(parseInt(entry.basename.substr(4, 2)) - 1);
-        dateCreate.setDate(parseInt(entry.basename.substr(6, 2)));
-        dateCreate.setHours(parseInt(entry.basename.substr(9, 2)));
-        dateCreate.setMinutes(parseInt(entry.basename.substr(11, 2)));
-        dateCreate.setSeconds(parseInt(entry.basename.substr(13, 2)));
-        dateCreate.setMilliseconds(0);
-
-    }
-
     // XXX_00000000_000000.jpg
 
-    if ((/^[a-z]{3}_[0-9]{8}_[0-9]{6}.jpg/i).test(entry.basename)) {
+    if ((/^[a-z]{3}_[0-9]{8}_[0-9]{6}.jpg$/i).test(entry.basename)) {
 
         dateCreate.setFullYear(parseInt(entry.basename.substr(4, 4)));
         dateCreate.setMonth(parseInt(entry.basename.substr(8, 2)) - 1);

@@ -74,8 +74,7 @@ window.app = {
                         app.users = res.data.users;
 
                         // TODO: загрузка завершена
-                        // app.scene.gallery.show().then(() => resolve());
-                        app.scene.cloud.show().then(resolve);
+                        app.scene.gallery.show().then(resolve);
 
                     } else app.scene.account_login.show().then(() => {
 
