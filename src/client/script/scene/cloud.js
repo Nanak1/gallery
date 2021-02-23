@@ -61,7 +61,7 @@ app.scene.cloud = {
 
                 // init
 
-                app.scene.cloud.initSync();
+                if (app.account['access_cloud']) app.scene.cloud.initSync();
                 app.scene.cloud.initBack();
 
                 setTimeout(() => {
