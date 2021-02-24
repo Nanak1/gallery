@@ -1,7 +1,6 @@
 .gallery-collection .collection-item {
     cursor: pointer;
     color: rgba(0, 0, 0, 0.87);
-    font-size: 14px;
     font-weight: 500;
     height: 48px;
     line-height: 48px;
@@ -15,7 +14,7 @@
 }
 
 .gallery-collection .collection-item .mdi {
-    font-size: 24px;
+    font-size: 1.6rem;
     float: left;
     height: 48px;
     line-height: 48px;

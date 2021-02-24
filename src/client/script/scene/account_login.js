@@ -55,16 +55,16 @@ app.scene.account_login = {
 
                 '<button ' +
                     'id="mask" ' +
-                    'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                    'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
                 '>' +
                     '<i class="mdi mdi-form-textbox-password"></i>' +
                 '</button>',
 
                 '<button ' +
                     'id="login" ' +
-                    'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                    'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out red"' +
                 '>' +
-                    '<i class="mdi mdi-login-variant"></i>' +
+                    '<i class="mdi mdi-login-variant white-text"></i>' +
                 '</button>'
 
             ]);

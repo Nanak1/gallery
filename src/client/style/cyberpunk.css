@@ -1,0 +1,160 @@
+/*
+
+#757575 grey darken-1
+#ffeb3b yellow
+#f44336 red
+#00e5ff cyan accent-3
+
+ */
+
+@font-face {
+    font-family: BlenderProBook;
+    src: url(/src/client/font/BlenderPro-Book.woff2) format("woff2");
+    font-weight: 400;
+    font-style: normal
+}
+
+@font-face {
+    font-family: BlenderProBold;
+    src: url(/src/client/font/BlenderPro-Bold.woff2) format("woff2");
+    font-weight: 700;
+    font-style: normal
+}
+
+@media only screen and (min-width: 0) {
+    html {
+        font-size: 18px;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    html {
+        font-size: 18.5px;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    html {
+        font-size: 19px;
+    }
+}
+
+::selection {
+    color: #000000;
+    background: #00e5ff;
+}
+
+html {
+    font-family: BlenderProBook;
+}
+
+body {
+    background-color: #ffeb3b;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: BlenderProBold;
+}
+
+.input-field > label {
+    color: #757575;
+}
+
+input[type=text]:not(.browser-default),
+input[type=password]:not(.browser-default) {
+    border-bottom-color: #757575;
+}
+
+input[type=text]:not(.browser-default):focus:not([readonly]),
+input[type=password]:not(.browser-default):focus:not([readonly]) {
+    border-bottom-color: #000000;
+    box-shadow: 0 1px 0 0 #000000;
+}
+
+input[type=text]:not(.browser-default):focus:not([readonly])+label,
+input[type=password]:not(.browser-default):focus:not([readonly])+label {
+    color: #000000;
+}
+
+.btn-floating,
+.btn-floating:hover,
+.btn-floating:focus {
+    background-color: #00e5ff;
+}
+
+.btn-floating i {
+    color: #000000;
+}
+
+.btn-large i {
+    /*font-size: 2rem;*/
+}
+
+.btn-small i {
+    /*font-size: 1.6rem;*/
+}
+
+.disabled.btn-floating {
+    background-color: #000000 !important;
+}
+
+.disabled.btn-floating i {
+    color: #757575 !important;
+}
+
+.gallery-modal {
+    background-color: #ffeb3b;
+}
+
+[type=checkbox]+span:not(.lever):before {
+    border: 2px solid #f44336;
+}
+
+[type=checkbox]:checked+span:not(.lever):before {
+    border-right: 4px solid #00e5ff;
+    border-bottom: 4px solid #00e5ff;
+}
+
+[type=radio]:not(:checked)+span:before {
+    border: 2px solid #f44336;
+}
+
+[type=radio]:checked+span:after {
+    background-color: #00e5ff;
+    border: 4px solid #00e5ff;
+}
+
+label {
+    color: #000000;
+}
+
+.gallery-collection,
+.collection {
+    border: 1px solid #000000;
+}
+
+.gallery-collection .collection-item,
+.collection .collection-item {
+    background-color: #ffeb3b;
+    border-bottom: 1px solid #000000;
+}
+
+.gallery-collection .collection-item:hover {
+    background-color: #00e5ff;
+}
+
+.gallery-collection .collection-item .mdi {
+    color: #000000;
+}
+
+.gallery-collection .collection-item.disabled {
+    color: #757575;
+}
+
+.gallery-collection .collection-item:disabled .mdi {
+    color: #757575;
+}
+
+table.highlight>tbody>tr:hover {
+    background-color: #00e5ff;
+}

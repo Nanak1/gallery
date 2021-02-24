@@ -433,10 +433,10 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="menu-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out red" ' +
                 'style="position: fixed; left: 8px; top: 8px;"' +
             '>' +
-                '<i class="mdi mdi-menu"></i>' +
+                '<i class="mdi mdi-menu white-text"></i>' +
             '</button>';
 
     },
@@ -486,7 +486,7 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="view-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-view-grid"></i>' +
             '</button>';
@@ -505,16 +505,16 @@ app.scene.gallery = {
                     '<div>' +
                         '<p style="display: inline-block;">Столбцы</p>' +
                         '<div class="right" style="margin-top: 8px;">' +
-                            '<button id="view-columns-decrease" class="btn-small btn-floating waves-effect waves-red white">' +
-                                '<i class="mdi mdi-arrow-left grey-text"></i>' +
+                            '<button id="view-columns-increase" class="btn-small btn-floating waves-effect waves-light">' +
+                                '<i class="mdi mdi-plus-thick"></i>' +
                             '</button>' +
                             ' ' +
-                            '<button id="view-columns-increase" class="btn-small btn-floating waves-effect waves-green white">' +
-                                '<i class="mdi mdi-arrow-right grey-text"></i>' +
+                            '<button id="view-columns-decrease" class="btn-small btn-floating waves-effect waves-light">' +
+                                '<i class="mdi mdi-minus-thick"></i>' +
                             '</button>' +
                         '</div>' +
                     '</div>' +
-                    '<div class="row grey-text">' +
+                    '<div class="row">' +
                         '<div class="col s12">' +
                             '<span id="view-columns"></span>' +
                             ' ' +
@@ -552,13 +552,27 @@ app.scene.gallery = {
                         '</label>' +
                     '</div>' +
 
+                    '<div style="height: 56px;"></div>' +
+
                 '</div>' +
 
-                '<div class="gallery-modal-footer">' +
-                    '<button id="view-cancel" class="btn-flat waves-effect waves-red">Отмена</button>' +
-                    ' ' +
-                    '<button id="view-apply" class="btn-flat waves-effect waves-green">Применить</button>' +
-                '</div>' +
+                app.tool.toolbar.getHTML('toolbar-calendar', [
+
+                    '<button ' +
+                        'id="view-cancel" ' +
+                        'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
+                    '>' +
+                        '<i class="mdi mdi-close-thick"></i>' +
+                    '</button>',
+
+                    '<button ' +
+                        'id="view-apply" ' +
+                        'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out red"' +
+                    '>' +
+                        '<i class="mdi mdi-check-bold white-text"></i>' +
+                    '</button>'
+
+                ]) +
 
             '</div>';
 
@@ -634,17 +648,26 @@ app.scene.gallery = {
 
                 document.getElementById('view-cancel').addEventListener('click', () => {
 
-                    document.getElementById('view-modal').remove();
-                    document.body.style.overflow = '';
-
                     [
-                        'menu-button',
+                        'view-cancel',
+                        'view-apply'
+                    ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
-                        'view-button',
-                        'calendar-button',
-                        'search-button',
-                        'select-button'
-                    ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+                    setTimeout(() => {
+
+                        document.getElementById('view-modal').remove();
+                        document.body.style.overflow = '';
+
+                        [
+                            'menu-button',
+
+                            'view-button',
+                            'calendar-button',
+                            'search-button',
+                            'select-button'
+                        ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+
+                    }, 250);
 
                 });
 
@@ -678,7 +701,18 @@ app.scene.gallery = {
             document.body.style.overflow = 'hidden';
 
             setTimeout(() => {
+
                 document.getElementById('view-modal').style.display = 'block';
+
+                setTimeout(() => {
+
+                    [
+                        'view-cancel',
+                        'view-apply'
+                    ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+
+                }, 100);
+
             }, 250);
 
         });
@@ -692,7 +726,7 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="calendar-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-calendar"></i>' +
             '</button>';
@@ -711,12 +745,8 @@ app.scene.gallery = {
                     '<div>' +
                         '<p style="display: inline-block;">Год</p>' +
                         '<div class="right" style="margin-top: 8px;">' +
-                            '<button id="calendar-year-check-all" class="btn-small btn-floating waves-effect waves-green white">' +
-                                '<i class="mdi mdi-check-all grey-text"></i>' +
-                            '</button>' +
-                            ' ' +
-                            '<button id="calendar-year-uncheck-all" class="btn-small btn-floating waves-effect waves-red white">' +
-                                '<i class="mdi mdi-close grey-text"></i>' +
+                            '<button id="calendar-year-check" class="btn-small btn-floating waves-effect waves-light">' +
+                                '<i class="mdi mdi-check-all"></i>' +
                             '</button>' +
                         '</div>' +
                     '</div>' +
@@ -725,12 +755,8 @@ app.scene.gallery = {
                     '<div>' +
                         '<p style="display: inline-block;">Месяц</p>' +
                         '<div class="right" style="margin-top: 8px;">' +
-                            '<button id="calendar-month-check-all" class="btn-small btn-floating waves-effect waves-green white">' +
-                                '<i class="mdi mdi-check-all grey-text"></i>' +
-                            '</button>' +
-                            ' ' +
-                            '<button id="calendar-month-uncheck-all" class="btn-small btn-floating waves-effect waves-red white">' +
-                                '<i class="mdi mdi-close grey-text"></i>' +
+                            '<button id="calendar-month-check" class="btn-small btn-floating waves-effect waves-light">' +
+                                '<i class="mdi mdi-check-all"></i>' +
                             '</button>' +
                         '</div>' +
                     '</div>' +
@@ -739,24 +765,34 @@ app.scene.gallery = {
                     '<div>' +
                         '<p style="display: inline-block;">День</p>' +
                         '<div class="right" style="margin-top: 8px;">' +
-                            '<button id="calendar-day-check-all" class="btn-small btn-floating waves-effect waves-green white">' +
-                                '<i class="mdi mdi-check-all grey-text"></i>' +
-                            '</button>' +
-                            ' ' +
-                            '<button id="calendar-day-uncheck-all" class="btn-small btn-floating waves-effect waves-red white">' +
-                                '<i class="mdi mdi-close grey-text"></i>' +
+                            '<button id="calendar-day-check" class="btn-small btn-floating waves-effect waves-light">' +
+                                '<i class="mdi mdi-check-all"></i>' +
                             '</button>' +
                         '</div>' +
                     '</div>' +
                     '<div id="calendar-day" class="row"></div>' +
 
+                    '<div style="height: 56px;"></div>' +
+
                 '</div>' +
 
-                '<div class="gallery-modal-footer">' +
-                    '<button id="calendar-cancel" class="btn-flat waves-effect waves-red">Отмена</button>' +
-                    ' ' +
-                    '<button id="calendar-apply" class="btn-flat waves-effect waves-green">Применить</button>' +
-                '</div>' +
+                app.tool.toolbar.getHTML('toolbar-calendar', [
+
+                    '<button ' +
+                        'id="calendar-cancel" ' +
+                        'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
+                    '>' +
+                        '<i class="mdi mdi-close-thick"></i>' +
+                    '</button>',
+
+                    '<button ' +
+                        'id="calendar-apply" ' +
+                        'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out red"' +
+                    '>' +
+                        '<i class="mdi mdi-check-bold white-text"></i>' +
+                    '</button>'
+
+                ]) +
 
             '</div>';
 
@@ -781,21 +817,13 @@ app.scene.gallery = {
 
                 // year
 
-                document.getElementById('calendar-year-check-all').addEventListener('click', () => {
+                document.getElementById('calendar-year-check').addEventListener('click', () => {
 
                     let el = document.getElementById('calendar-year');
                     let nodeList = el.querySelectorAll('input[type=checkbox]');
+                    let checked = nodeList[0].checked;
 
-                    nodeList.forEach(checkbox => checkbox.checked = true);
-
-                });
-
-                document.getElementById('calendar-year-uncheck-all').addEventListener('click', () => {
-
-                    let el = document.getElementById('calendar-year');
-                    let nodeList = el.querySelectorAll('input[type=checkbox]');
-
-                    nodeList.forEach(checkbox => checkbox.checked = false);
+                    nodeList.forEach(checkbox => checkbox.checked = !checked);
 
                 });
 
@@ -809,7 +837,7 @@ app.scene.gallery = {
                             '<span style="width: 100%;">' +
                                 year.value +
                                 ' ' +
-                                '<span class="right grey-text text-lighten-1">' +
+                                '<span class="right grey-text text-darken-1">' +
                                     '(' + year.count + ')' +
                                 '</span>' +
                             '</span>' +
@@ -819,21 +847,13 @@ app.scene.gallery = {
 
                 // month
 
-                document.getElementById('calendar-month-check-all').addEventListener('click', () => {
+                document.getElementById('calendar-month-check').addEventListener('click', () => {
 
                     let el = document.getElementById('calendar-month');
                     let nodeList = el.querySelectorAll('input[type=checkbox]');
+                    let checked = nodeList[0].checked;
 
-                    nodeList.forEach(checkbox => checkbox.checked = true);
-
-                });
-
-                document.getElementById('calendar-month-uncheck-all').addEventListener('click', () => {
-
-                    let el = document.getElementById('calendar-month');
-                    let nodeList = el.querySelectorAll('input[type=checkbox]');
-
-                    nodeList.forEach(checkbox => checkbox.checked = false);
+                    nodeList.forEach(checkbox => checkbox.checked = !checked);
 
                 });
 
@@ -847,7 +867,7 @@ app.scene.gallery = {
                             '<span style="width: 100%;">' +
                                 app.tool.format.MONTH_SHORT[month.value - 1].toUpperCase() +
                                 ' ' +
-                                '<span class="right grey-text text-lighten-1">' +
+                                '<span class="right grey-text text-darken-1">' +
                                     '(' + month.count + ')' +
                                 '</span>' +
                             '</span>' +
@@ -857,21 +877,13 @@ app.scene.gallery = {
 
                 // day
 
-                document.getElementById('calendar-day-check-all').addEventListener('click', () => {
+                document.getElementById('calendar-day-check').addEventListener('click', () => {
 
                     let el = document.getElementById('calendar-day');
                     let nodeList = el.querySelectorAll('input[type=checkbox]');
+                    let checked = nodeList[0].checked;
 
-                    nodeList.forEach(checkbox => checkbox.checked = true);
-
-                });
-
-                document.getElementById('calendar-day-uncheck-all').addEventListener('click', () => {
-
-                    let el = document.getElementById('calendar-day');
-                    let nodeList = el.querySelectorAll('input[type=checkbox]');
-
-                    nodeList.forEach(checkbox => checkbox.checked = false);
+                    nodeList.forEach(checkbox => checkbox.checked = !checked);
 
                 });
 
@@ -885,7 +897,7 @@ app.scene.gallery = {
                             '<span style="width: 100%;">' +
                                 day.value +
                                 ' ' +
-                                '<span class="right grey-text text-lighten-1">' +
+                                '<span class="right grey-text text-darken-1">' +
                                     '(' + day.count + ')' +
                                 '</span>' +
                             '</span>' +
@@ -897,17 +909,26 @@ app.scene.gallery = {
 
                 document.getElementById('calendar-cancel').addEventListener('click', () => {
 
-                    document.getElementById('calendar-modal').remove();
-                    document.body.style.overflow = '';
-
                     [
-                        'menu-button',
+                        'calendar-cancel',
+                        'calendar-apply'
+                    ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
-                        'view-button',
-                        'calendar-button',
-                        'search-button',
-                        'select-button'
-                    ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+                    setTimeout(() => {
+
+                        document.getElementById('calendar-modal').remove();
+                        document.body.style.overflow = '';
+
+                        [
+                            'menu-button',
+
+                            'view-button',
+                            'calendar-button',
+                            'search-button',
+                            'select-button'
+                        ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+
+                    }, 250);
 
                 });
 
@@ -952,7 +973,18 @@ app.scene.gallery = {
             document.body.style.overflow = 'hidden';
 
             setTimeout(() => {
+
                 document.getElementById('calendar-modal').style.display = 'block';
+
+                setTimeout(() => {
+
+                    [
+                        'calendar-cancel',
+                        'calendar-apply'
+                    ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+
+                }, 100);
+
             }, 250);
 
         });
@@ -966,7 +998,7 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="search-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                'class="disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-magnify"></i>' +
             '</button>';
@@ -986,7 +1018,7 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="select-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-selection"></i>' +
             '</button>';
@@ -1040,7 +1072,7 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="delete-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                'class="disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-delete"></i>' +
             '</button>';
@@ -1060,7 +1092,7 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="edit-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                'class="disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-pencil"></i>' +
             '</button>';
@@ -1080,7 +1112,7 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="download-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                'class="disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-download"></i>' +
             '</button>';
@@ -1100,9 +1132,9 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="back-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out red"' +
             '>' +
-                '<i class="mdi mdi-close"></i>' +
+                '<i class="mdi mdi-close-thick white-text"></i>' +
             '</button>';
 
     },
@@ -1162,7 +1194,7 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="all-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'class="disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out" ' +
                 'style="position: fixed; top: 8px; right: 8px; z-index: 2;"' +
             '>' +
                 '<i class="mdi mdi-check-all"></i>' +
@@ -1183,10 +1215,10 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="left-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out" ' +
                 'style="position: fixed; top: 50%; left: 8px; z-index: 2;"' +
             '>' +
-                '<i class="mdi mdi-arrow-left"></i>' +
+                '<i class="mdi mdi-arrow-left-thick"></i>' +
             '</button>';
 
     },
@@ -1218,10 +1250,10 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="right-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out" ' +
                 'style="position: fixed; top: 50%; right: 8px; z-index: 2;"' +
             '>' +
-                '<i class="mdi mdi-arrow-right"></i>' +
+                '<i class="mdi mdi-arrow-right-thick"></i>' +
             '</button>';
 
     },

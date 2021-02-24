@@ -1,7 +1,7 @@
 .gallery-modal {
     display: none;
     position: fixed;
-    z-index: 2;
+    z-index: 3;
     top: 0;
     right: 0;
     bottom: 0;
@@ -13,7 +13,7 @@
 
 .gallery-modal-content {
     position: absolute;
-    height: calc(100% - 56px);
+    height: 100%;
     width: 100%;
     padding: 24px;
     overflow: auto;
@@ -24,18 +24,4 @@
 .gallery-modal-content h3,
 .gallery-modal-content h4 {
     margin-top: 0;
-}
-
-.gallery-modal-footer {
-    position: absolute;
-    bottom: 0;
-    height: 56px;
-    width: 100%;
-    padding: 4px 6px;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    text-align: right;
-}
-
-.gallery-modal-footer .btn-flat {
-    margin: 6px 0;
 }

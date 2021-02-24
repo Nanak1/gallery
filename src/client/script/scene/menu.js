@@ -95,10 +95,10 @@ app.scene.menu = {
         return '' +
             '<button ' +
                 'id="back-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out" ' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out red" ' +
                 'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 2;"' +
             '>' +
-                '<i class="mdi mdi-close"></i>' +
+                '<i class="mdi mdi-close-thick white-text"></i>' +
             '</button>';
 
     },

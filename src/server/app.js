@@ -32,6 +32,7 @@ app.use(fileUpload({
  */
 
 app.use('/node_modules', express.static(path.join(__dirname, '../../node_modules')));
+app.use('/src/client/font', express.static(path.join(__dirname, '../client/font')));
 app.use('/src/client/image', express.static(path.join(__dirname, '../client/image')));
 app.use('/src/client/script', express.static(path.join(__dirname, '../client/script')));
 app.use('/src/client/style', express.static(path.join(__dirname, '../client/style')));

@@ -125,19 +125,19 @@ app.scene.cloud = {
 
                         '<div class="collection">' +
                             '<div class="collection-item">' +
-                                '<div class="grey-text">Имя пользователя</div>' +
+                                '<div class="grey-text text-darken-1">Имя пользователя</div>' +
                                 '<div>' + app.scene.cloud.user.username + '</div>' +
                             '</div>' +
                             '<div class="collection-item">' +
-                                '<div class="grey-text">Директория поиска</div>' +
+                                '<div class="grey-text text-darken-1">Директория поиска</div>' +
                                 '<div>' + app.scene.cloud.user.cloud_scan.split('/').join(slash) + '</div>' +
                             '</div>' +
                             '<div class="collection-item">' +
-                                '<div class="grey-text">Директория результата</div>' +
+                                '<div class="grey-text text-darken-1">Директория результата</div>' +
                                 '<div>' + app.scene.cloud.user.cloud_sync.split('/').join(slash) + '</div>' +
                             '</div>' +
                             '<div class="collection-item">' +
-                                '<div class="grey-text">Синхронизировано</div>' +
+                                '<div class="grey-text text-darken-1">Синхронизировано</div>' +
                                 '<div>' +
                                     '<snan id="sync-count">0</snan>' +
                                     ' из ' +
@@ -168,9 +168,8 @@ app.scene.cloud = {
                     '<td>' + file.split('/').join(slash) + '</td>' +
                     '<td ' +
                         'data-file="' + file + '" ' +
-                        'class="grey-text gallery-table-mdi center-align" ' +
+                        'class="gallery-table-mdi center-align" ' +
                         'style="cursor: help;" ' +
-                        'data-color="grey-text"' +
                     '>' +
                         '<i class="mdi mdi-timer-outline tooltipped" data-icon="mdi-timer-outline"></i>' +
                     '</td>' +
@@ -200,7 +199,7 @@ app.scene.cloud = {
         return '' +
             '<button ' +
                 'id="sync-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-sync"></i>' +
             '</button>';
@@ -222,9 +221,7 @@ app.scene.cloud = {
 
                 let status = (el, color, icon, html) => {
 
-                    el.classList.remove(el.dataset.color);
-                    el.classList.add(color);
-                    el.dataset.color = color;
+                    el.style.color = color;
 
                     el = el.querySelector('i');
 
@@ -264,7 +261,7 @@ app.scene.cloud = {
                     let file = app.scene.cloud.files[i];
                     let el = document.querySelector('[data-file="' + file + '"]');
 
-                    status(el, 'blue-text', 'mdi-image-plus', 'Добавление в БД');
+                    status(el, '#757575', 'mdi-image-plus', 'Добавление в БД');
 
                     axios.post('/photo/cloud', {
                         username: app.scene.cloud.user.username,
@@ -275,7 +272,7 @@ app.scene.cloud = {
 
                             if (res.data.id) {
 
-                                status(el, 'cyan-text', 'mdi-image-move', 'Перенос в папку');
+                                status(el, '#000000', 'mdi-image-move', 'Перенос в папку');
 
                                 axios.post('/cloud', {
                                     username: app.scene.cloud.user.username,
@@ -285,12 +282,12 @@ app.scene.cloud = {
 
                                     if (res.data.success) {
 
-                                        status(el, 'green-text', 'mdi-cloud-check', 'Завершено');
+                                        status(el, '#00e5ff', 'mdi-cloud-check', 'Завершено');
                                         end();
 
                                     } else {
 
-                                        status(el, 'red-text', 'mdi-image-off', res.data.message);
+                                        status(el, '#f44336', 'mdi-image-off', res.data.message);
                                         console.log(res.data);
                                         end();
 
@@ -299,14 +296,19 @@ app.scene.cloud = {
                                 }).catch(error => {
 
                                     console.log(error);
-                                    status(el, 'red-text', 'mdi-image-off', 'Ошибка при запросе на перенос');
+                                    status(el, '#f44336', 'mdi-image-off', 'Ошибка при запросе на перенос');
                                     end();
 
                                 });
 
                             } else if (res.data.status === 'HASH_ALREADY_EXIST') {
 
-                                status(el, 'orange-text', 'mdi-image-remove', 'Пропуск дубликата');
+                                status(el, '#757575', 'mdi-image-remove', 'Пропуск дубликата');
+                                end();
+
+                            } else {
+
+                                status(el, '#f44336', 'mdi-image-remove', 'Что-то пошло не так');
                                 end();
 
                             }
@@ -314,7 +316,7 @@ app.scene.cloud = {
                         } else {
 
                             console.log(res);
-                            status(el, 'red-text', 'mdi-image-off', 'Ошибка создания');
+                            status(el, '#f44336', 'mdi-image-off', 'Ошибка создания');
                             end();
 
                         }
@@ -322,7 +324,7 @@ app.scene.cloud = {
                     }).catch(error => {
 
                         console.log(error);
-                        status(el, 'red-text', 'mdi-image-off', 'Ошибка при запросе на создание');
+                        status(el, '#f44336', 'mdi-image-off', 'Ошибка при запросе на создание');
                         end();
 
                     });
@@ -344,9 +346,9 @@ app.scene.cloud = {
         return '' +
             '<button ' +
                 'id="back-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light blue-grey scale-transition scale-out"' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out red"' +
             '>' +
-                '<i class="mdi mdi-close"></i>' +
+                '<i class="mdi mdi-close-thick white-text"></i>' +
             '</button>';
 
     },
