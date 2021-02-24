@@ -49,6 +49,18 @@ Add `config.json` to root directory:
       "password": "gallery"
     }
   },
+  "photo": {
+    "thumbnail": {
+      "width": 256,
+      "height": 256,
+      "fit": "cover"
+    },
+    "preview": {
+      "width": 1024,
+      "height": 1024,
+      "fit": "inside"
+    }
+  },
   "cloud": {
     "dir": "/var/lib/docker/volumes/nextcloud_app/_data/data",
     "webdav": "https://cloud.example.org/remote.php/dav"
