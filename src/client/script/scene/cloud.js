@@ -159,7 +159,7 @@ app.scene.cloud = {
     getFilesHTML: () => {
 
         let html = '';
-        let slash = ' <span class="grey-text">/</span> ';
+        let slash = ' <span class="grey-text text-darken-1">/</span> ';
 
         app.scene.cloud.files.forEach(file => {
 
@@ -188,7 +188,8 @@ app.scene.cloud = {
                 '<tbody>' +
                     '<tr>' + html + '</tr>' +
                 '</tbody>' +
-            '</table>';
+            '</table>' +
+            '<div style="height: 56px;"></div>';
 
     },
 

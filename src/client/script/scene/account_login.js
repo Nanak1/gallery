@@ -49,6 +49,8 @@ app.scene.account_login = {
                             '<label for="password">Пароль</label>' +
                         '</div>' +
 
+                        '<div style="height: 56px;"></div>' +
+
                     '</div>' +
                 '</div>' +
             '</div>' + app.tool.toolbar.getHTML('login-view', [

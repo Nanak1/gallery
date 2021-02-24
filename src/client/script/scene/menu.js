@@ -59,6 +59,8 @@ app.scene.menu = {
                             '<div class="collection-item disabled"><i class="mdi mdi-cog"></i>Система</div>' +
                         '</div>' +
 
+                        '<div style="height: 56px;"></div>' +
+
                     '</div>' +
                 '</div>' +
             '</div>';
