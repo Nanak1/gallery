@@ -1,9 +1,9 @@
-#photos {
+#app-grid {
     cursor: zoom-in;
     -webkit-tap-highlight-color: transparent;
 }
 
-.photo {
+.thumbnail {
     position: relative;
     float: left;
     background-repeat: no-repeat;
@@ -13,12 +13,43 @@
     transform: scale(0.99);
 }
 
-.photo:before {
+.thumbnail:before {
     content: '';
     float: left;
     padding-top: 100%;
 }
 
-.photo.select {
+.thumbnail.select {
     transform: scale(0.77);
+}
+
+.gallery-divider {
+    position: relative;
+    float: left;
+    margin: 1rem;
+    width: calc(100% - 2rem);
+    text-align: right;
+    cursor: text;
+    border-bottom: 1px solid #000000;
+}
+
+.gallery-divider:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.4rem;
+    width: 4rem;
+    height: 0.4rem;
+    background-color: #000000;
+}
+
+.gallery-divider:before {
+    content: "";
+    position: absolute;
+    left: 4rem;
+    bottom: -0.4rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-top: 0.4rem solid #000000;
+    border-right: 0.4rem solid transparent;
 }

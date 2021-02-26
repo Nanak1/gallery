@@ -7,6 +7,7 @@ app.scene.gallery = {
 
     px: 256,
     page: 0,
+    lastDate: null,
 
     columns: null,
     rows: null,
@@ -37,7 +38,7 @@ app.scene.gallery = {
 
                     // html
 
-                    let html = '<div id="photos"></div>';
+                    let html = '<div id="app-grid"></div>';
 
                     html += app.scene.gallery.getPreviewModalHTML();
 
@@ -169,10 +170,11 @@ app.scene.gallery = {
         }
 
         app.scene.gallery.page = 0;
+        app.scene.gallery.lastDate = null;
         app.scene.gallery.photos = [];
         app.scene.gallery.selected = [];
         app.scene.gallery.finish = false;
-        document.getElementById('photos').innerHTML = '';
+        document.getElementById('app-grid').innerHTML = '';
         window.removeEventListener('scroll', app.scene.gallery.onScroll);
 
         app.scene.gallery.loadPage().then(() => {
@@ -214,16 +216,53 @@ app.scene.gallery = {
                     app.scene.gallery.photos.push(... res.data.photos);
 
                     let width = 100 / app.scene.gallery.columns;
-                    let el = document.getElementById('photos');
+                    let el = document.getElementById('app-grid');
 
                     res.data.photos.forEach(photo => {
+
+                        // проверка на разделитель
+
+                        let isDivider = false;
+                        let currentDate = photo[app.scene.gallery.sortColumn];
+                        let curr = new Date(currentDate);
+
+                        if (app.scene.gallery.lastDate) {
+
+                            let last = new Date(app.scene.gallery.lastDate);
+
+                            isDivider =
+                                last.getFullYear() !== curr.getFullYear() ||
+                                last.getMonth() !== curr.getMonth() ||
+                                last.getDate() !== curr.getDate();
+
+                        } else isDivider = true;
+
+                        if (isDivider) {
+
+                            el.insertAdjacentHTML('beforeend', '' +
+                                '<h4 class="gallery-divider">' +
+                                    app.tool.format.number2String(curr.getDate(), 2) +
+                                    '.' +
+                                    app.tool.format.number2String(curr.getMonth() + 1, 2) +
+                                    '.' +
+                                    curr.getFullYear() +
+                                '</h4>'
+                            );
+
+                        }
+
+                        // currentDate > lastDate
+
+                        app.scene.gallery.lastDate = currentDate;
+
+                        // thumbnail
 
                         let url = '/photo/thumbnail/' + photo.id;
 
                         el.insertAdjacentHTML('beforeend', '' +
                             '<div ' +
                                 'data-id="' + photo.id + '" ' +
-                                'class="photo" ' +
+                                'class="thumbnail" ' +
                                 'style="width: ' + width + '%; background-image: url(' + url + ');"' +
                             '></div>'
                         );
@@ -349,32 +388,36 @@ app.scene.gallery = {
 
             if (app.scene.gallery.photos.length) {
 
-                // поиск фотографии для выравнивания после смены ориентации
+                // поиск узла для выравнивания после смены ориентации
 
-                let img = null;
-                let nodes = document.getElementById('photos').childNodes;
+                let node = null;
+                let nodes = document.getElementById('app-grid').childNodes;
 
-                for (let i = 0; !img && i < nodes.length; i++) {
+                for (let i = 0; !node && i < nodes.length; i++) {
 
-                    if (nodes[i].offsetTop >= window.scrollY) img = nodes[i];
+                    if (nodes[i].offsetTop >= window.scrollY) node = nodes[i];
 
                 }
 
-                // обновление ширины и высоты фотографий в сетке
+                // обновление ширины и высоты миниатюры в сетке
 
                 let percent = 100 / app.scene.gallery.columns;
 
-                nodes.forEach(img => {
+                nodes.forEach(thumbnail => {
 
-                    img.style.width = percent + '%';
-                    img.style.height = percent + '%';
+                    if (thumbnail.classList.contains('thumbnail')) {
+
+                        thumbnail.style.width = percent + '%';
+                        thumbnail.style.height = percent + '%';
+
+                    }
 
                 });
 
                 // выравнивание по фотографии
 
                 setTimeout(() => {
-                    img.scrollIntoView();
+                    node.scrollIntoView();
                 }, 100);
 
             }
@@ -1038,7 +1081,7 @@ app.scene.gallery = {
 
             setTimeout(() => {
 
-                document.getElementById('photos').style.cursor = 'pointer';
+                document.getElementById('app-grid').style.cursor = 'pointer';
                 document.getElementById('toolbar-view').style.display = 'none';
                 document.getElementById('toolbar-edit').style.display = 'block';
 
@@ -1164,7 +1207,7 @@ app.scene.gallery = {
             setTimeout(() => {
 
                 document.getElementById('preview-modal').style.display = '';
-                document.getElementById('photos').style.cursor = '';
+                document.getElementById('app-grid').style.cursor = '';
                 document.getElementById('toolbar-edit').style.display = 'none';
                 document.getElementById('toolbar-view').style.display = 'block';
                 document.body.style.overflow = '';
