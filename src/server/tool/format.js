@@ -34,14 +34,18 @@ module.exports = {
 
                 // 00000000_000000.jpg
                 // 00000000_000000_0.jpg
+                // 00000000_000000(0).jpg
                 // 00000000-000000.jpg
                 // 00000000-000000_0.jpg
+                // 00000000-000000(0).jpg
 
                 if (
                     (/^[0-9]{8}_[0-9]{6}.jpg$/i).test(baseName) ||
                     (/^[0-9]{8}_[0-9]{6}_[0-9].jpg$/i).test(baseName) ||
+                    (/^[0-9]{8}_[0-9]{6}\([0-9]\).jpg$/i).test(baseName) ||
                     (/^[0-9]{8}-[0-9]{6}.jpg$/i).test(baseName) ||
-                    (/^[0-9]{8}-[0-9]{6}_[0-9].jpg$/i).test(baseName)
+                    (/^[0-9]{8}-[0-9]{6}_[0-9].jpg$/i).test(baseName) ||
+                    (/^[0-9]{8}-[0-9]{6}\([0-9]\).jpg$/i).test(baseName)
                 ) {
 
                     year = parseInt(baseName.substr(0, 4));

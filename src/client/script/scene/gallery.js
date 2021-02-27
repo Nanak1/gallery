@@ -170,7 +170,7 @@ app.scene.gallery = {
         app.scene.gallery.finish = false;
         document.getElementById('app-grid').innerHTML = '' +
             '<h3 class="gallery-grid-head">' +
-                '<span class="app-gallery-total">?</span> шт' +
+                '<span class="app-gallery-total"></span> шт' +
             '</h3>';
         window.removeEventListener('scroll', app.scene.gallery.onScroll);
 

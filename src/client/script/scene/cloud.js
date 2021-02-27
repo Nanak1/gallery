@@ -262,7 +262,7 @@ app.scene.cloud = {
                     let file = app.scene.cloud.files[i];
                     let el = document.querySelector('[data-file="' + file + '"]');
 
-                    status(el, '#757575', 'mdi-image-plus', 'Добавление в БД');
+                    status(el, '', 'mdi-image-plus', 'Добавление в БД');
 
                     axios.post('/photo/cloud', {
                         username: app.scene.cloud.user.username,
@@ -273,7 +273,7 @@ app.scene.cloud = {
 
                             if (res.data.id) {
 
-                                status(el, '#000000', 'mdi-image-move', 'Перенос в папку');
+                                status(el, '', 'mdi-image-move', 'Перенос в папку');
 
                                 axios.post('/cloud', {
                                     username: app.scene.cloud.user.username,

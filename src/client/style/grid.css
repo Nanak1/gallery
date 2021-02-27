@@ -26,7 +26,8 @@
 .gallery-grid-head {
     position: relative;
     float: left;
-    margin: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
     width: calc(100% - 2rem);
     cursor: text;
     border-bottom: 1px solid #000000;
