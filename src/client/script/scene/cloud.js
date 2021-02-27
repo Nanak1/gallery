@@ -178,7 +178,7 @@ app.scene.cloud = {
         });
 
         return '' +
-            '<table class="highlight gallery-table">' +
+            '<table class="gallery-table">' +
                 '<thead>' +
                     '<tr>' +
                         '<th>Расположение</th>' +

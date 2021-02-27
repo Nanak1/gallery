@@ -140,21 +140,22 @@ label {
 }
 
 .gallery-collection .collection-item:hover {
-    background-color: #00e5ff;
+    color: #ffeb3b;
+    background-color: #000000;
 }
 
 .gallery-collection .collection-item .mdi {
     color: #000000;
 }
 
+.gallery-collection .collection-item:hover .mdi {
+    color: #ffeb3b;
+}
+
 .gallery-collection .collection-item.disabled {
     color: #757575;
 }
 
-.gallery-collection .collection-item:disabled .mdi {
+.gallery-collection .collection-item.disabled .mdi {
     color: #757575;
-}
-
-table.highlight>tbody>tr:hover {
-    background-color: #00e5ff;
 }
