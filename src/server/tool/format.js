@@ -108,6 +108,23 @@ module.exports = {
 
                 }
 
+                // 0000-00-00 00-00-00.jpg
+                // 0000-00-00 00-00-00 XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX.jpg
+
+                if (
+                    (/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}-[0-9]{2}-[0-9]{2}.jpg$/i).test(baseName) ||
+                    (/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}-[0-9]{2}-[0-9]{2} [a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}.jpg$/i).test(baseName)
+                ) {
+
+                    year = parseInt(baseName.substr(0, 4));
+                    month = parseInt(baseName.substr(5, 2)) - 1;
+                    date = parseInt(baseName.substr(8, 2));
+                    hours = parseInt(baseName.substr(11, 2));
+                    minutes = parseInt(baseName.substr(14, 2));
+                    seconds = parseInt(baseName.substr(17, 2));
+
+                }
+
                 dateCreate.setFullYear(year);
                 dateCreate.setMonth(month);
                 dateCreate.setDate(date);
