@@ -241,13 +241,13 @@ app.scene.gallery = {
                         if (isDivider) {
 
                             el.insertAdjacentHTML('beforeend', '' +
-                                '<h4 class="app-grid-divider">' +
+                                '<div class="app-grid-divider"><h4>' +
                                     app.tool.format.number2String(curr.getDate(), 2) +
                                     '.' +
                                     app.tool.format.number2String(curr.getMonth() + 1, 2) +
                                     '.' +
                                     curr.getFullYear() +
-                                '</h4>'
+                                '</h4></div>'
                             );
 
                         }

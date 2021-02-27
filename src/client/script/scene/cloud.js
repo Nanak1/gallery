@@ -39,7 +39,7 @@ app.scene.cloud = {
 
                 if (app.scene.cloud.files.length > 0) {
 
-                    el.insertAdjacentHTML('beforeend', '<h3>Фотографии</h3>');
+                    el.insertAdjacentHTML('beforeend', '<h3 class="app-h3">Фотографии</h3>');
                     el.insertAdjacentHTML('beforeend', app.scene.cloud.getFilesHTML());
 
                 }
@@ -124,7 +124,7 @@ app.scene.cloud = {
                 '<div class="row">' +
                     '<div id="cloud-info" class="col s12 offset-m1 m10 offset-l2 l8 offset-xl3 xl6">' +
 
-                        '<h3>Облако</h3>' +
+                        '<h3 class="app-h3">Облако</h3>' +
 
                         '<div class="collection app-collection">' +
                             '<div class="collection-item app-icon app-icon-mt2">' +

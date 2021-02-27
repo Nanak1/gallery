@@ -33,7 +33,7 @@ app.scene.account_login = {
                 '<div class="row">' +
                     '<div class="col s12 offset-m2 m8 offset-l3 l6 offset-xl4 xl4">' +
 
-                        '<h3>Вход</h3>' +
+                        '<h3 class="app-h3">Вход</h3>' +
 
                         '<div class="input-field">' +
                             '<input id="username" type="text">' +

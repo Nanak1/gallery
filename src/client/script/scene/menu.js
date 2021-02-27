@@ -45,7 +45,7 @@ app.scene.menu = {
                 '<div class="row">' +
                     '<div class="col s12 offset-m2 m8 offset-l3 l6 offset-xl4 xl4">' +
 
-                        '<h3>Меню</h3>' +
+                        '<h3 class="app-h3">Меню</h3>' +
 
                         '<div class="collection app-collection">' +
                             '<div id="button-account" class="collection-item app-icon app-button app-disable">' +
