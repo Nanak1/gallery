@@ -1,7 +1,8 @@
-.gallery-table-mdi {
+.app-column-icon {
     padding: 5px;
+    text-align: center;
 }
 
-.gallery-table-mdi .mdi {
-    font-size: 27px;
+.app-column-icon .mdi {
+    font-size: 1.6rem;
 }

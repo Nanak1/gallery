@@ -1,0 +1,58 @@
+/*
+
+#757575 grey darken-1
+#ffeb3b yellow
+#f44336 red
+#00e5ff cyan accent-3
+
+ */
+
+@font-face {
+    font-family: BlenderProBook;
+    src: url(/src/client/font/BlenderPro-Book.woff2) format("woff2");
+    font-weight: 400;
+    font-style: normal
+}
+
+@font-face {
+    font-family: BlenderProBold;
+    src: url(/src/client/font/BlenderPro-Bold.woff2) format("woff2");
+    font-weight: 700;
+    font-style: normal
+}
+
+@media only screen and (min-width: 0) {
+    html {
+        font-size: 18px;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    html {
+        font-size: 18.5px;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    html {
+        font-size: 19px;
+    }
+}
+
+::selection {
+    color: #000000;
+    background: #00e5ff;
+}
+
+html {
+    font-family: BlenderProBook;
+    color: #000000;
+}
+
+body {
+    background-color: #ffeb3b;
+}
+
+h1, h2, h3, h4, h5, h6, b {
+    font-family: BlenderProBold;
+}

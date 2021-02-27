@@ -35,37 +35,44 @@ app.scene.gallery = {
 
                     // html
 
-                    let html = '<div id="app-grid"></div>';
+                    let html = '<div class="app-grid"></div>';
 
                     html += app.scene.gallery.getPreviewModalHTML();
 
                     html += app.scene.gallery.getMenuButtonHTML();
 
-                    html += app.tool.toolbar.getHTML('toolbar-view', [
-                        app.scene.gallery.getViewButtonHTML(),
-                        app.scene.gallery.getCalendarButtonHTML(),
-                        app.scene.gallery.getSearchButtonHTML(),
-                        app.scene.gallery.getSelectButtonHTML()
-                    ]);
+                    html += app.tool.toolbar({
+                        id: 'toolbar-view',
+                        buttons: [
+                            app.scene.gallery.getViewButtonHTML(),
+                            app.scene.gallery.getCalendarButtonHTML(),
+                            app.scene.gallery.getSearchButtonHTML(),
+                            app.scene.gallery.getSelectButtonHTML()
+                        ]
+                    });
 
                     let buttons = [];
 
                     if (app.account['access_photo_delete']) buttons.push(app.scene.gallery.getDeleteButtonHTML());
                     if (app.account['access_photo_edit']) buttons.push(app.scene.gallery.getEditButtonHTML());
 
-                    html += app.tool.toolbar.getHTML('toolbar-edit', [
-                        ... buttons,
-                        app.scene.gallery.getDownloadButtonHTML(),
-                        app.scene.gallery.getBackButtonHTML()
-                    ], 'none');
+                    html += app.tool.toolbar({
+                        id: 'toolbar-edit',
+                        display: 'none',
+                        buttons: [
+                            ... buttons,
+                            app.scene.gallery.getDownloadButtonHTML(),
+                            app.scene.gallery.getBackButtonHTML()
+                        ]
+                    });
 
                     html += app.scene.gallery.getAllButtonHTML();
 
                     html += app.scene.gallery.getLeftButtonHTML();
                     html += app.scene.gallery.getRightButtonHTML();
 
-                    document.querySelector('.app').innerHTML = html;
-                    document.body.classList.add('gallery-scrollbar-overlay');
+                    document.getElementById('app').innerHTML = html;
+                    document.body.classList.add('app-scrollbar-overlay');
 
                     app.scene.gallery.initPreview();
 
@@ -98,12 +105,12 @@ app.scene.gallery = {
                         // show ui
 
                         [
-                            'menu-button',
+                            'button-menu',
 
-                            'view-button',
-                            'calendar-button',
-                            'search-button',
-                            'select-button'
+                            'button-view',
+                            'button-calendar',
+                            'button-search',
+                            'button-select'
                         ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
                         // end
@@ -127,11 +134,11 @@ app.scene.gallery = {
 
         // clear
 
-        document.querySelector('.app').innerHTML = '';
+        document.getElementById('app').innerHTML = '';
 
         // after clear
 
-        document.body.classList.remove('gallery-scrollbar-overlay');
+        document.body.classList.remove('app-scrollbar-overlay');
 
         // end
 
@@ -164,9 +171,9 @@ app.scene.gallery = {
         app.scene.gallery.photos = [];
         app.scene.gallery.selected = [];
         app.scene.gallery.finish = false;
-        document.getElementById('app-grid').innerHTML = '' +
-            '<h3 class="gallery-grid-head">' +
-                '<span class="app-gallery-total"></span> шт' +
+        document.querySelector('.app-grid').innerHTML = '' +
+            '<h3 class="app-grid-title">' +
+                '<span class="app-photos-total"></span> шт' +
             '</h3>';
         window.removeEventListener('scroll', app.scene.gallery.onScroll);
 
@@ -203,14 +210,14 @@ app.scene.gallery = {
                 }
             }).then(res => {
 
-                document.querySelector('.app-gallery-total').innerText = res.data.total;
+                document.querySelector('.app-photos-total').innerText = res.data.total;
 
                 if (res.data.photos.length > 0) {
 
                     app.scene.gallery.photos.push(... res.data.photos);
 
                     let width = 100 / app.scene.gallery.columns;
-                    let el = document.getElementById('app-grid');
+                    let el = document.querySelector('.app-grid');
 
                     res.data.photos.forEach(photo => {
 
@@ -234,7 +241,7 @@ app.scene.gallery = {
                         if (isDivider) {
 
                             el.insertAdjacentHTML('beforeend', '' +
-                                '<h4 class="gallery-divider">' +
+                                '<h4 class="app-grid-divider">' +
                                     app.tool.format.number2String(curr.getDate(), 2) +
                                     '.' +
                                     app.tool.format.number2String(curr.getMonth() + 1, 2) +
@@ -256,7 +263,7 @@ app.scene.gallery = {
                         el.insertAdjacentHTML('beforeend', '' +
                             '<div ' +
                                 'data-id="' + photo.id + '" ' +
-                                'class="thumbnail" ' +
+                                'class="app-grid-thumbnail" ' +
                                 'style="width: ' + width + '%; background-image: url(' + url + ');"' +
                             '></div>'
                         );
@@ -267,7 +274,7 @@ app.scene.gallery = {
 
                             let id = event.target.dataset.id;
 
-                            if (document.getElementById('all-button').classList.contains('scale-out')) {
+                            if (document.getElementById('button-all').classList.contains('scale-out')) {
 
                                 // photo:preview
 
@@ -275,10 +282,10 @@ app.scene.gallery = {
                                 document.body.style.overflow = 'hidden';
 
                                 [
-                                    'view-button',
-                                    'calendar-button',
-                                    'search-button',
-                                    'select-button'
+                                    'button-view',
+                                    'button-calendar',
+                                    'button-search',
+                                    'button-select'
                                 ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
                                 setTimeout(() => {
@@ -294,16 +301,16 @@ app.scene.gallery = {
 
                                         let buttons = [];
 
-                                        if (app.account['access_photo_delete']) buttons.push('delete-button');
-                                        if (app.account['access_photo_edit']) buttons.push('edit-button');
+                                        if (app.account['access_photo_delete']) buttons.push('button-delete');
+                                        if (app.account['access_photo_edit']) buttons.push('button-edit');
 
                                         [
                                             ... buttons,
-                                            'download-button',
-                                            'back-button',
+                                            'button-download',
+                                            'button-back',
 
-                                            'left-button',
-                                            'right-button'
+                                            'button-left',
+                                            'button-right'
                                         ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
                                     }, 50);
@@ -385,7 +392,7 @@ app.scene.gallery = {
                 // поиск узла для выравнивания после смены ориентации
 
                 let node = null;
-                let nodes = document.getElementById('app-grid').childNodes;
+                let nodes = document.querySelector('.app-grid').childNodes;
 
                 for (let i = 0; !node && i < nodes.length; i++) {
 
@@ -399,7 +406,7 @@ app.scene.gallery = {
 
                 nodes.forEach(thumbnail => {
 
-                    if (thumbnail.classList.contains('thumbnail')) {
+                    if (thumbnail.classList.contains('app-grid-thumbnail')) {
 
                         thumbnail.style.width = percent + '%';
                         thumbnail.style.height = percent + '%';
@@ -429,7 +436,7 @@ app.scene.gallery = {
         return '' +
             '<div ' +
                 'id="preview-modal" ' +
-                'class="gallery-preview" ' +
+                'class="app-preview" ' +
                 'style="' +
                     'background-image: url(/src/client/image/favicon.png);' +
                 '"' +
@@ -441,22 +448,22 @@ app.scene.gallery = {
 
         document.getElementById('preview-modal').addEventListener('click', () => {
 
-            let f = document.getElementById('menu-button').classList.contains('scale-out') ? 'remove' : 'add';
+            let f = document.getElementById('button-menu').classList.contains('scale-out') ? 'remove' : 'add';
 
             let buttons = [];
 
-            if (app.account['access_photo_delete']) buttons.push('delete-button');
-            if (app.account['access_photo_edit']) buttons.push('edit-button');
+            if (app.account['access_photo_delete']) buttons.push('button-delete');
+            if (app.account['access_photo_edit']) buttons.push('button-edit');
 
             [
-                'menu-button',
+                'button-menu',
 
                 ... buttons,
-                'download-button',
-                'back-button',
+                'button-download',
+                'button-back',
 
-                'left-button',
-                'right-button'
+                'button-left',
+                'button-right'
             ].forEach(button => document.getElementById(button).classList[f]('scale-out'));
 
         });
@@ -469,40 +476,40 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="menu-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out red" ' +
+                'id="button-menu" ' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-btn-primary" ' +
                 'style="position: fixed; left: 8px; top: 8px;"' +
             '>' +
-                '<i class="mdi mdi-menu white-text"></i>' +
+                '<i class="mdi mdi-menu"></i>' +
             '</button>';
 
     },
 
     initMenu: () => {
 
-        document.getElementById('menu-button').addEventListener('click', () => {
+        document.getElementById('button-menu').addEventListener('click', () => {
 
             let buttons = [];
 
-            if (app.account['access_photo_delete']) buttons.push('delete-button');
-            if (app.account['access_photo_edit']) buttons.push('edit-button');
+            if (app.account['access_photo_delete']) buttons.push('button-delete');
+            if (app.account['access_photo_edit']) buttons.push('button-edit');
 
             [
-                'menu-button',
+                'button-menu',
 
-                'view-button',
-                'calendar-button',
-                'search-button',
-                'select-button',
+                'button-view',
+                'button-calendar',
+                'button-search',
+                'button-select',
 
                 ... buttons,
-                'download-button',
-                'back-button',
+                'button-download',
+                'button-back',
 
-                'all-button',
+                'button-all',
 
-                'left-button',
-                'right-button'
+                'button-left',
+                'button-right'
             ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
             setTimeout(() => {
@@ -522,7 +529,7 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="view-button" ' +
+                'id="button-view" ' +
                 'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-view-grid"></i>' +
@@ -533,20 +540,20 @@ app.scene.gallery = {
     getViewModalHTML: () => {
 
         return '' +
-            '<div id="view-modal" class="gallery-modal">' +
+            '<div id="view-modal" class="app-modal">' +
 
-                '<div class="gallery-modal-content">' +
+                '<div class="app-modal-content">' +
 
                     '<h4>Вид</h4>' +
 
                     '<div>' +
                         '<p style="display: inline-block;">Столбцы</p>' +
                         '<div class="right" style="margin-top: 8px;">' +
-                            '<button id="view-columns-increase" class="btn-small btn-floating waves-effect waves-light">' +
+                            '<button id="button-view-columns-plus" class="btn-small btn-floating waves-effect waves-light">' +
                                 '<i class="mdi mdi-plus-thick"></i>' +
                             '</button>' +
                             ' ' +
-                            '<button id="view-columns-decrease" class="btn-small btn-floating waves-effect waves-light">' +
+                            '<button id="button-view-columns-minus" class="btn-small btn-floating waves-effect waves-light">' +
                                 '<i class="mdi mdi-minus-thick"></i>' +
                             '</button>' +
                         '</div>' +
@@ -593,23 +600,26 @@ app.scene.gallery = {
 
                 '</div>' +
 
-                app.tool.toolbar.getHTML('toolbar-calendar', [
+                app.tool.toolbar({
+                    id: 'toolbar-calendar',
+                    buttons: [
 
-                    '<button ' +
-                        'id="view-cancel" ' +
+                        '<button ' +
+                        'id="button-view-cancel" ' +
                         'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
-                    '>' +
+                        '>' +
                         '<i class="mdi mdi-close-thick"></i>' +
-                    '</button>',
+                        '</button>',
 
-                    '<button ' +
-                        'id="view-apply" ' +
-                        'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out red"' +
-                    '>' +
-                        '<i class="mdi mdi-check-bold white-text"></i>' +
-                    '</button>'
+                        '<button ' +
+                        'id="button-view-apply" ' +
+                        'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-btn-primary"' +
+                        '>' +
+                        '<i class="mdi mdi-check-bold"></i>' +
+                        '</button>'
 
-                ]) +
+                    ]
+                }) +
 
             '</div>';
 
@@ -617,15 +627,15 @@ app.scene.gallery = {
 
     initView: () => {
 
-        document.getElementById('view-button').addEventListener('click', () => {
+        document.getElementById('button-view').addEventListener('click', () => {
 
             [
-                'menu-button',
+                'button-menu',
 
-                'view-button',
-                'calendar-button',
-                'search-button',
-                'select-button'
+                'button-view',
+                'button-calendar',
+                'button-search',
+                'button-select'
             ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
             document.body.insertAdjacentHTML('afterbegin', app.scene.gallery.getViewModalHTML());
@@ -639,7 +649,7 @@ app.scene.gallery = {
                     app.scene.gallery.columns, 'столбец', 'столбца', 'столбцов'
                 );
 
-                document.getElementById('view-columns-decrease').addEventListener('click', () => {
+                document.getElementById('button-view-columns-minus').addEventListener('click', () => {
 
                     let el = document.getElementById('view-columns');
                     let columns = parseInt(el.innerText);
@@ -656,7 +666,7 @@ app.scene.gallery = {
 
                 });
 
-                document.getElementById('view-columns-increase').addEventListener('click', () => {
+                document.getElementById('button-view-columns-plus').addEventListener('click', () => {
 
                     let el = document.getElementById('view-columns');
                     let columns = parseInt(el.innerText);
@@ -683,11 +693,11 @@ app.scene.gallery = {
 
                 // cancel
 
-                document.getElementById('view-cancel').addEventListener('click', () => {
+                document.getElementById('button-view-cancel').addEventListener('click', () => {
 
                     [
-                        'view-cancel',
-                        'view-apply'
+                        'button-view-cancel',
+                        'button-view-apply'
                     ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
                     setTimeout(() => {
@@ -696,12 +706,12 @@ app.scene.gallery = {
                         document.body.style.overflow = '';
 
                         [
-                            'menu-button',
+                            'button-menu',
 
-                            'view-button',
-                            'calendar-button',
-                            'search-button',
-                            'select-button'
+                            'button-view',
+                            'button-calendar',
+                            'button-search',
+                            'button-select'
                         ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
                     }, 250);
@@ -710,7 +720,7 @@ app.scene.gallery = {
 
                 // apply
 
-                document.getElementById('view-apply').addEventListener('click', () => {
+                document.getElementById('button-view-apply').addEventListener('click', () => {
 
                     // columns
 
@@ -728,7 +738,7 @@ app.scene.gallery = {
                     // apply
 
                     app.scene.gallery.reload().then(() => {
-                        document.getElementById('view-cancel').click();
+                        document.getElementById('button-view-cancel').click();
                     });
 
                 });
@@ -744,8 +754,8 @@ app.scene.gallery = {
                 setTimeout(() => {
 
                     [
-                        'view-cancel',
-                        'view-apply'
+                        'button-view-cancel',
+                        'button-view-apply'
                     ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
                 }, 100);
@@ -762,7 +772,7 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="calendar-button" ' +
+                'id="button-calendar" ' +
                 'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-calendar"></i>' +
@@ -773,16 +783,16 @@ app.scene.gallery = {
     getCalendarModalHTML: () => {
 
         return '' +
-            '<div id="calendar-modal" class="gallery-modal">' +
+            '<div id="calendar-modal" class="app-modal">' +
 
-                '<div class="gallery-modal-content">' +
+                '<div class="app-modal-content">' +
 
                     '<h4>Календарь</h4>' +
 
                     '<div>' +
                         '<p style="display: inline-block;">Год</p>' +
                         '<div class="right" style="margin-top: 8px;">' +
-                            '<button id="calendar-year-check" class="btn-small btn-floating waves-effect waves-light">' +
+                            '<button id="button-calendar-year" class="btn-small btn-floating waves-effect waves-light">' +
                                 '<i class="mdi mdi-check-all"></i>' +
                             '</button>' +
                         '</div>' +
@@ -792,7 +802,7 @@ app.scene.gallery = {
                     '<div>' +
                         '<p style="display: inline-block;">Месяц</p>' +
                         '<div class="right" style="margin-top: 8px;">' +
-                            '<button id="calendar-month-check" class="btn-small btn-floating waves-effect waves-light">' +
+                            '<button id="button-calendar-month" class="btn-small btn-floating waves-effect waves-light">' +
                                 '<i class="mdi mdi-check-all"></i>' +
                             '</button>' +
                         '</div>' +
@@ -802,7 +812,7 @@ app.scene.gallery = {
                     '<div>' +
                         '<p style="display: inline-block;">День</p>' +
                         '<div class="right" style="margin-top: 8px;">' +
-                            '<button id="calendar-day-check" class="btn-small btn-floating waves-effect waves-light">' +
+                            '<button id="button-calendar-day" class="btn-small btn-floating waves-effect waves-light">' +
                                 '<i class="mdi mdi-check-all"></i>' +
                             '</button>' +
                         '</div>' +
@@ -813,23 +823,26 @@ app.scene.gallery = {
 
                 '</div>' +
 
-                app.tool.toolbar.getHTML('toolbar-calendar', [
+                app.tool.toolbar({
+                    id: 'toolbar-calendar',
+                    buttons: [
 
-                    '<button ' +
-                        'id="calendar-cancel" ' +
-                        'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
-                    '>' +
-                        '<i class="mdi mdi-close-thick"></i>' +
-                    '</button>',
+                        '<button ' +
+                            'id="button-calendar-cancel" ' +
+                            'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
+                        '>' +
+                            '<i class="mdi mdi-close-thick"></i>' +
+                        '</button>',
 
-                    '<button ' +
-                        'id="calendar-apply" ' +
-                        'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out red"' +
-                    '>' +
-                        '<i class="mdi mdi-check-bold white-text"></i>' +
-                    '</button>'
+                        '<button ' +
+                            'id="button-calendar-apply" ' +
+                            'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-btn-primary"' +
+                        '>' +
+                            '<i class="mdi mdi-check-bold"></i>' +
+                        '</button>'
 
-                ]) +
+                    ]
+                }) +
 
             '</div>';
 
@@ -837,15 +850,15 @@ app.scene.gallery = {
 
     initCalendar: () => {
 
-        document.getElementById('calendar-button').addEventListener('click', () => {
+        document.getElementById('button-calendar').addEventListener('click', () => {
 
             [
-                'menu-button',
+                'button-menu',
 
-                'view-button',
-                'calendar-button',
-                'search-button',
-                'select-button'
+                'button-view',
+                'button-calendar',
+                'button-search',
+                'button-select'
             ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
             document.body.insertAdjacentHTML('afterbegin', app.scene.gallery.getCalendarModalHTML());
@@ -854,7 +867,7 @@ app.scene.gallery = {
 
                 // year
 
-                document.getElementById('calendar-year-check').addEventListener('click', () => {
+                document.getElementById('button-calendar-year').addEventListener('click', () => {
 
                     let el = document.getElementById('calendar-year');
                     let nodeList = el.querySelectorAll('input[type=checkbox]');
@@ -884,7 +897,7 @@ app.scene.gallery = {
 
                 // month
 
-                document.getElementById('calendar-month-check').addEventListener('click', () => {
+                document.getElementById('button-calendar-month').addEventListener('click', () => {
 
                     let el = document.getElementById('calendar-month');
                     let nodeList = el.querySelectorAll('input[type=checkbox]');
@@ -914,7 +927,7 @@ app.scene.gallery = {
 
                 // day
 
-                document.getElementById('calendar-day-check').addEventListener('click', () => {
+                document.getElementById('button-calendar-day').addEventListener('click', () => {
 
                     let el = document.getElementById('calendar-day');
                     let nodeList = el.querySelectorAll('input[type=checkbox]');
@@ -944,11 +957,11 @@ app.scene.gallery = {
 
                 // cancel
 
-                document.getElementById('calendar-cancel').addEventListener('click', () => {
+                document.getElementById('button-calendar-cancel').addEventListener('click', () => {
 
                     [
-                        'calendar-cancel',
-                        'calendar-apply'
+                        'button-calendar-cancel',
+                        'button-calendar-apply'
                     ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
                     setTimeout(() => {
@@ -957,12 +970,12 @@ app.scene.gallery = {
                         document.body.style.overflow = '';
 
                         [
-                            'menu-button',
+                            'button-menu',
 
-                            'view-button',
-                            'calendar-button',
-                            'search-button',
-                            'select-button'
+                            'button-view',
+                            'button-calendar',
+                            'button-search',
+                            'button-select'
                         ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
                     }, 250);
@@ -971,7 +984,7 @@ app.scene.gallery = {
 
                 // apply
 
-                document.getElementById('calendar-apply').addEventListener('click', () => {
+                document.getElementById('button-calendar-apply').addEventListener('click', () => {
 
                     // year
 
@@ -1000,7 +1013,7 @@ app.scene.gallery = {
                     // apply
 
                     app.scene.gallery.reload().then(() => {
-                        document.getElementById('calendar-cancel').click();
+                        document.getElementById('button-calendar-cancel').click();
                     });
 
                 });
@@ -1016,8 +1029,8 @@ app.scene.gallery = {
                 setTimeout(() => {
 
                     [
-                        'calendar-cancel',
-                        'calendar-apply'
+                        'button-calendar-cancel',
+                        'button-calendar-apply'
                     ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
                 }, 100);
@@ -1034,8 +1047,8 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="search-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
+                'id="button-search" ' +
+                'class="app-disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-magnify"></i>' +
             '</button>';
@@ -1054,7 +1067,7 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="select-button" ' +
+                'id="button-select" ' +
                 'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-selection"></i>' +
@@ -1064,18 +1077,18 @@ app.scene.gallery = {
 
     initSelect: () => {
 
-        document.getElementById('select-button').addEventListener('click', () => {
+        document.getElementById('button-select').addEventListener('click', () => {
 
             [
-                'view-button',
-                'calendar-button',
-                'search-button',
-                'select-button'
+                'button-view',
+                'button-calendar',
+                'button-search',
+                'button-select'
             ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
             setTimeout(() => {
 
-                document.getElementById('app-grid').style.cursor = 'pointer';
+                document.querySelector('.app-grid').style.cursor = 'pointer';
                 document.getElementById('toolbar-view').style.display = 'none';
                 document.getElementById('toolbar-edit').style.display = 'block';
 
@@ -1083,15 +1096,15 @@ app.scene.gallery = {
 
                     let buttons = [];
 
-                    if (app.account['access_photo_delete']) buttons.push('delete-button');
-                    if (app.account['access_photo_edit']) buttons.push('edit-button');
+                    if (app.account['access_photo_delete']) buttons.push('button-delete');
+                    if (app.account['access_photo_edit']) buttons.push('button-edit');
 
                     [
                         ... buttons,
-                        'download-button',
-                        'back-button',
+                        'button-download',
+                        'button-back',
 
-                        'all-button'
+                        'button-all'
                     ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
                 }, 50);
@@ -1108,8 +1121,8 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="delete-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
+                'id="button-delete" ' +
+                'class="app-disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-delete"></i>' +
             '</button>';
@@ -1128,8 +1141,8 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="edit-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
+                'id="button-edit" ' +
+                'class="app-disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-pencil"></i>' +
             '</button>';
@@ -1148,8 +1161,8 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="download-button" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
+                'id="button-download" ' +
+                'class="app-disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-download"></i>' +
             '</button>';
@@ -1168,40 +1181,40 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="back-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out red"' +
+                'id="button-back" ' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-btn-primary"' +
             '>' +
-                '<i class="mdi mdi-close-thick white-text"></i>' +
+                '<i class="mdi mdi-close-thick"></i>' +
             '</button>';
 
     },
 
     initBack: () => {
 
-        document.getElementById('back-button').addEventListener('click', () => {
+        document.getElementById('button-back').addEventListener('click', () => {
 
             app.scene.gallery.selected.forEach(id => document.querySelector('[data-id="' + id + '"]').classList.remove('select'));
 
             let buttons = [];
 
-            if (app.account['access_photo_delete']) buttons.push('delete-button');
-            if (app.account['access_photo_edit']) buttons.push('edit-button');
+            if (app.account['access_photo_delete']) buttons.push('button-delete');
+            if (app.account['access_photo_edit']) buttons.push('button-edit');
 
             [
                 ... buttons,
-                'download-button',
-                'back-button',
+                'button-download',
+                'button-back',
 
-                'all-button',
+                'button-all',
 
-                'left-button',
-                'right-button'
+                'button-left',
+                'button-right'
             ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
             setTimeout(() => {
 
                 document.getElementById('preview-modal').style.display = '';
-                document.getElementById('app-grid').style.cursor = '';
+                document.querySelector('.app-grid').style.cursor = '';
                 document.getElementById('toolbar-edit').style.display = 'none';
                 document.getElementById('toolbar-view').style.display = 'block';
                 document.body.style.overflow = '';
@@ -1210,10 +1223,10 @@ app.scene.gallery = {
                 setTimeout(() => {
 
                     [
-                        'view-button',
-                        'calendar-button',
-                        'search-button',
-                        'select-button'
+                        'button-view',
+                        'button-calendar',
+                        'button-search',
+                        'button-select'
                     ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
                 }, 50);
@@ -1230,7 +1243,7 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="all-button" ' +
+                'id="button-all" ' +
                 'class="disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out" ' +
                 'style="position: fixed; top: 8px; right: 8px; z-index: 2;"' +
             '>' +
@@ -1251,7 +1264,7 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="left-button" ' +
+                'id="button-left" ' +
                 'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out" ' +
                 'style="position: fixed; top: 50%; left: 8px; z-index: 2;"' +
             '>' +
@@ -1262,7 +1275,7 @@ app.scene.gallery = {
 
     initLeft: () => {
 
-        document.getElementById('left-button').addEventListener('click', () => {
+        document.getElementById('button-left').addEventListener('click', () => {
 
             let id = app.scene.gallery.selected[0];
             let photo = app.scene.gallery.photos.find(photo => photo.id === id);
@@ -1286,7 +1299,7 @@ app.scene.gallery = {
 
         return '' +
             '<button ' +
-                'id="right-button" ' +
+                'id="button-right" ' +
                 'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out" ' +
                 'style="position: fixed; top: 50%; right: 8px; z-index: 2;"' +
             '>' +
@@ -1297,7 +1310,7 @@ app.scene.gallery = {
 
     initRight: () => {
 
-        document.getElementById('right-button').addEventListener('click', () => {
+        document.getElementById('button-right').addEventListener('click', () => {
 
             let id = app.scene.gallery.selected[0];
             let photo = app.scene.gallery.photos.find(photo => photo.id === id);

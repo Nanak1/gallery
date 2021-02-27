@@ -9,7 +9,7 @@ app.scene.cloud = {
         app.scene.cloud.user = username ? app.users.find(user => user.username === username) : app.account;
         app.scene.cloud.files = [];
 
-        document.querySelector('.app').innerHTML = app.scene.cloud.getCloudHTML();
+        document.getElementById('app').innerHTML = app.scene.cloud.getCloudHTML();
 
         // cloud::scan
 
@@ -50,12 +50,15 @@ app.scene.cloud = {
 
                 if (app.account['access_cloud'] && app.scene.cloud.files.length) buttons.push(app.scene.cloud.getSyncButtonHTML());
 
-                let toolbar = app.tool.toolbar.getHTML('toolbar-cloud', [
-                    ... buttons,
-                    app.scene.cloud.getBackButtonHTML()
-                ]);
+                let toolbar = app.tool.toolbar({
+                    id: 'toolbar-cloud',
+                    buttons: [
+                        ... buttons,
+                        app.scene.cloud.getBackButtonHTML()
+                    ]
+                });
 
-                document.querySelector('.app').insertAdjacentHTML('beforeend', toolbar);
+                document.getElementById('app').insertAdjacentHTML('beforeend', toolbar);
 
                 // init
 
@@ -66,11 +69,11 @@ app.scene.cloud = {
 
                     let buttons = [];
 
-                    if (app.account['access_cloud'] && app.scene.cloud.files.length) buttons.push('sync-button');
+                    if (app.account['access_cloud'] && app.scene.cloud.files.length) buttons.push('button-sync');
 
                     [
                         ... buttons,
-                        'back-button'
+                        'button-back'
                     ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
                     M.Tooltip.init(document.querySelectorAll('.tooltipped'), {
@@ -94,9 +97,13 @@ app.scene.cloud = {
 
         // before clear
 
+        document.querySelectorAll('.tooltipped').forEach(el => {
+            M.Tooltip.getInstance(el).destroy();
+        });
+
         // clear
 
-        document.querySelector('.app').innerHTML = '';
+        document.getElementById('app').innerHTML = '';
 
         // after clear
 
@@ -119,21 +126,25 @@ app.scene.cloud = {
 
                         '<h3>Облако</h3>' +
 
-                        '<div class="collection">' +
-                            '<div class="collection-item">' +
-                                '<div class="grey-text text-darken-1">Имя пользователя</div>' +
+                        '<div class="collection app-collection">' +
+                            '<div class="collection-item app-icon app-icon-mt2">' +
+                                '<i class="mdi mdi-account"></i>' +
+                                '<div class="app-title">Имя пользователя</div>' +
                                 '<div>' + app.scene.cloud.user.username + '</div>' +
                             '</div>' +
-                            '<div class="collection-item">' +
-                                '<div class="grey-text text-darken-1">Директория поиска</div>' +
+                            '<div class="collection-item app-icon app-icon-mt2">' +
+                                '<i class="mdi mdi-cloud-search"></i>' +
+                                '<div class="app-title">Директория поиска</div>' +
                                 '<div>' + app.scene.cloud.user.cloud_scan.split('/').join(slash) + '</div>' +
                             '</div>' +
-                            '<div class="collection-item">' +
-                                '<div class="grey-text text-darken-1">Директория результата</div>' +
+                            '<div class="collection-item app-icon app-icon-mt2">' +
+                                '<i class="mdi mdi-cloud-download"></i>' +
+                                '<div class="app-title">Директория результата</div>' +
                                 '<div>' + app.scene.cloud.user.cloud_sync.split('/').join(slash) + '</div>' +
                             '</div>' +
-                            '<div class="collection-item">' +
-                                '<div class="grey-text text-darken-1">Синхронизировано</div>' +
+                            '<div class="collection-item app-icon app-icon-mt2">' +
+                                '<i class="mdi mdi-cloud-refresh"></i>' +
+                                '<div class="app-title">Синхронизировано</div>' +
                                 '<div>' +
                                     '<snan id="sync-count">0</snan>' +
                                     ' из ' +
@@ -146,7 +157,8 @@ app.scene.cloud = {
 
                     '</div>' +
                 '</div>' +
-            '</div>';
+            '</div>' +
+            '<div class="app-toolbar-space"></div>';
 
     },
 
@@ -164,7 +176,7 @@ app.scene.cloud = {
                     '<td>' + file.split('/').join(slash) + '</td>' +
                     '<td ' +
                         'data-file="' + file + '" ' +
-                        'class="gallery-table-mdi center-align" ' +
+                        'class="app-column-icon" ' +
                         'style="cursor: help;" ' +
                     '>' +
                         '<i class="mdi mdi-timer-outline tooltipped" data-icon="mdi-timer-outline"></i>' +
@@ -174,7 +186,7 @@ app.scene.cloud = {
         });
 
         return '' +
-            '<table class="gallery-table">' +
+            '<table>' +
                 '<thead>' +
                     '<tr>' +
                         '<th>Расположение</th>' +
@@ -184,8 +196,7 @@ app.scene.cloud = {
                 '<tbody>' +
                     '<tr>' + html + '</tr>' +
                 '</tbody>' +
-            '</table>' +
-            '<div style="height: 56px;"></div>';
+            '</table>';
 
     },
 
@@ -195,7 +206,7 @@ app.scene.cloud = {
 
         return '' +
             '<button ' +
-                'id="sync-button" ' +
+                'id="button-sync" ' +
                 'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-sync"></i>' +
@@ -205,11 +216,11 @@ app.scene.cloud = {
 
     initSync: () => {
 
-        document.getElementById('sync-button').addEventListener('click', () => {
+        document.getElementById('button-sync').addEventListener('click', () => {
 
             [
-                'sync-button',
-                'back-button'
+                'button-sync',
+                'button-back'
             ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
             setTimeout(() => {
@@ -247,7 +258,7 @@ app.scene.cloud = {
 
                         el.style.marginLeft = (left - diameter - padding).toString() + 'px';
 
-                        document.getElementById('back-button').classList.remove('scale-out');
+                        document.getElementById('button-back').classList.remove('scale-out');
 
                     }
 
@@ -342,25 +353,25 @@ app.scene.cloud = {
 
         return '' +
             '<button ' +
-                'id="back-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out red"' +
+                'id="button-back" ' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-btn-primary"' +
             '>' +
-                '<i class="mdi mdi-close-thick white-text"></i>' +
+                '<i class="mdi mdi-close-thick"></i>' +
             '</button>';
 
     },
 
     initBack: () => {
 
-        document.getElementById('back-button').addEventListener('click', () => {
+        document.getElementById('button-back').addEventListener('click', () => {
 
             let buttons = [];
 
-            if (app.account['access_cloud'] && app.scene.cloud.files.length) buttons.push('sync-button');
+            if (app.account['access_cloud'] && app.scene.cloud.files.length) buttons.push('button-sync');
 
             [
                 ... buttons,
-                'back-button'
+                'button-back'
             ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
             setTimeout(() => {

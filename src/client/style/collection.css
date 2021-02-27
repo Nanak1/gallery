@@ -1,33 +1,49 @@
-.gallery-collection .collection-item {
+.app-collection {
+    border: 1px solid #000000;
+}
+
+.app-collection .collection-item {
+    background-color: #ffeb3b;
+    border-bottom: 1px solid #000000;
+}
+
+.app-collection .app-icon {
+    padding-left: calc(2rem + 40px);
+}
+
+.app-collection .app-icon .mdi {
+    position: absolute;
+    left: 20px;
+    font-size: 2rem;
+}
+
+.app-collection .app-icon.app-icon-mt2 .mdi {
+    margin-top: 0.7rem;
+}
+
+.app-collection .app-title {
+    font-size: 0.8rem;
+    color: #757575;
+}
+
+.app-collection .app-button {
+    font-family: BlenderProBold;
     cursor: pointer;
-    color: rgba(0, 0, 0, 0.87);
-    font-weight: 500;
-    height: 48px;
-    line-height: 48px;
-    padding: 0 32px;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
 }
 
-.gallery-collection .collection-item:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+.app-collection .app-disable {
+    color: #757575;
 }
 
-.gallery-collection .collection-item .mdi {
-    font-size: 1.6rem;
-    float: left;
-    height: 48px;
-    line-height: 48px;
-    margin: 0 32px 0 0;
-    width: 24px;
-    color: rgba(0, 0, 0, 0.54);
+.app-collection .app-button:hover {
+    color: #ffeb3b;
+    background-color: #000000;
 }
 
-.gallery-collection .collection-item.disabled {
+.app-collection .app-button:hover.app-disable {
+    color: #ffeb3b;
+    background-color: #757575;
     cursor: not-allowed;
-    color: rgba(0, 0, 0, 0.44);
-}
-
-.gallery-collection .collection-item.disabled .mdi {
-    color: rgba(0, 0, 0, 0.27);
 }

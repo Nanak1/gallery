@@ -2,7 +2,7 @@ app.scene.account_login = {
 
     show: () => new Promise((resolve, reject) => {
 
-        document.querySelector('.app').innerHTML = app.scene.account_login.getHTML();
+        document.getElementById('app').innerHTML = app.scene.account_login.getHTML();
 
         app.scene.account_login.init();
 
@@ -16,7 +16,7 @@ app.scene.account_login = {
 
         // clear
 
-        document.querySelector('.app').innerHTML = '';
+        document.getElementById('app').innerHTML = '';
 
         // after clear
 
@@ -45,24 +45,24 @@ app.scene.account_login = {
                             '<label for="password">Пароль</label>' +
                         '</div>' +
 
-                        '<div style="height: 56px;"></div>' +
-
                     '</div>' +
                 '</div>' +
-            '</div>' + app.tool.toolbar.getHTML('login-view', [
+            '</div>' +
+            '<div class="app-toolbar-space"></div>' +
+            app.tool.toolbar([
 
                 '<button ' +
-                    'id="mask" ' +
+                    'id="button-mask" ' +
                     'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
                 '>' +
                     '<i class="mdi mdi-form-textbox-password"></i>' +
                 '</button>',
 
                 '<button ' +
-                    'id="login" ' +
-                    'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out red"' +
+                    'id="button-login" ' +
+                    'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-btn-primary"' +
                 '>' +
-                    '<i class="mdi mdi-login-variant white-text"></i>' +
+                    '<i class="mdi mdi-login-variant"></i>' +
                 '</button>'
 
             ]);
@@ -84,7 +84,7 @@ app.scene.account_login = {
 
         })
 
-        document.getElementById('mask').addEventListener('click', () => {
+        document.getElementById('button-mask').addEventListener('click', () => {
 
             let el = document.getElementById('password');
 
@@ -92,13 +92,13 @@ app.scene.account_login = {
 
         });
 
-        document.getElementById('login').addEventListener('click', app.scene.account_login.login);
+        document.getElementById('button-login').addEventListener('click', app.scene.account_login.login);
 
         setTimeout(() => {
 
             [
-                'mask',
-                'login'
+                'button-mask',
+                'button-login'
             ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
         }, 100);

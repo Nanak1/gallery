@@ -7,14 +7,14 @@ app.scene.menu = {
         html += app.scene.menu.getMenuHTML();
         html += app.scene.menu.getBackButtonHTML();
 
-        document.querySelector('.app').innerHTML = html;
+        document.getElementById('app').innerHTML = html;
 
         app.scene.menu.initCloud();
         app.scene.menu.initBack();
 
         setTimeout(() => {
 
-            document.getElementById('back-button').classList.remove('scale-out');
+            document.getElementById('button-back').classList.remove('scale-out');
 
             resolve();
 
@@ -28,7 +28,7 @@ app.scene.menu = {
 
         // clear
 
-        document.querySelector('.app').innerHTML = '';
+        document.getElementById('app').innerHTML = '';
 
         // after clear
 
@@ -47,19 +47,33 @@ app.scene.menu = {
 
                         '<h3>Меню</h3>' +
 
-                        '<div class="collection gallery-collection">' +
-                            '<div class="collection-item disabled"><i class="mdi mdi-account"></i>Аккаунт</div>' +
-                            '<div class="collection-item disabled"><i class="mdi mdi-account-multiple"></i>Пользователи</div>' +
-                            '<div class="collection-item disabled"><i class="mdi mdi-tag"></i>Теги</div>' +
-                            '<div id="cloud-button" class="collection-item"><i class="mdi mdi-cloud"></i>Облако</div>' +
-                            '<div class="collection-item disabled"><i class="mdi mdi-cog"></i>Система</div>' +
+                        '<div class="collection app-collection">' +
+                            '<div id="button-account" class="collection-item app-icon app-button app-disable">' +
+                                '<i class="mdi mdi-account"></i>' +
+                                '<div>Аккаунт</div>' +
+                            '</div>' +
+                            '<div id="button-user" class="collection-item app-icon app-button app-disable">' +
+                                '<i class="mdi mdi-account-multiple"></i>' +
+                                '<div>Пользователи</div>' +
+                            '</div>' +
+                            '<div id="button-tag" class="collection-item app-icon app-button app-disable">' +
+                                '<i class="mdi mdi-tag"></i>' +
+                                '<div>Теги</div>' +
+                            '</div>' +
+                            '<div id="button-cloud" class="collection-item app-icon app-button">' +
+                                '<i class="mdi mdi-cloud"></i>' +
+                                '<div>Облако</div>' +
+                            '</div>' +
+                            '<div id="button-system" class="collection-item app-icon app-button app-disable">' +
+                                '<i class="mdi mdi-cog"></i>' +
+                                '<div>Система</div>' +
+                            '</div>' +
                         '</div>' +
-
-                        '<div style="height: 56px;"></div>' +
 
                     '</div>' +
                 '</div>' +
-            '</div>';
+            '</div>' +
+            '<div class="app-toolbar-space"></div>';
 
     },
 
@@ -67,9 +81,9 @@ app.scene.menu = {
 
     initCloud: () => {
 
-        document.getElementById('cloud-button').addEventListener('click', () => {
+        document.getElementById('button-cloud').addEventListener('click', () => {
 
-            document.getElementById('back-button').classList.add('scale-out');
+            document.getElementById('button-back').classList.add('scale-out');
 
             setTimeout(() => {
 
@@ -92,20 +106,20 @@ app.scene.menu = {
 
         return '' +
             '<button ' +
-                'id="back-button" ' +
-                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out red" ' +
+                'id="button-back" ' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-btn-primary" ' +
                 'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 2;"' +
             '>' +
-                '<i class="mdi mdi-close-thick white-text"></i>' +
+                '<i class="mdi mdi-close-thick"></i>' +
             '</button>';
 
     },
 
     initBack: () => {
 
-        document.getElementById('back-button').addEventListener('click', () => {
+        document.getElementById('button-back').addEventListener('click', () => {
 
-            document.getElementById('back-button').classList.add('scale-out');
+            document.getElementById('button-back').classList.add('scale-out');
 
             setTimeout(() => {
 

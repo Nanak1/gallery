@@ -1,4 +1,4 @@
-.gallery-modal {
+.app-modal {
     display: none;
     position: fixed;
     z-index: 3;
@@ -8,10 +8,10 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #fafafa;
+    background-color: #ffeb3b;
 }
 
-.gallery-modal-content {
+.app-modal-content {
     position: absolute;
     height: 100%;
     width: 100%;
@@ -19,9 +19,9 @@
     overflow: auto;
 }
 
-.gallery-modal-content h1,
-.gallery-modal-content h2,
-.gallery-modal-content h3,
-.gallery-modal-content h4 {
+.app-modal-content h1,
+.app-modal-content h2,
+.app-modal-content h3,
+.app-modal-content h4 {
     margin-top: 0;
 }

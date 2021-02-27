@@ -1,0 +1,26 @@
+.btn-floating,
+.btn-floating:hover,
+.btn-floating:focus {
+    background-color: #00e5ff;
+}
+
+.btn-floating i {
+    color: #000000;
+}
+
+.btn-floating.app-btn-primary {
+    background-color: #f44336;
+}
+
+.btn-floating.app-btn-primary i {
+    color: #ffffff;
+}
+
+.btn-floating.app-disabled {
+    background-color: #757575;
+    cursor: not-allowed;
+}
+
+.btn-floating.app-disabled i {
+    color: #000000;
+}
