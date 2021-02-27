@@ -21,8 +21,6 @@ window.app = {
     tool: {},
     scene: {},
 
-    activeScene: null,
-
     init: () => new Promise(async (resolve, reject) => {
 
         // Инструменты

@@ -1,14 +1,11 @@
 app.scene.account_login = {
 
-    id: 'account_login',
-
     show: () => new Promise((resolve, reject) => {
 
         document.querySelector('.app').innerHTML = app.scene.account_login.getHTML();
 
         app.scene.account_login.init();
 
-        app.activeScene = app.scene.account_login;
         resolve();
 
     }),
@@ -25,7 +22,6 @@ app.scene.account_login = {
 
         // end
 
-        app.activeScene = null;
         resolve();
 
     }),

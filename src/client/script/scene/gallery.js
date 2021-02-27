@@ -1,7 +1,5 @@
 app.scene.gallery = {
 
-    id: 'gallery',
-
     px: 256,
 
     sortDirection: 'DESC',
@@ -110,7 +108,6 @@ app.scene.gallery = {
 
                         // end
 
-                        app.activeScene = app.scene.gallery;
                         resolve();
 
                     });
@@ -138,7 +135,6 @@ app.scene.gallery = {
 
         // end
 
-        app.activeScene = null;
         resolve();
 
     }),

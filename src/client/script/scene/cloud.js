@@ -1,7 +1,5 @@
 app.scene.cloud = {
 
-    id: 'cloud',
-
     user: null,
 
     files: [],
@@ -80,7 +78,6 @@ app.scene.cloud = {
                         position: 'left'
                     });
 
-                    app.activeScene = app.scene.cloud;
                     resolve();
 
                 }, 100);
@@ -105,7 +102,6 @@ app.scene.cloud = {
 
         // end
 
-        app.activeScene = null;
         resolve();
 
     }),

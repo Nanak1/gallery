@@ -1,7 +1,5 @@
 app.scene.menu = {
 
-    id: 'menu',
-
     show: () => new Promise((resolve, reject) => {
 
         let html = '';
@@ -18,7 +16,6 @@ app.scene.menu = {
 
             document.getElementById('back-button').classList.remove('scale-out');
 
-            app.activeScene = app.scene.menu;
             resolve();
 
         }, 100);
@@ -37,7 +34,6 @@ app.scene.menu = {
 
         // end
 
-        app.activeScene = null;
         resolve();
 
     }),
