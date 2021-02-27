@@ -13,17 +13,14 @@ let router = express.Router();
 /**
  * Выборка фильтрованного списка фотографий по страницам
  * @type {number} req.query.count
- * @type {number} req.query.page
- * @type {array} req.query.years - array of numbers
- * @type {array} req.query.months - array of numbers
- * @type {array} req.query.days - array of numbers
+ * @type {number} req.query.sort_column
+ * @type {number} req.query.sort_direction
+ * @type {number} req.query.last_date
+ * @type {array<number>} req.query.years
+ * @type {array<number>} req.query.months
+ * @type {array<number>} req.query.days
  */
 router.get('/photo', (req, res) => {
-
-    let limit = parseInt(req.query.count);
-    let offset = limit * (parseInt(req.query.page) - 1);
-    let sort_column = req.query.sort_column || 'date_create';
-    let sort_direction = req.query.sort_direction || 'DESC';
 
     let filters = [];
 
@@ -64,17 +61,33 @@ router.get('/photo', (req, res) => {
     }
 
     let where = filters.length ? 'WHERE ' + filters.join(' AND ') : '';
+    let sql = `SELECT count(id) FROM photo ${where};`;
 
-    let sql = `SELECT id, date_create, date_import, censored FROM photo ${where} ORDER BY ${sort_column} ${sort_direction} LIMIT $1 OFFSET $2;`;
+    db.gallery.query(sql).then(result => {
 
-    db.gallery.query(sql, [
-        limit,
-        offset
-    ]).then(result => {
+        let total = parseInt(result.rows[0].count);
+        let values = [parseInt(req.query.count) || 0];
+        let sort_column = req.query.sort_column || 'date_create';
+        let sort_direction = req.query.sort_direction || 'DESC';
 
-        res.send({
-            success: true,
-            photos: result.rows
+        if (req.query.last_date) {
+
+            filters.push(`${sort_column} ${sort_direction === 'DESC' ? '<' : '>'} $2`);
+            values.push(new Date(req.query.last_date));
+
+        }
+
+        let where = filters.length ? 'WHERE ' + filters.join(' AND ') : '';
+        let sql = `SELECT id, date_create, date_import, censored FROM photo ${where} ORDER BY ${sort_column} ${sort_direction} LIMIT $1;`;
+
+        db.gallery.query(sql, values).then(result => {
+
+            res.send({
+                success: true,
+                total: total,
+                photos: result.rows
+            });
+
         });
 
     });

@@ -2,11 +2,10 @@ app.scene.gallery = {
 
     id: 'gallery',
 
+    px: 256,
+
     sortDirection: 'DESC',
     sortColumn: 'date_create',
-
-    px: 256,
-    page: 0,
     lastDate: null,
 
     columns: null,
@@ -157,28 +156,26 @@ app.scene.gallery = {
 
     reload: () => new Promise((resolve, reject) => {
 
-        if (!app.scene.gallery.columns) {
-            app.scene.gallery.columns = Math.ceil(
-                window.innerWidth / app.scene.gallery.px
-            );
-        }
+        if (!app.scene.gallery.columns) app.scene.gallery.columns = Math.ceil(
+            window.innerWidth / app.scene.gallery.px
+        );
 
-        if (!app.scene.gallery.rows) {
-            app.scene.gallery.rows = Math.ceil(
-                app.scene.gallery.columns * window.innerHeight / window.innerWidth
-            );
-        }
+        if (!app.scene.gallery.rows) app.scene.gallery.rows = Math.ceil(
+            app.scene.gallery.columns * window.innerHeight / window.innerWidth
+        );
 
-        app.scene.gallery.page = 0;
         app.scene.gallery.lastDate = null;
         app.scene.gallery.photos = [];
         app.scene.gallery.selected = [];
         app.scene.gallery.finish = false;
-        document.getElementById('app-grid').innerHTML = '';
+        document.getElementById('app-grid').innerHTML = '' +
+            '<h3 class="gallery-grid-head">' +
+                '<span class="app-gallery-total">?</span> шт' +
+            '</h3>';
         window.removeEventListener('scroll', app.scene.gallery.onScroll);
 
-        app.scene.gallery.loadPage().then(() => {
-            app.scene.gallery.loadPage().then(() => {
+        app.scene.gallery.load().then(() => {
+            app.scene.gallery.load().then(() => {
 
                 if (!app.scene.gallery.finish) window.addEventListener('scroll', app.scene.gallery.onScroll);
 
@@ -189,27 +186,28 @@ app.scene.gallery = {
 
     }),
 
-    loadPage: () => new Promise((resolve, reject) => {
+    load: () => new Promise((resolve, reject) => {
 
         if (app.scene.gallery.loading || app.scene.gallery.finish) resolve();
         else {
 
             app.scene.gallery.loading = true;
-            app.scene.gallery.page++;
 
             let count = app.scene.gallery.columns * app.scene.gallery.rows;
 
             axios.get('/photo', {
                 params: {
                     count: count,
-                    page: app.scene.gallery.page,
                     sort_direction: app.scene.gallery.sortDirection,
                     sort_column: app.scene.gallery.sortColumn,
+                    last_date: app.scene.gallery.lastDate,
                     years: app.scene.gallery.years,
                     months: app.scene.gallery.months,
                     days: app.scene.gallery.days
                 }
             }).then(res => {
+
+                document.querySelector('.app-gallery-total').innerText = res.data.total;
 
                 if (res.data.photos.length > 0) {
 
@@ -222,7 +220,7 @@ app.scene.gallery = {
 
                         // проверка на разделитель
 
-                        let isDivider = false;
+                        let isDivider;
                         let currentDate = photo[app.scene.gallery.sortColumn];
                         let curr = new Date(currentDate);
 
@@ -363,7 +361,7 @@ app.scene.gallery = {
     onScroll: () => {
 
         if (window.scrollY + window.innerHeight > document.documentElement.offsetHeight - window.innerHeight) {
-            app.scene.gallery.loadPage();
+            app.scene.gallery.load();
         }
 
     },
