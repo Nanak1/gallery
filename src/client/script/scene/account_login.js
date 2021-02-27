@@ -4,7 +4,7 @@ app.scene.account_login = {
 
     show: () => new Promise((resolve, reject) => {
 
-        document.getElementById('app').innerHTML = app.scene.account_login.getHTML();
+        document.querySelector('.app').innerHTML = app.scene.account_login.getHTML();
 
         app.scene.account_login.init();
 
@@ -19,7 +19,7 @@ app.scene.account_login = {
 
         // clear
 
-        document.getElementById('app').innerHTML = '';
+        document.querySelector('.app').innerHTML = '';
 
         // after clear
 

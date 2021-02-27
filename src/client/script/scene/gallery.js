@@ -66,7 +66,7 @@ app.scene.gallery = {
                     html += app.scene.gallery.getLeftButtonHTML();
                     html += app.scene.gallery.getRightButtonHTML();
 
-                    document.getElementById('app').innerHTML = html;
+                    document.querySelector('.app').innerHTML = html;
                     document.body.classList.add('gallery-scrollbar-overlay');
 
                     app.scene.gallery.initPreview();
@@ -130,7 +130,7 @@ app.scene.gallery = {
 
         // clear
 
-        document.getElementById('app').innerHTML = '';
+        document.querySelector('.app').innerHTML = '';
 
         // after clear
 

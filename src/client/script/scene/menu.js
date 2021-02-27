@@ -9,7 +9,7 @@ app.scene.menu = {
         html += app.scene.menu.getMenuHTML();
         html += app.scene.menu.getBackButtonHTML();
 
-        document.getElementById('app').innerHTML = html;
+        document.querySelector('.app').innerHTML = html;
 
         app.scene.menu.initCloud();
         app.scene.menu.initBack();
@@ -31,7 +31,7 @@ app.scene.menu = {
 
         // clear
 
-        document.getElementById('app').innerHTML = '';
+        document.querySelector('.app').innerHTML = '';
 
         // after clear
 

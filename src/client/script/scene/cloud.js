@@ -11,7 +11,7 @@ app.scene.cloud = {
         app.scene.cloud.user = username ? app.users.find(user => user.username === username) : app.account;
         app.scene.cloud.files = [];
 
-        document.getElementById('app').innerHTML = app.scene.cloud.getCloudHTML();
+        document.querySelector('.app').innerHTML = app.scene.cloud.getCloudHTML();
 
         // cloud::scan
 
@@ -57,7 +57,7 @@ app.scene.cloud = {
                     app.scene.cloud.getBackButtonHTML()
                 ]);
 
-                document.getElementById('app').insertAdjacentHTML('beforeend', toolbar);
+                document.querySelector('.app').insertAdjacentHTML('beforeend', toolbar);
 
                 // init
 
@@ -99,7 +99,7 @@ app.scene.cloud = {
 
         // clear
 
-        document.getElementById('app').innerHTML = '';
+        document.querySelector('.app').innerHTML = '';
 
         // after clear
 
