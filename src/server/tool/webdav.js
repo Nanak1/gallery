@@ -194,6 +194,49 @@ module.exports = {
 
         });
 
+    },
+
+    /**
+     * Удалить файл
+     * @param data
+     * @param {string} data.webdav
+     * @param {string} data.username
+     * @param {string} data.password
+     * @param {string} data.path
+     * @returns {Promise<object>}
+     */
+    delete: function (data) {
+
+        return new Promise((resolve, reject) => {
+
+            if (this.debug) console.log('webdav::delete', data.webdav, data.username, data.path, '...');
+
+            axios({
+                method: 'DELETE',
+                url: encodeURI(data.webdav + '/files/' + data.username + '/' + data.path),
+                auth: {
+                    username: data.username,
+                    password: data.password
+                }
+            }).then(() => {
+
+                if (this.debug) console.log('webdav::delete', data.webdav, data.username, data.path, 'success');
+
+                resolve({
+                    success: true
+                });
+
+            }).catch(error => {
+
+                resolve({
+                    success: false,
+                    error: error
+                });
+
+            });
+
+        });
+
     }
 
 };

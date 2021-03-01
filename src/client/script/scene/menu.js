@@ -52,10 +52,6 @@ app.scene.menu = {
                                 '<i class="mdi mdi-account"></i>' +
                                 '<div>Аккаунт</div>' +
                             '</div>' +
-                            '<div id="button-user" class="collection-item app-icon app-button app-disabled">' +
-                                '<i class="mdi mdi-account-multiple"></i>' +
-                                '<div>Пользователи</div>' +
-                            '</div>' +
                             '<div id="button-tag" class="collection-item app-icon app-button app-disabled">' +
                                 '<i class="mdi mdi-tag"></i>' +
                                 '<div>Теги</div>' +
@@ -63,6 +59,14 @@ app.scene.menu = {
                             '<div id="button-cloud" class="collection-item app-icon app-button">' +
                                 '<i class="mdi mdi-cloud"></i>' +
                                 '<div>Облако</div>' +
+                            '</div>' +
+                            '<div id="button-stat" class="collection-item app-icon app-button app-disabled">' +
+                                '<i class="mdi mdi-chart-line"></i>' +
+                                '<div>Статистика</div>' +
+                            '</div>' +
+                            '<div id="button-user" class="collection-item app-icon app-button app-disabled">' +
+                                '<i class="mdi mdi-account-multiple"></i>' +
+                                '<div>Пользователи</div>' +
                             '</div>' +
                             '<div id="button-system" class="collection-item app-icon app-button app-disabled">' +
                                 '<i class="mdi mdi-cog"></i>' +

@@ -11,7 +11,8 @@ let config = require('../../../config.json');
 let router = express.Router();
 
 /**
- * Выборка фильтрованного списка фотографий по страницам
+ * Выборка фильтрованного и сортированного списка фотографий
+ * с учётом даты начала и количества
  * @type {number} req.query.count
  * @type {number} req.query.sort_column
  * @type {number} req.query.sort_direction
@@ -182,68 +183,115 @@ router.get('/photo/date_create/:part', (req, res) => {
 /**
  * Добавление фотографии из облака
  * @type {string} req.body.username
- * @type {string} req.body.file
+ * @type {string} req.body.file - путь к файлу в папке сканирования пользователя
  */
 router.post('/photo/cloud', async (req, res) => {
 
-    let user = req.body.username === req.account.username ? req.account : (
-        await db.gallery.query(
-            `SELECT * FROM "user" WHERE username = $1;`,
-            [
-                req.body.username
-            ]
-        )
-    ).rows[0];
+    if (req.account['access_cloud']) {
 
-    if (user) {
+        let user;
 
-        let fullPath = config.cloud.dir + '/' + user.cloud_username + '/files/' + user.cloud_scan + '/' + req.body.file;
+        if (req.body.username === req.account.username) user = req.account;
+        else {
 
-        // TODO: отладка под Windows
-        if (process.platform === 'win32') fullPath = 'D:/nextcloud/' + user.cloud_scan + '/' + req.body.file;
+            if (req.account['access_user_cloud']) {
 
-        let hash = crypto.createHash('sha512');
-        let file = await fs.readFile(fullPath);
+                let sql = 'SELECT * FROM "user" WHERE username = $1;';
 
-        hash.update(file);
-
-        let sql = 'INSERT INTO photo (hash, date_create, censored, thumbnail, preview) VALUES ($1, $2, $3, $4, $5) RETURNING id;';
-
-        db.gallery.query(sql, [
-            hash.digest('hex'),
-            await format.getDateCreate(fullPath),
-            false,
-            await sharp(file).rotate().resize(config.photo.thumbnail).toBuffer(),
-            await sharp(file).rotate().resize(config.photo.preview).toBuffer()
-        ]).then(result => {
-
-            res.send({
-                success: true,
-                id: result.rows[0].id
-            });
-
-        }).catch(error => {
-
-            if (error.code === '23505') res.send({
-                success: true,
-                status: 'HASH_ALREADY_EXIST'
-            });
-            else {
-
-                console.log(error);
-
-                res.send({
-                    success: false,
-                    message: 'Что-то пошло не так'
-                });
+                user = await db.gallery.query(sql, [
+                    req.body.username
+                ]).rows[0];
 
             }
+
+        }
+
+        if (user) {
+
+            let fullPath = config.cloud.dir + '/' + user.cloud_username + '/files/' + user.cloud_scan + '/' + req.body.file;
+
+            // TODO: отладка под Windows
+            if (process.platform === 'win32') fullPath = 'D:/nextcloud/' + user.cloud_scan + '/' + req.body.file;
+
+            let hash = crypto.createHash('sha512');
+            let file = await fs.readFile(fullPath);
+
+            hash.update(file);
+
+            let sql = 'INSERT INTO photo (hash, date_create, censored, thumbnail, preview) VALUES ($1, $2, $3, $4, $5) RETURNING id;';
+
+            db.gallery.query(sql, [
+                hash.digest('hex'),
+                await format.getDateCreate(fullPath),
+                false,
+                await sharp(file).rotate().resize(config.photo.thumbnail).toBuffer(),
+                await sharp(file).rotate().resize(config.photo.preview).toBuffer()
+            ]).then(result => {
+
+                res.send({
+                    success: true,
+                    id: result.rows[0].id
+                });
+
+            }).catch(error => {
+
+                if (error.code === '23505') res.send({
+                    success: true,
+                    status: 'HASH_ALREADY_EXIST'
+                });
+                else {
+
+                    console.log(error);
+
+                    res.send({
+                        success: false,
+                        message: 'Что-то пошло не так'
+                    });
+
+                }
+
+            });
+
+        } else res.send({
+            success: false,
+            message: 'Отказано в доступе к переносу в папку синхронизации для других пользователей'
+        });
+
+    } else res.send({
+        success: false,
+        message: 'Отказано в доступе к переносу в папку синхронизации'
+    });
+
+});
+
+/**
+ * Удаление фотографии
+ * @type {string} req.body.id - идентификатор фотографии в галерее
+ */
+router.delete('/photo', (req, res) => {
+
+    if (req.account['access_photo_delete']) {
+
+        let sql = 'DELETE FROM photo WHERE id = $1';
+
+        db.gallery.query(sql, [
+            req.body.id
+        ]).then(() => res.send({
+            success: true
+        })).catch(error => {
+
+            console.log(error);
+
+            res.send({
+                success: false,
+                message: 'Удаление не выполнено'
+            });
 
         });
 
     } else res.send({
         success: false,
-        message: 'Пользователь не найден'
+        message: 'Отказано в доступе к удалению фотографии'
     });
 
 });
