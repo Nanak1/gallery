@@ -333,8 +333,6 @@ app.scene.gallery = {
 
                                 }
 
-                                console.log(app.scene.gallery.selected);
-
                             }
 
                         });
@@ -1148,9 +1146,9 @@ app.scene.gallery = {
 
                     '<p>' +
                         'Удалено: ' +
-                        '<span id="modal-delete-i"></span>' +
+                        '<span id="modal-delete-i">0</span>' +
                         ' ' +
-                        '<span id="modal-delete-i-unit"></span>' +
+                        '<span id="modal-delete-i-unit">фотографий</span>' +
                     '</p>' +
 
                     '<p class="card-panel app-primary flow-text">' +
@@ -1228,14 +1226,6 @@ app.scene.gallery = {
                     'фотографий'
                 );
 
-                document.getElementById('modal-delete-i').innerText = '0';
-                document.getElementById('modal-delete-i-unit').innerText = app.tool.format.getUnitEnding(
-                    0,
-                    'фотографию',
-                    'фотографии',
-                    'фотографий'
-                );
-
                 // cancel
 
                 document.getElementById('button-delete-cancel').addEventListener('click', () => {
@@ -1278,9 +1268,54 @@ app.scene.gallery = {
 
                 document.getElementById('button-delete-apply').addEventListener('click', () => {
 
-                    // apply
+                    [
+                        'button-delete-cancel',
+                        'button-delete-apply'
+                    ].forEach(button => document.getElementById(button).classList.add('scale-out'));
 
-                    document.getElementById('button-delete-cancel').click();
+                    setTimeout(() => {
+
+                        let i = 0;
+
+                        let end = () => {
+
+                            i++;
+
+                            document.getElementById('modal-delete-i').innerText = i.toString();
+                            document.getElementById('modal-delete-i-unit').innerText = app.tool.format.getUnitEnding(
+                                i,
+                                'фотография',
+                                'фотографии',
+                                'фотографий'
+                            );
+
+                            if (i < app.scene.gallery.selected.length) sync();
+                            else {
+
+                                // TODO: delete finish
+                                console.log('finish');
+
+                            }
+
+                        };
+
+                        let sync = () => {
+
+                            let id = app.scene.gallery.selected[i];
+
+                            console.log(id);
+
+                            setTimeout(() => {
+
+                                end();
+
+                            }, 100);
+
+                        };
+
+                        sync();
+
+                    }, 200);
 
                 });
 

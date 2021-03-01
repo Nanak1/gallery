@@ -248,19 +248,7 @@ app.scene.cloud = {
                     document.getElementById('sync-count').innerText = i.toString();
 
                     if (i < app.scene.cloud.files.length) sync();
-                    else {
-
-                        let el = document.getElementById('toolbar-cloud');
-
-                        let left = parseInt(el.style.marginLeft);
-                        let diameter = Math.round(el.clientHeight / 2);
-                        let padding = Math.round(parseInt(el.style.bottom) / 2);
-
-                        el.style.marginLeft = (left - diameter - padding).toString() + 'px';
-
-                        document.getElementById('button-back').classList.remove('scale-out');
-
-                    }
+                    else document.getElementById('button-back').classList.remove('scale-out');
 
                 };
 
