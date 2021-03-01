@@ -83,8 +83,8 @@ app.scene.gallery = {
                     app.scene.gallery.initSearch();
                     app.scene.gallery.initSelect();
 
-                    app.scene.gallery.initDelete();
-                    app.scene.gallery.initEdit();
+                    if (app.account['access_photo_delete']) app.scene.gallery.initDelete();
+                    if (app.account['access_photo_edit']) app.scene.gallery.initEdit();
                     app.scene.gallery.initDownload();
                     app.scene.gallery.initBack();
 
