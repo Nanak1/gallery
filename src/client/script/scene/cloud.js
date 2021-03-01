@@ -25,8 +25,8 @@ app.scene.cloud = {
 
                 // cloud
 
-                document.getElementById('scan-count').innerText = app.scene.cloud.files.length.toString();
-                document.getElementById('scan-count-unit').innerText = app.tool.format.getUnitEnding(
+                document.getElementById('cloud-scan-count').innerText = app.scene.cloud.files.length.toString();
+                document.getElementById('cloud-scan-count-unit').innerText = app.tool.format.getUnitEnding(
                     app.scene.cloud.files.length,
                     'фотографии',
                     'фотографий',
@@ -146,11 +146,11 @@ app.scene.cloud = {
                                 '<i class="mdi mdi-cloud-refresh"></i>' +
                                 '<div class="app-title">Синхронизировано</div>' +
                                 '<div>' +
-                                    '<snan id="sync-count">0</snan>' +
+                                    '<snan id="cloud-sync-count">0</snan>' +
                                     ' из ' +
-                                    '<span id="scan-count">?</span>' +
+                                    '<span id="cloud-scan-count">?</span>' +
                                     ' ' +
-                                    '<span id="scan-count-unit">...</span>' +
+                                    '<span id="cloud-scan-count-unit">...</span>' +
                                 '</div>' +
                             '</div>' +
                         '</div>' +
@@ -245,7 +245,7 @@ app.scene.cloud = {
 
                     i++;
 
-                    document.getElementById('sync-count').innerText = i.toString();
+                    document.getElementById('cloud-sync-count').innerText = i.toString();
 
                     if (i < app.scene.cloud.files.length) sync();
                     else document.getElementById('button-back').classList.remove('scale-out');
@@ -284,7 +284,7 @@ app.scene.cloud = {
                                     } else {
 
                                         status(el, '#f44336', 'mdi-image-off', res.data.message);
-                                        console.log(res.data);
+                                        console.log(res);
                                         end();
 
                                     }

@@ -75,7 +75,7 @@ router.post('/cloud', async (req, res) => {
 
         if (user) {
 
-            let sql = 'SELECT id, date_create FROM photo WHERE id = $1;';
+            let sql = 'SELECT date_create FROM photo WHERE id = $1;';
 
             db.gallery.query(sql, [
                 req.body.id
@@ -92,7 +92,7 @@ router.post('/cloud', async (req, res) => {
                     let minutes = format.number2String(dateCreate.getMinutes(), 2);
                     let seconds = format.number2String(dateCreate.getSeconds(), 2);
 
-                    let fileName = year + '-' + month + '-' + date + ' ' + hours + '-' + minutes + '-' + seconds + ' ' + photo.id + '.jpg';
+                    let fileName = year + '-' + month + '-' + date + ' ' + hours + '-' + minutes + '-' + seconds + ' ' + req.body.id + '.jpg';
 
                     webdav.move({
                         webdav: config.cloud.webdav,
@@ -173,7 +173,7 @@ router.delete('/cloud', (req, res) => {
                 let minutes = format.number2String(dateCreate.getMinutes(), 2);
                 let seconds = format.number2String(dateCreate.getSeconds(), 2);
 
-                let fileName = year + '-' + month + '-' + date + ' ' + hours + '-' + minutes + '-' + seconds + ' ' + photo.id + '.jpg';
+                let fileName = year + '-' + month + '-' + date + ' ' + hours + '-' + minutes + '-' + seconds + ' ' + req.body.id + '.jpg';
 
                 webdav.delete({
                     webdav: config.cloud.webdav,

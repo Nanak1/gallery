@@ -1303,13 +1303,60 @@ app.scene.gallery = {
 
                             let id = app.scene.gallery.selected[i];
 
-                            console.log(id);
+                            axios.delete('/cloud', {
+                                data: {
+                                    id: id
+                                }
+                            }).then(res => {
 
-                            setTimeout(() => {
+                                if (res.data.success) {
 
+                                    axios.delete('/photo', {
+                                        data: {
+                                            id: id
+                                        }
+                                    }).then(res => {
+
+                                        if (res.data.success) end();
+                                        else {
+
+                                            console.log(res);
+                                            M.toast({
+                                                html: 'Ошибка при удалении записи из галереи: ' + id
+                                            });
+                                            end();
+
+                                        }
+
+                                    }).catch(error => {
+
+                                        console.log(error);
+                                        M.toast({
+                                            html: 'Ошибка при запросе на удаление записи из галереи: ' + id
+                                        });
+                                        end();
+
+                                    });
+
+                                } else {
+
+                                    console.log(res);
+                                    M.toast({
+                                        html: 'Ошибка при удалении файла из облака: ' + id
+                                    });
+                                    end();
+
+                                }
+
+                            }).catch(error => {
+
+                                console.log(error);
+                                M.toast({
+                                    html: 'Ошибка при запросе на удаление файла из облака: ' + id
+                                });
                                 end();
 
-                            }, 100);
+                            });
 
                         };
 
