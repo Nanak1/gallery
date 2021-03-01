@@ -65,7 +65,7 @@ router.get('/photo', (req, res) => {
 
     db.gallery.query(sql).then(result => {
 
-        let total = parseInt(result.rows[0].count);
+        let count = parseInt(result.rows[0].count);
         let values = [parseInt(req.query.count) || 0];
         let sort_column = req.query.sort_column || 'date_create';
         let sort_direction = req.query.sort_direction || 'DESC';
@@ -84,7 +84,7 @@ router.get('/photo', (req, res) => {
 
             res.send({
                 success: true,
-                total: total,
+                count: count,
                 photos: result.rows
             });
 

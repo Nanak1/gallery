@@ -56,3 +56,13 @@ body {
 h1, h2, h3, h4, h5, h6, b {
     font-family: BlenderProBold;
 }
+
+.app-primary {
+    color: #ffffff;
+    background-color: #f44336;
+}
+
+.app-second {
+    color: #000000;
+    background-color: #00e5ff;
+}

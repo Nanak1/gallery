@@ -33,7 +33,7 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-.app-collection .app-disable {
+.app-collection .app-disabled {
     color: #757575;
 }
 
@@ -42,7 +42,7 @@
     background-color: #000000;
 }
 
-.app-collection .app-button:hover.app-disable {
+.app-collection .app-button:hover.app-disabled {
     color: #ffeb3b;
     background-color: #757575;
     cursor: not-allowed;

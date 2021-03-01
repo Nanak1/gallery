@@ -354,7 +354,7 @@ app.scene.cloud = {
         return '' +
             '<button ' +
                 'id="button-back" ' +
-                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-btn-primary"' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-primary"' +
             '>' +
                 '<i class="mdi mdi-close-thick"></i>' +
             '</button>';

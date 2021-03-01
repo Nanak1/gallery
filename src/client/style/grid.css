@@ -9,8 +9,10 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    transition: transform 0.2s;
+    transition: transform 0.2s, border 0.1s;
     transform: scale(0.99);
+    border: 0 solid #000000;
+    user-select: none;
 }
 
 .app-grid-thumbnail:before {
@@ -20,7 +22,8 @@
 }
 
 .app-grid-thumbnail.select {
-    transform: scale(0.77);
+    transform: scale(0.88);
+    border: 0.5rem solid #000000;
 }
 
 .app-grid-title {

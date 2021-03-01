@@ -8,11 +8,12 @@
     color: #000000;
 }
 
-.btn-floating.app-btn-primary {
+.btn-floating:hover.app-primary,
+.btn-floating:focus.app-primary {
     background-color: #f44336;
 }
 
-.btn-floating.app-btn-primary i {
+.btn-floating.app-primary i {
     color: #ffffff;
 }
 

@@ -48,15 +48,15 @@ app.scene.menu = {
                         '<h3 class="app-h3">Меню</h3>' +
 
                         '<div class="collection app-collection">' +
-                            '<div id="button-account" class="collection-item app-icon app-button app-disable">' +
+                            '<div id="button-account" class="collection-item app-icon app-button app-disabled">' +
                                 '<i class="mdi mdi-account"></i>' +
                                 '<div>Аккаунт</div>' +
                             '</div>' +
-                            '<div id="button-user" class="collection-item app-icon app-button app-disable">' +
+                            '<div id="button-user" class="collection-item app-icon app-button app-disabled">' +
                                 '<i class="mdi mdi-account-multiple"></i>' +
                                 '<div>Пользователи</div>' +
                             '</div>' +
-                            '<div id="button-tag" class="collection-item app-icon app-button app-disable">' +
+                            '<div id="button-tag" class="collection-item app-icon app-button app-disabled">' +
                                 '<i class="mdi mdi-tag"></i>' +
                                 '<div>Теги</div>' +
                             '</div>' +
@@ -64,7 +64,7 @@ app.scene.menu = {
                                 '<i class="mdi mdi-cloud"></i>' +
                                 '<div>Облако</div>' +
                             '</div>' +
-                            '<div id="button-system" class="collection-item app-icon app-button app-disable">' +
+                            '<div id="button-system" class="collection-item app-icon app-button app-disabled">' +
                                 '<i class="mdi mdi-cog"></i>' +
                                 '<div>Система</div>' +
                             '</div>' +
@@ -107,7 +107,7 @@ app.scene.menu = {
         return '' +
             '<button ' +
                 'id="button-back" ' +
-                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-btn-primary" ' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-primary" ' +
                 'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 2;"' +
             '>' +
                 '<i class="mdi mdi-close-thick"></i>' +

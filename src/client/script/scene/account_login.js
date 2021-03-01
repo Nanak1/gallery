@@ -60,7 +60,7 @@ app.scene.account_login = {
 
                 '<button ' +
                     'id="button-login" ' +
-                    'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-btn-primary"' +
+                    'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-primary"' +
                 '>' +
                     '<i class="mdi mdi-login-variant"></i>' +
                 '</button>'

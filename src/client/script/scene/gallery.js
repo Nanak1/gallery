@@ -173,7 +173,7 @@ app.scene.gallery = {
         app.scene.gallery.finish = false;
         document.querySelector('.app-grid').innerHTML = '' +
             '<h3 class="app-grid-title">' +
-                '<span class="app-photos-total"></span> шт' +
+                '<span class="app-photos-count"></span> шт' +
             '</h3>';
         window.removeEventListener('scroll', app.scene.gallery.onScroll);
 
@@ -210,7 +210,7 @@ app.scene.gallery = {
                 }
             }).then(res => {
 
-                document.querySelector('.app-photos-total').innerText = res.data.total;
+                document.querySelector('.app-photos-count').innerText = res.data.count;
 
                 if (res.data.photos.length > 0) {
 
@@ -290,7 +290,7 @@ app.scene.gallery = {
 
                                 setTimeout(() => {
 
-                                    let el = document.getElementById('preview-modal');
+                                    let el = document.getElementById('modal-preview');
 
                                     el.style.backgroundImage = 'url(/photo/preview/' + id + ')';
                                     el.style.display = 'block';
@@ -435,7 +435,7 @@ app.scene.gallery = {
 
         return '' +
             '<div ' +
-                'id="preview-modal" ' +
+                'id="modal-preview" ' +
                 'class="app-preview" ' +
                 'style="' +
                     'background-image: url(/src/client/image/favicon.png);' +
@@ -446,7 +446,7 @@ app.scene.gallery = {
 
     initPreview: () => {
 
-        document.getElementById('preview-modal').addEventListener('click', () => {
+        document.getElementById('modal-preview').addEventListener('click', () => {
 
             let f = document.getElementById('button-menu').classList.contains('scale-out') ? 'remove' : 'add';
 
@@ -477,7 +477,7 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="button-menu" ' +
-                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-btn-primary" ' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-primary" ' +
                 'style="position: fixed; left: 8px; top: 8px;"' +
             '>' +
                 '<i class="mdi mdi-menu"></i>' +
@@ -540,7 +540,7 @@ app.scene.gallery = {
     getViewModalHTML: () => {
 
         return '' +
-            '<div id="view-modal" class="app-modal">' +
+            '<div id="modal-view" class="app-modal">' +
 
                 '<div class="app-modal-content">' +
 
@@ -560,9 +560,9 @@ app.scene.gallery = {
                     '</div>' +
                     '<div class="row">' +
                         '<div class="col s12">' +
-                            '<span id="view-columns"></span>' +
+                            '<span id="modal-view-columns"></span>' +
                             ' ' +
-                            '<span id="view-columns-unit"></span>' +
+                            '<span id="modal-view-columns-unit"></span>' +
                         '</div>' +
                     '</div>' +
 
@@ -570,12 +570,12 @@ app.scene.gallery = {
 
                     '<div class="row">' +
                         '<label class="col s6 m4 l3 xl2">' +
-                            '<input name="sort-direction" type="radio" value="ASC">' +
+                            '<input name="modal-sort-direction" type="radio" value="ASC">' +
                             ' ' +
                             '<span>Возрастание</span>' +
                         '</label>' +
                         '<label class="col s6 m4 l3 xl2">' +
-                            '<input name="sort-direction" type="radio" value="DESC">' +
+                            '<input name="modal-sort-direction" type="radio" value="DESC">' +
                             ' ' +
                             '<span>Убывание</span>' +
                         '</label>' +
@@ -585,18 +585,18 @@ app.scene.gallery = {
 
                     '<div class="row">' +
                         '<label class="col s6 m4 l3 xl2">' +
-                            '<input name="sort-column" type="radio" value="date_create">' +
+                            '<input name="modal-sort-column" type="radio" value="date_create">' +
                             ' ' +
                             '<span>Создание</span>' +
                         '</label>' +
                         '<label class="col s6 m4 l3 xl2">' +
-                            '<input name="sort-column" type="radio" value="date_import">' +
+                            '<input name="modal-sort-column" type="radio" value="date_import">' +
                             ' ' +
                             '<span>Добавление</span>' +
                         '</label>' +
                     '</div>' +
 
-                    '<div style="height: 56px;"></div>' +
+                    '<div class="app-toolbar-space"></div>' +
 
                 '</div>' +
 
@@ -613,7 +613,7 @@ app.scene.gallery = {
 
                         '<button ' +
                         'id="button-view-apply" ' +
-                        'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-btn-primary"' +
+                        'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-primary"' +
                         '>' +
                         '<i class="mdi mdi-check-bold"></i>' +
                         '</button>'
@@ -644,21 +644,21 @@ app.scene.gallery = {
 
                 // columns
 
-                document.getElementById('view-columns').innerText = app.scene.gallery.columns;
-                document.getElementById('view-columns-unit').innerText = app.tool.format.getUnitEnding(
+                document.getElementById('modal-view-columns').innerText = app.scene.gallery.columns;
+                document.getElementById('modal-view-columns-unit').innerText = app.tool.format.getUnitEnding(
                     app.scene.gallery.columns, 'столбец', 'столбца', 'столбцов'
                 );
 
                 document.getElementById('button-view-columns-minus').addEventListener('click', () => {
 
-                    let el = document.getElementById('view-columns');
+                    let el = document.getElementById('modal-view-columns');
                     let columns = parseInt(el.innerText);
 
                     if (columns > 1) {
 
                         columns--;
                         el.innerText = columns.toString();
-                        document.getElementById('view-columns-unit').innerText = app.tool.format.getUnitEnding(
+                        document.getElementById('modal-view-columns-unit').innerText = app.tool.format.getUnitEnding(
                             columns, 'столбец', 'столбца', 'столбцов'
                         );
 
@@ -668,12 +668,12 @@ app.scene.gallery = {
 
                 document.getElementById('button-view-columns-plus').addEventListener('click', () => {
 
-                    let el = document.getElementById('view-columns');
+                    let el = document.getElementById('modal-view-columns');
                     let columns = parseInt(el.innerText);
 
                     columns++;
                     el.innerText = columns.toString();
-                    document.getElementById('view-columns-unit').innerText = app.tool.format.getUnitEnding(
+                    document.getElementById('modal-view-columns-unit').innerText = app.tool.format.getUnitEnding(
                         columns, 'столбец', 'столбца', 'столбцов'
                     );
 
@@ -682,13 +682,13 @@ app.scene.gallery = {
                 // sort direction
 
                 document.querySelector(
-                    '[name=sort-direction][value=' + app.scene.gallery.sortDirection + ']'
+                    '[name=modal-sort-direction][value=' + app.scene.gallery.sortDirection + ']'
                 ).checked = true;
 
                 // sort column
 
                 document.querySelector(
-                    '[name=sort-column][value=' + app.scene.gallery.sortColumn + ']'
+                    '[name=modal-sort-column][value=' + app.scene.gallery.sortColumn + ']'
                 ).checked = true;
 
                 // cancel
@@ -702,7 +702,7 @@ app.scene.gallery = {
 
                     setTimeout(() => {
 
-                        document.getElementById('view-modal').remove();
+                        document.getElementById('modal-view').remove();
                         document.body.style.overflow = '';
 
                         [
@@ -724,16 +724,16 @@ app.scene.gallery = {
 
                     // columns
 
-                    app.scene.gallery.columns = parseInt(document.getElementById('view-columns').innerText);
+                    app.scene.gallery.columns = parseInt(document.getElementById('modal-view-columns').innerText);
                     app.scene.gallery.rows = null;
 
                     // sort direction
 
-                    app.scene.gallery.sortDirection = document.querySelector('[name=sort-direction]:checked').value
+                    app.scene.gallery.sortDirection = document.querySelector('[name=modal-sort-direction]:checked').value
 
                     // sort column
 
-                    app.scene.gallery.sortColumn = document.querySelector('[name=sort-column]:checked').value
+                    app.scene.gallery.sortColumn = document.querySelector('[name=modal-sort-column]:checked').value
 
                     // apply
 
@@ -749,7 +749,7 @@ app.scene.gallery = {
 
             setTimeout(() => {
 
-                document.getElementById('view-modal').style.display = 'block';
+                document.getElementById('modal-view').style.display = 'block';
 
                 setTimeout(() => {
 
@@ -783,7 +783,7 @@ app.scene.gallery = {
     getCalendarModalHTML: () => {
 
         return '' +
-            '<div id="calendar-modal" class="app-modal">' +
+            '<div id="modal-calendar" class="app-modal">' +
 
                 '<div class="app-modal-content">' +
 
@@ -797,7 +797,7 @@ app.scene.gallery = {
                             '</button>' +
                         '</div>' +
                     '</div>' +
-                    '<div id="calendar-year" class="row"></div>' +
+                    '<div id="modal-calendar-year" class="row"></div>' +
 
                     '<div>' +
                         '<p style="display: inline-block;">Месяц</p>' +
@@ -807,7 +807,7 @@ app.scene.gallery = {
                             '</button>' +
                         '</div>' +
                     '</div>' +
-                    '<div id="calendar-month" class="row"></div>' +
+                    '<div id="modal-calendar-month" class="row"></div>' +
 
                     '<div>' +
                         '<p style="display: inline-block;">День</p>' +
@@ -817,9 +817,9 @@ app.scene.gallery = {
                             '</button>' +
                         '</div>' +
                     '</div>' +
-                    '<div id="calendar-day" class="row"></div>' +
+                    '<div id="modal-calendar-day" class="row"></div>' +
 
-                    '<div style="height: 56px;"></div>' +
+                    '<div class="app-toolbar-space"></div>' +
 
                 '</div>' +
 
@@ -836,7 +836,7 @@ app.scene.gallery = {
 
                         '<button ' +
                             'id="button-calendar-apply" ' +
-                            'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-btn-primary"' +
+                            'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-primary"' +
                         '>' +
                             '<i class="mdi mdi-check-bold"></i>' +
                         '</button>'
@@ -869,7 +869,7 @@ app.scene.gallery = {
 
                 document.getElementById('button-calendar-year').addEventListener('click', () => {
 
-                    let el = document.getElementById('calendar-year');
+                    let el = document.getElementById('modal-calendar-year');
                     let nodeList = el.querySelectorAll('input[type=checkbox]');
                     let checked = nodeList[0].checked;
 
@@ -881,7 +881,7 @@ app.scene.gallery = {
 
                     let checked = app.scene.gallery.years.includes(year.value) ? ' checked' : '';
 
-                    document.getElementById('calendar-year').innerHTML += '' +
+                    document.getElementById('modal-calendar-year').innerHTML += '' +
                         '<label class="col s6 m4 l3 xl2">' +
                             '<input type="checkbox" value="' + year.value + '"' + checked + '>' +
                             '<span style="width: 100%;">' +
@@ -899,7 +899,7 @@ app.scene.gallery = {
 
                 document.getElementById('button-calendar-month').addEventListener('click', () => {
 
-                    let el = document.getElementById('calendar-month');
+                    let el = document.getElementById('modal-calendar-month');
                     let nodeList = el.querySelectorAll('input[type=checkbox]');
                     let checked = nodeList[0].checked;
 
@@ -911,7 +911,7 @@ app.scene.gallery = {
 
                     let checked = app.scene.gallery.months.includes(month.value) ? ' checked' : '';
 
-                    document.getElementById('calendar-month').innerHTML += '' +
+                    document.getElementById('modal-calendar-month').innerHTML += '' +
                         '<label class="col s6 m4 l3 xl2">' +
                             '<input type="checkbox" value="' + month.value + '"' + checked + '>' +
                             '<span style="width: 100%;">' +
@@ -929,7 +929,7 @@ app.scene.gallery = {
 
                 document.getElementById('button-calendar-day').addEventListener('click', () => {
 
-                    let el = document.getElementById('calendar-day');
+                    let el = document.getElementById('modal-calendar-day');
                     let nodeList = el.querySelectorAll('input[type=checkbox]');
                     let checked = nodeList[0].checked;
 
@@ -941,7 +941,7 @@ app.scene.gallery = {
 
                     let checked = app.scene.gallery.days.includes(day.value) ? ' checked' : '';
 
-                    document.getElementById('calendar-day').innerHTML += '' +
+                    document.getElementById('modal-calendar-day').innerHTML += '' +
                         '<label class="col s6 m4 l3 xl2">' +
                             '<input type="checkbox" value="' + day.value + '"' + checked + '>' +
                             '<span style="width: 100%;">' +
@@ -966,7 +966,7 @@ app.scene.gallery = {
 
                     setTimeout(() => {
 
-                        document.getElementById('calendar-modal').remove();
+                        document.getElementById('modal-calendar').remove();
                         document.body.style.overflow = '';
 
                         [
@@ -988,7 +988,7 @@ app.scene.gallery = {
 
                     // year
 
-                    let elYear = document.getElementById('calendar-year');
+                    let elYear = document.getElementById('modal-calendar-year');
                     let chYear = elYear.querySelectorAll('input[type=checkbox]:checked');
 
                     app.scene.gallery.years = [];
@@ -996,7 +996,7 @@ app.scene.gallery = {
 
                     // month
 
-                    let elMonth = document.getElementById('calendar-month');
+                    let elMonth = document.getElementById('modal-calendar-month');
                     let chMonth = elMonth.querySelectorAll('input[type=checkbox]:checked');
 
                     app.scene.gallery.months = [];
@@ -1004,7 +1004,7 @@ app.scene.gallery = {
 
                     // day
 
-                    let elDay = document.getElementById('calendar-day');
+                    let elDay = document.getElementById('modal-calendar-day');
                     let chDay = elDay.querySelectorAll('input[type=checkbox]:checked');
 
                     app.scene.gallery.days = [];
@@ -1024,7 +1024,7 @@ app.scene.gallery = {
 
             setTimeout(() => {
 
-                document.getElementById('calendar-modal').style.display = 'block';
+                document.getElementById('modal-calendar').style.display = 'block';
 
                 setTimeout(() => {
 
@@ -1122,16 +1122,188 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="button-delete" ' +
-                'class="app-disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
             '>' +
                 '<i class="mdi mdi-delete"></i>' +
             '</button>';
 
     },
 
+    getDeleteModalHTML: () => {
+
+        return '' +
+            '<div id="modal-delete" class="app-modal">' +
+
+                '<div class="app-modal-content">' +
+
+                    '<h4>Удаление</h4>' +
+
+                    '<p>' +
+                        'Вы точно хотите удалить ' +
+                        '<span id="modal-delete-count"></span>' +
+                        ' ' +
+                        '<span id="modal-delete-count-unit"></span>' +
+                        ' из галереи и облака?' +
+                    '</p>' +
+
+                    '<p>' +
+                        'Удалено: ' +
+                        '<span id="modal-delete-i"></span>' +
+                        ' ' +
+                        '<span id="modal-delete-i-unit"></span>' +
+                    '</p>' +
+
+                    '<p class="card-panel app-primary flow-text">' +
+                        'Сначала удаляется файл в облаке, ' +
+                        'а только потом запись о фотографии в галерее' +
+                    '</p>' +
+
+                    '<p class="card-panel app-second flow-text">' +
+                        'Удаление займёт некоторое время, ' +
+                        'так как происходит синхронизация галереи с облаком' +
+                    '</p>' +
+
+                    '<div class="app-toolbar-space"></div>' +
+
+                '</div>' +
+
+                app.tool.toolbar({
+                    id: 'toolbar-delete',
+                    buttons: [
+
+                        '<button ' +
+                            'id="button-delete-cancel" ' +
+                            'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
+                        '>' +
+                            '<i class="mdi mdi-close-thick"></i>' +
+                        '</button>',
+
+                        '<button ' +
+                            'id="button-delete-apply" ' +
+                            'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-primary"' +
+                        '>' +
+                            '<i class="mdi mdi-check-bold"></i>' +
+                        '</button>'
+
+                    ]
+                }) +
+
+            '</div>';
+
+    },
+
     initDelete: () => {
 
-        console.log('init delete');
+        document.getElementById('button-delete').addEventListener('click', () => {
+
+            let buttons = [];
+
+            if (app.account['access_photo_delete']) buttons.push('button-delete');
+            if (app.account['access_photo_edit']) buttons.push('button-edit');
+
+            [
+                'button-menu',
+
+                ... buttons,
+                'button-download',
+                'button-back',
+
+                'button-all',
+
+                'button-left',
+                'button-right'
+            ].forEach(button => document.getElementById(button).classList.add('scale-out'));
+
+            document.body.insertAdjacentHTML('afterbegin', app.scene.gallery.getDeleteModalHTML());
+
+            (() => {
+
+                // info
+
+                document.getElementById('modal-delete-count').innerText = app.scene.gallery.selected.length.toString();
+                document.getElementById('modal-delete-count-unit').innerText = app.tool.format.getUnitEnding(
+                    app.scene.gallery.selected.length,
+                    'фотографию',
+                    'фотографии',
+                    'фотографий'
+                );
+
+                document.getElementById('modal-delete-i').innerText = '0';
+                document.getElementById('modal-delete-i-unit').innerText = app.tool.format.getUnitEnding(
+                    0,
+                    'фотографию',
+                    'фотографии',
+                    'фотографий'
+                );
+
+                // cancel
+
+                document.getElementById('button-delete-cancel').addEventListener('click', () => {
+
+                    [
+                        'button-delete-cancel',
+                        'button-delete-apply'
+                    ].forEach(button => document.getElementById(button).classList.add('scale-out'));
+
+                    setTimeout(() => {
+
+                        document.getElementById('modal-delete').remove();
+                        document.body.style.overflow = '';
+
+                        let buttons = [];
+
+                        if (app.account['access_photo_delete']) buttons.push('button-delete');
+                        if (app.account['access_photo_edit']) buttons.push('button-edit');
+
+                        if (document.getElementById('modal-preview').style.display === 'block') {
+
+                            buttons.push('button-left');
+                            buttons.push('button-right');
+
+                        } else buttons.push('button-all');
+
+                        [
+                            'button-menu',
+
+                            ... buttons,
+                            'button-download',
+                            'button-back'
+                        ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+
+                    }, 250);
+
+                });
+
+                // apply
+
+                document.getElementById('button-delete-apply').addEventListener('click', () => {
+
+                    // apply
+
+                    document.getElementById('button-delete-cancel').click();
+
+                });
+
+            })();
+
+            document.body.style.overflow = 'hidden';
+
+            setTimeout(() => {
+
+                document.getElementById('modal-delete').style.display = 'block';
+
+                setTimeout(() => {
+
+                    [
+                        'button-delete-cancel',
+                        'button-delete-apply'
+                    ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+
+                }, 100);
+
+            }, 250);
+
+        });
 
     },
 
@@ -1182,7 +1354,7 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="button-back" ' +
-                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-btn-primary"' +
+                'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-primary"' +
             '>' +
                 '<i class="mdi mdi-close-thick"></i>' +
             '</button>';
@@ -1213,7 +1385,7 @@ app.scene.gallery = {
 
             setTimeout(() => {
 
-                document.getElementById('preview-modal').style.display = '';
+                document.getElementById('modal-preview').style.display = '';
                 document.querySelector('.app-grid').style.cursor = '';
                 document.getElementById('toolbar-edit').style.display = 'none';
                 document.getElementById('toolbar-view').style.display = 'block';
@@ -1244,7 +1416,7 @@ app.scene.gallery = {
         return '' +
             '<button ' +
                 'id="button-all" ' +
-                'class="disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out" ' +
+                'class="app-disabled btn-floating btn-large waves-effect waves-light scale-transition scale-out" ' +
                 'style="position: fixed; top: 8px; right: 8px; z-index: 2;"' +
             '>' +
                 '<i class="mdi mdi-check-all"></i>' +
@@ -1284,7 +1456,7 @@ app.scene.gallery = {
             if (index > 0) {
 
                 id = app.scene.gallery.photos[index - 1].id;
-                document.getElementById('preview-modal').style.backgroundImage = 'url(/photo/preview/' + id + ')';
+                document.getElementById('modal-preview').style.backgroundImage = 'url(/photo/preview/' + id + ')';
                 app.scene.gallery.selected = [id];
 
             }
@@ -1319,7 +1491,7 @@ app.scene.gallery = {
             if (index < app.scene.gallery.photos.length - 1) {
 
                 id = app.scene.gallery.photos[index + 1].id;
-                document.getElementById('preview-modal').style.backgroundImage = 'url(/photo/preview/' + id + ')';
+                document.getElementById('modal-preview').style.backgroundImage = 'url(/photo/preview/' + id + ')';
                 app.scene.gallery.selected = [id];
 
             }
