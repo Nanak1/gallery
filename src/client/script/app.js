@@ -1,6 +1,10 @@
 window.addEventListener('load', () => {
 
-    app.init();
+    app.init().then(() => {
+
+        console.log('app is running');
+
+    });
 
 });
 
@@ -70,8 +74,6 @@ window.app = {
                     if (res.data.success) {
 
                         app.users = res.data.users;
-
-                        // TODO: загрузка завершена
                         app.scene.gallery.show().then(resolve);
 
                     } else app.scene.account_login.show().then(() => {

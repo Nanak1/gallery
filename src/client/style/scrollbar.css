@@ -1,15 +1,11 @@
-.app-scrollbar-overlay {
-    overflow-y: overlay;
-}
-
-body::-webkit-scrollbar {
+::-webkit-scrollbar {
     width: 4px;
 }
 
-body::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     background-color: #00e5ff;
 }
 
-body::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
     background-color: #f44336;
 }

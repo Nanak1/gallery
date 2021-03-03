@@ -25,13 +25,15 @@ app.scene.cloud = {
 
                 // cloud
 
-                document.getElementById('cloud-scan-count').innerText = app.scene.cloud.files.length.toString();
-                document.getElementById('cloud-scan-count-unit').innerText = app.tool.format.getUnitEnding(
+                document.getElementById('cloud-scan-count').innerText = [
                     app.scene.cloud.files.length,
-                    'фотографии',
-                    'фотографий',
-                    'фотографий'
-                );
+                    app.tool.format.getUnitEnding(
+                        app.scene.cloud.files.length,
+                        'фотографии',
+                        'фотографий',
+                        'фотографий'
+                    )
+                ].join(' ');
 
                 // files
 
@@ -149,8 +151,6 @@ app.scene.cloud = {
                                     '<snan id="cloud-sync-count">0</snan>' +
                                     ' из ' +
                                     '<span id="cloud-scan-count">?</span>' +
-                                    ' ' +
-                                    '<span id="cloud-scan-count-unit">...</span>' +
                                 '</div>' +
                             '</div>' +
                         '</div>' +

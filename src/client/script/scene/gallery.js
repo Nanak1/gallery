@@ -72,7 +72,7 @@ app.scene.gallery = {
                     html += app.scene.gallery.getRightButtonHTML();
 
                     document.getElementById('app').innerHTML = html;
-                    document.body.classList.add('app-scrollbar-overlay');
+                    document.body.style.overflowY = 'overlay';
 
                     app.scene.gallery.initPreview();
 
@@ -138,7 +138,7 @@ app.scene.gallery = {
 
         // after clear
 
-        document.body.classList.remove('app-scrollbar-overlay');
+        document.body.style.overflowY = '';
 
         // end
 
@@ -542,7 +542,7 @@ app.scene.gallery = {
 
                 '<div class="app-modal-content">' +
 
-                    '<h4>Вид</h4>' +
+                    '<h3 class="app-h3">Вид</h3>' +
 
                     '<div>' +
                         '<p style="display: inline-block;">Столбцы</p>' +
@@ -559,8 +559,6 @@ app.scene.gallery = {
                     '<div class="row">' +
                         '<div class="col s12">' +
                             '<span id="modal-view-columns"></span>' +
-                            ' ' +
-                            '<span id="modal-view-columns-unit"></span>' +
                         '</div>' +
                     '</div>' +
 
@@ -642,10 +640,15 @@ app.scene.gallery = {
 
                 // columns
 
-                document.getElementById('modal-view-columns').innerText = app.scene.gallery.columns;
-                document.getElementById('modal-view-columns-unit').innerText = app.tool.format.getUnitEnding(
-                    app.scene.gallery.columns, 'столбец', 'столбца', 'столбцов'
-                );
+                document.getElementById('modal-view-columns').innerText = [
+                    app.scene.gallery.columns,
+                    app.tool.format.getUnitEnding(
+                        app.scene.gallery.columns,
+                        'столбец',
+                        'столбца',
+                        'столбцов'
+                    )
+                ].join(' ');
 
                 document.getElementById('button-view-columns-minus').addEventListener('click', () => {
 
@@ -655,10 +658,15 @@ app.scene.gallery = {
                     if (columns > 1) {
 
                         columns--;
-                        el.innerText = columns.toString();
-                        document.getElementById('modal-view-columns-unit').innerText = app.tool.format.getUnitEnding(
-                            columns, 'столбец', 'столбца', 'столбцов'
-                        );
+                        el.innerText = [
+                            columns,
+                            app.tool.format.getUnitEnding(
+                                columns,
+                                'столбец',
+                                'столбца',
+                                'столбцов'
+                            )
+                        ].join(' ');
 
                     }
 
@@ -670,10 +678,15 @@ app.scene.gallery = {
                     let columns = parseInt(el.innerText);
 
                     columns++;
-                    el.innerText = columns.toString();
-                    document.getElementById('modal-view-columns-unit').innerText = app.tool.format.getUnitEnding(
-                        columns, 'столбец', 'столбца', 'столбцов'
-                    );
+                    el.innerText = [
+                        columns,
+                        app.tool.format.getUnitEnding(
+                            columns,
+                            'столбец',
+                            'столбца',
+                            'столбцов'
+                        )
+                    ].join(' ');
 
                 });
 
@@ -701,7 +714,7 @@ app.scene.gallery = {
                     setTimeout(() => {
 
                         document.getElementById('modal-view').remove();
-                        document.body.style.overflow = '';
+                        document.body.style.overflow = 'overlay';
 
                         [
                             'button-menu',
@@ -785,7 +798,7 @@ app.scene.gallery = {
 
                 '<div class="app-modal-content">' +
 
-                    '<h4>Календарь</h4>' +
+                    '<h3 class="app-h3">Календарь</h3>' +
 
                     '<div>' +
                         '<p style="display: inline-block;">Год</p>' +
@@ -965,7 +978,7 @@ app.scene.gallery = {
                     setTimeout(() => {
 
                         document.getElementById('modal-calendar').remove();
-                        document.body.style.overflow = '';
+                        document.body.style.overflow = 'overlay';
 
                         [
                             'button-menu',
@@ -1134,22 +1147,51 @@ app.scene.gallery = {
 
                 '<div class="app-modal-content">' +
 
-                    '<h4>Удаление</h4>' +
+                    '<h3 class="app-h3">Удаление</h3>' +
 
                     '<p>' +
                         'Вы точно хотите удалить ' +
                         '<span id="modal-delete-count"></span>' +
-                        ' ' +
-                        '<span id="modal-delete-count-unit"></span>' +
                         ' из галереи и облака?' +
                     '</p>' +
 
-                    '<p>' +
-                        'Удалено: ' +
-                        '<span id="modal-delete-i">0</span>' +
-                        ' ' +
-                        '<span id="modal-delete-i-unit">фотографий</span>' +
-                    '</p>' +
+                    '<div id="modal-delete-info" style="display: none;">' +
+
+                        '<p id="modal-delete-percent" class="flow-text center-align">0%</p>' +
+
+                        '<div class="progress">' +
+                            '<div id="modal-delete-progress" class="determinate"></div>' +
+                        '</div>' +
+
+                        '<div class="collection app-collection">' +
+                            '<div class="collection-item app-icon app-icon-mt2">' +
+                                '<i class="mdi mdi-cloud-check"></i>' +
+                                '<div class="app-title">Удалено</div>' +
+                                '<div id="modal-delete-i">0 фотографий</div>' +
+                            '</div>' +
+                            '<div class="collection-item app-icon app-icon-mt2">' +
+                                '<i class="mdi mdi-calendar-start"></i>' +
+                                '<div class="app-title">Начало</div>' +
+                                '<div id="modal-delete-date-start">&nbsp;</div>' +
+                            '</div>' +
+                            '<div class="collection-item app-icon app-icon-mt2">' +
+                                '<i class="mdi mdi-clock-start"></i>' +
+                                '<div class="app-title">Прошло</div>' +
+                                '<div id="modal-delete-date-passed">...</div>' +
+                            '</div>' +
+                            '<div class="collection-item app-icon app-icon-mt2">' +
+                                '<i class="mdi mdi-clock-end"></i>' +
+                                '<div class="app-title">Осталось</div>' +
+                                '<div id="modal-delete-date-left">...</div>' +
+                            '</div>' +
+                            '<div class="collection-item app-icon app-icon-mt2">' +
+                                '<i class="mdi mdi-calendar-end"></i>' +
+                                '<div class="app-title">Окончание</div>' +
+                                '<div id="modal-delete-date-end">...</div>' +
+                            '</div>' +
+                        '</div>' +
+
+                    '</div>' +
 
                     '<p class="card-panel app-primary flow-text">' +
                         'Сначала удаляется файл в облаке, ' +
@@ -1218,13 +1260,15 @@ app.scene.gallery = {
 
                 // info
 
-                document.getElementById('modal-delete-count').innerText = app.scene.gallery.selected.length.toString();
-                document.getElementById('modal-delete-count-unit').innerText = app.tool.format.getUnitEnding(
+                document.getElementById('modal-delete-count').innerText = [
                     app.scene.gallery.selected.length,
-                    'фотографию',
-                    'фотографии',
-                    'фотографий'
-                );
+                    app.tool.format.getUnitEnding(
+                        app.scene.gallery.selected.length,
+                        'фотографию',
+                        'фотографии',
+                        'фотографий'
+                    )
+                ].join(' ');
 
                 // cancel
 
@@ -1238,7 +1282,7 @@ app.scene.gallery = {
                     setTimeout(() => {
 
                         document.getElementById('modal-delete').remove();
-                        document.body.style.overflow = '';
+                        document.body.style.overflow = 'overlay';
 
                         let buttons = [
                             'button-menu',
@@ -1274,18 +1318,35 @@ app.scene.gallery = {
                     setTimeout(() => {
 
                         let i = 0;
+                        let dateStart = new Date();
+
+                        document.getElementById('modal-delete-date-start').innerText = app.tool.format.date(dateStart, 'H:i:s d.m.Y');
+                        document.getElementById('modal-delete-info').style.display = '';
 
                         let end = () => {
 
                             i++;
 
-                            document.getElementById('modal-delete-i').innerText = i.toString();
-                            document.getElementById('modal-delete-i-unit').innerText = app.tool.format.getUnitEnding(
+                            let currentDate = new Date();
+                            let percent = Math.floor(i * 100 / app.scene.gallery.selected.length);
+                            let ms = currentDate - dateStart;
+                            let left = Math.floor(ms * app.scene.gallery.selected.length / i) - ms;
+
+                            document.getElementById('modal-delete-i').innerText = [
                                 i,
-                                'фотография',
-                                'фотографии',
-                                'фотографий'
-                            );
+                                app.tool.format.getUnitEnding(
+                                    i,
+                                    'фотография',
+                                    'фотографии',
+                                    'фотографий'
+                                )
+                            ].join(' ');
+
+                            document.getElementById('modal-delete-percent').innerText = percent + '%';
+                            document.getElementById('modal-delete-progress').style.width = percent + '%';
+                            document.getElementById('modal-delete-date-passed').innerText = app.tool.format.msToString(ms);
+                            document.getElementById('modal-delete-date-left').innerText = app.tool.format.msToString(left);
+                            document.getElementById('modal-delete-date-end').innerText = app.tool.format.date(new Date(dateStart.getTime() + left), 'H:i:s d.m.Y');
 
                             if (i < app.scene.gallery.selected.length) sync();
                             else {
@@ -1316,7 +1377,7 @@ app.scene.gallery = {
                                     document.querySelector('.app-grid').style.cursor = '';
                                     document.getElementById('toolbar-edit').style.display = 'none';
                                     document.getElementById('toolbar-view').style.display = 'block';
-                                    document.body.style.overflow = '';
+                                    document.body.style.overflow = 'overlay';
                                     document.getElementById('modal-delete').remove();
 
                                     setTimeout(() => {
@@ -1525,7 +1586,7 @@ app.scene.gallery = {
                 document.querySelector('.app-grid').style.cursor = '';
                 document.getElementById('toolbar-edit').style.display = 'none';
                 document.getElementById('toolbar-view').style.display = 'block';
-                document.body.style.overflow = '';
+                document.body.style.overflow = 'overlay';
                 app.scene.gallery.selected = [];
 
                 setTimeout(() => {
