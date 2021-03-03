@@ -1240,7 +1240,11 @@ app.scene.gallery = {
                         document.getElementById('modal-delete').remove();
                         document.body.style.overflow = '';
 
-                        let buttons = [];
+                        let buttons = [
+                            'button-menu',
+                            'button-download',
+                            'button-back'
+                        ];
 
                         if (app.account['access_photo_delete']) buttons.push('button-delete');
                         if (app.account['access_photo_edit']) buttons.push('button-edit');
@@ -1252,13 +1256,7 @@ app.scene.gallery = {
 
                         } else buttons.push('button-all');
 
-                        [
-                            'button-menu',
-
-                            ... buttons,
-                            'button-download',
-                            'button-back'
-                        ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+                        buttons.forEach(button => document.getElementById(button).classList.remove('scale-out'));
 
                     }, 250);
 
@@ -1292,8 +1290,64 @@ app.scene.gallery = {
                             if (i < app.scene.gallery.selected.length) sync();
                             else {
 
-                                // TODO: delete finish
-                                console.log('finish');
+                                let preview = document.getElementById('modal-preview');
+                                let buttons = [
+                                    'button-menu',
+                                    'button-download',
+                                    'button-back'
+                                ];
+
+                                if (app.account['access_photo_delete']) buttons.push('button-delete');
+                                if (app.account['access_photo_edit']) buttons.push('button-edit');
+
+                                if (preview.style.display === 'block') {
+
+                                    preview.style.display = '';
+
+                                    buttons.push('button-left');
+                                    buttons.push('button-right');
+
+                                } else buttons.push('button-all');
+
+                                buttons.forEach(button => document.getElementById(button).classList.add('scale-out'));
+
+                                setTimeout(() => {
+
+                                    document.querySelector('.app-grid').style.cursor = '';
+                                    document.getElementById('toolbar-edit').style.display = 'none';
+                                    document.getElementById('toolbar-view').style.display = 'block';
+                                    document.body.style.overflow = '';
+                                    document.getElementById('modal-delete').remove();
+
+                                    setTimeout(() => {
+
+                                        app.scene.gallery.selected.forEach(id => {
+
+                                            let thumbnail = document.querySelector(`[data-id="${id}"]`);
+
+                                            thumbnail.classList.remove('select');
+                                            thumbnail.classList.add('scale-transition');
+                                            thumbnail.classList.add('scale-out');
+
+                                        });
+
+                                        setTimeout(() => {
+
+                                            document.querySelectorAll('.app-grid-thumbnail.scale-out').forEach(thumbnail => thumbnail.remove());
+                                            app.scene.gallery.selected = [];
+
+                                            [
+                                                'button-view',
+                                                'button-calendar',
+                                                'button-search',
+                                                'button-select'
+                                            ].forEach(button => document.getElementById(button).classList.remove('scale-out'));
+
+                                        }, 250);
+
+                                    }, 250);
+
+                                }, 250);
 
                             }
 
