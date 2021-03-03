@@ -23,7 +23,7 @@
 
 .app-grid-thumbnail.select {
     transform: scale(0.88);
-    border: 0.5rem solid #000000;
+    border: 0.5rem solid #f44336;
 }
 
 .app-grid-title {
