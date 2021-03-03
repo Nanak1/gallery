@@ -1155,42 +1155,38 @@ app.scene.gallery = {
                         ' из галереи и облака?' +
                     '</p>' +
 
-                    '<div id="modal-delete-apply-info" style="display: none;">' +
+                    '<p id="modal-delete-percent" class="flow-text center-align">0%</p>' +
 
-                        '<p id="modal-delete-percent" class="flow-text center-align">0%</p>' +
+                    '<div class="progress">' +
+                        '<div id="modal-delete-progress" class="determinate"></div>' +
+                    '</div>' +
 
-                        '<div class="progress">' +
-                            '<div id="modal-delete-progress" class="determinate"></div>' +
+                    '<div class="collection app-collection">' +
+                        '<div class="collection-item app-icon app-icon-mt2">' +
+                            '<i class="mdi mdi-cloud-check"></i>' +
+                            '<div class="app-title">Удалено</div>' +
+                            '<div id="modal-delete-i">0 фотографий</div>' +
                         '</div>' +
-
-                        '<div class="collection app-collection">' +
-                            '<div class="collection-item app-icon app-icon-mt2">' +
-                                '<i class="mdi mdi-cloud-check"></i>' +
-                                '<div class="app-title">Удалено</div>' +
-                                '<div id="modal-delete-i">0 фотографий</div>' +
-                            '</div>' +
-                            '<div class="collection-item app-icon app-icon-mt2">' +
-                                '<i class="mdi mdi-calendar-start"></i>' +
-                                '<div class="app-title">Начало</div>' +
-                                '<div id="modal-delete-date-start">&nbsp;</div>' +
-                            '</div>' +
-                            '<div class="collection-item app-icon app-icon-mt2">' +
-                                '<i class="mdi mdi-clock-start"></i>' +
-                                '<div class="app-title">Прошло</div>' +
-                                '<div id="modal-delete-date-passed">...</div>' +
-                            '</div>' +
-                            '<div class="collection-item app-icon app-icon-mt2">' +
-                                '<i class="mdi mdi-clock-end"></i>' +
-                                '<div class="app-title">Осталось</div>' +
-                                '<div id="modal-delete-date-left">...</div>' +
-                            '</div>' +
-                            '<div class="collection-item app-icon app-icon-mt2">' +
-                                '<i class="mdi mdi-calendar-end"></i>' +
-                                '<div class="app-title">Окончание</div>' +
-                                '<div id="modal-delete-date-end">...</div>' +
-                            '</div>' +
+                        '<div class="collection-item app-icon app-icon-mt2">' +
+                            '<i class="mdi mdi-calendar-start"></i>' +
+                            '<div class="app-title">Начало</div>' +
+                            '<div id="modal-delete-date-start">...</div>' +
                         '</div>' +
-
+                        '<div class="collection-item app-icon app-icon-mt2">' +
+                            '<i class="mdi mdi-clock-start"></i>' +
+                            '<div class="app-title">Прошло</div>' +
+                            '<div id="modal-delete-date-passed">...</div>' +
+                        '</div>' +
+                        '<div class="collection-item app-icon app-icon-mt2">' +
+                            '<i class="mdi mdi-clock-end"></i>' +
+                            '<div class="app-title">Осталось</div>' +
+                            '<div id="modal-delete-date-left">...</div>' +
+                        '</div>' +
+                        '<div class="collection-item app-icon app-icon-mt2">' +
+                            '<i class="mdi mdi-calendar-end"></i>' +
+                            '<div class="app-title">Окончание</div>' +
+                            '<div id="modal-delete-date-end">...</div>' +
+                        '</div>' +
                     '</div>' +
 
                     '<p class="card-panel app-primary flow-text">' +
@@ -1321,7 +1317,6 @@ app.scene.gallery = {
                         let dateStart = new Date();
 
                         document.getElementById('modal-delete-date-start').innerText = app.tool.format.date(dateStart, 'H:i:s d.m.Y');
-                        document.getElementById('modal-delete-apply-info').style.display = '';
 
                         let end = () => {
 

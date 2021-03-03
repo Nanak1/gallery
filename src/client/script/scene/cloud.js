@@ -147,46 +147,42 @@ app.scene.cloud = {
                             '<div class="collection-item app-icon app-icon-mt2">' +
                                 '<i class="mdi mdi-timer-outline"></i>' +
                                 '<div class="app-title">Ожидает</div>' +
-                                '<div id="cloud-scan-count">&nbsp;</div>' +
+                                '<div id="cloud-scan-count">...</div>' +
                             '</div>' +
                         '</div>' +
 
-                        '<div id="cloud-apply-info" style="display: none;">' +
+                        '<p id="cloud-percent" class="flow-text center-align">0%</p>' +
 
-                            '<p id="cloud-percent" class="flow-text center-align">0%</p>' +
+                        '<div class="progress">' +
+                            '<div id="cloud-progress" class="determinate"></div>' +
+                        '</div>' +
 
-                            '<div class="progress">' +
-                                '<div id="cloud-progress" class="determinate"></div>' +
+                        '<div class="collection app-collection">' +
+                            '<div class="collection-item app-icon app-icon-mt2">' +
+                                '<i class="mdi mdi-cloud-check"></i>' +
+                                '<div class="app-title">Синхронизировано</div>' +
+                                '<div id="cloud-i">0 фотографий</div>' +
                             '</div>' +
-
-                            '<div class="collection app-collection">' +
-                                '<div class="collection-item app-icon app-icon-mt2">' +
-                                    '<i class="mdi mdi-cloud-check"></i>' +
-                                    '<div class="app-title">Синхронизировано</div>' +
-                                    '<div id="cloud-i">0 фотографий</div>' +
-                                '</div>' +
-                                '<div class="collection-item app-icon app-icon-mt2">' +
-                                    '<i class="mdi mdi-calendar-start"></i>' +
-                                    '<div class="app-title">Начало</div>' +
-                                    '<div id="cloud-date-start">&nbsp;</div>' +
-                                '</div>' +
-                                '<div class="collection-item app-icon app-icon-mt2">' +
-                                    '<i class="mdi mdi-clock-start"></i>' +
-                                    '<div class="app-title">Прошло</div>' +
-                                    '<div id="cloud-date-passed">...</div>' +
-                                '</div>' +
-                                '<div class="collection-item app-icon app-icon-mt2">' +
-                                    '<i class="mdi mdi-clock-end"></i>' +
-                                    '<div class="app-title">Осталось</div>' +
-                                    '<div id="cloud-date-left">...</div>' +
-                                '</div>' +
-                                '<div class="collection-item app-icon app-icon-mt2">' +
-                                    '<i class="mdi mdi-calendar-end"></i>' +
-                                    '<div class="app-title">Окончание</div>' +
-                                    '<div id="cloud-date-end">...</div>' +
-                                '</div>' +
+                            '<div class="collection-item app-icon app-icon-mt2">' +
+                                '<i class="mdi mdi-calendar-start"></i>' +
+                                '<div class="app-title">Начало</div>' +
+                                '<div id="cloud-date-start">...</div>' +
                             '</div>' +
-
+                            '<div class="collection-item app-icon app-icon-mt2">' +
+                                '<i class="mdi mdi-clock-start"></i>' +
+                                '<div class="app-title">Прошло</div>' +
+                                '<div id="cloud-date-passed">...</div>' +
+                            '</div>' +
+                            '<div class="collection-item app-icon app-icon-mt2">' +
+                                '<i class="mdi mdi-clock-end"></i>' +
+                                '<div class="app-title">Осталось</div>' +
+                                '<div id="cloud-date-left">...</div>' +
+                            '</div>' +
+                            '<div class="collection-item app-icon app-icon-mt2">' +
+                                '<i class="mdi mdi-calendar-end"></i>' +
+                                '<div class="app-title">Окончание</div>' +
+                                '<div id="cloud-date-end">...</div>' +
+                            '</div>' +
                         '</div>' +
 
                     '</div>' +
@@ -262,8 +258,8 @@ app.scene.cloud = {
                 let i = 0;
                 let dateStart = new Date();
 
+                document.getElementById('button-sync').remove();
                 document.getElementById('cloud-date-start').innerText = app.tool.format.date(dateStart, 'H:i:s d.m.Y');
-                document.getElementById('cloud-apply-info').style.display = '';
 
                 let status = (el, color, icon, html) => {
 
@@ -412,7 +408,7 @@ app.scene.cloud = {
 
             let buttons = [];
 
-            if (app.account['access_cloud'] && app.scene.cloud.files.length) buttons.push('button-sync');
+            if (document.getElementById('button-sync')) buttons.push('button-sync');
 
             [
                 ... buttons,
