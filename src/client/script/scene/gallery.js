@@ -1155,7 +1155,7 @@ app.scene.gallery = {
                         ' из галереи и облака?' +
                     '</p>' +
 
-                    '<div id="modal-delete-info" style="display: none;">' +
+                    '<div id="modal-delete-apply-info" style="display: none;">' +
 
                         '<p id="modal-delete-percent" class="flow-text center-align">0%</p>' +
 
@@ -1321,7 +1321,7 @@ app.scene.gallery = {
                         let dateStart = new Date();
 
                         document.getElementById('modal-delete-date-start').innerText = app.tool.format.date(dateStart, 'H:i:s d.m.Y');
-                        document.getElementById('modal-delete-info').style.display = '';
+                        document.getElementById('modal-delete-apply-info').style.display = '';
 
                         let end = () => {
 
@@ -1330,7 +1330,7 @@ app.scene.gallery = {
                             let currentDate = new Date();
                             let percent = Math.floor(i * 100 / app.scene.gallery.selected.length);
                             let ms = currentDate - dateStart;
-                            let left = Math.floor(ms * app.scene.gallery.selected.length / i) - ms;
+                            let end = Math.floor(ms * app.scene.gallery.selected.length / i);
 
                             document.getElementById('modal-delete-i').innerText = [
                                 i,
@@ -1345,8 +1345,8 @@ app.scene.gallery = {
                             document.getElementById('modal-delete-percent').innerText = percent + '%';
                             document.getElementById('modal-delete-progress').style.width = percent + '%';
                             document.getElementById('modal-delete-date-passed').innerText = app.tool.format.msToString(ms);
-                            document.getElementById('modal-delete-date-left').innerText = app.tool.format.msToString(left);
-                            document.getElementById('modal-delete-date-end').innerText = app.tool.format.date(new Date(dateStart.getTime() + left), 'H:i:s d.m.Y');
+                            document.getElementById('modal-delete-date-left').innerText = app.tool.format.msToString(end - ms);
+                            document.getElementById('modal-delete-date-end').innerText = app.tool.format.date(new Date(dateStart.getTime() + end), 'H:i:s d.m.Y');
 
                             if (i < app.scene.gallery.selected.length) sync();
                             else {

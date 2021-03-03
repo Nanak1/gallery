@@ -145,14 +145,48 @@ app.scene.cloud = {
                                 '<div>' + app.scene.cloud.user.cloud_sync.split('/').join(slash) + '</div>' +
                             '</div>' +
                             '<div class="collection-item app-icon app-icon-mt2">' +
-                                '<i class="mdi mdi-cloud-refresh"></i>' +
-                                '<div class="app-title">Синхронизировано</div>' +
-                                '<div>' +
-                                    '<snan id="cloud-sync-count">0</snan>' +
-                                    ' из ' +
-                                    '<span id="cloud-scan-count">?</span>' +
+                                '<i class="mdi mdi-timer-outline"></i>' +
+                                '<div class="app-title">Ожидает</div>' +
+                                '<div id="cloud-scan-count">&nbsp;</div>' +
+                            '</div>' +
+                        '</div>' +
+
+                        '<div id="cloud-apply-info" style="display: none;">' +
+
+                            '<p id="cloud-percent" class="flow-text center-align">0%</p>' +
+
+                            '<div class="progress">' +
+                                '<div id="cloud-progress" class="determinate"></div>' +
+                            '</div>' +
+
+                            '<div class="collection app-collection">' +
+                                '<div class="collection-item app-icon app-icon-mt2">' +
+                                    '<i class="mdi mdi-cloud-check"></i>' +
+                                    '<div class="app-title">Синхронизировано</div>' +
+                                    '<div id="cloud-i">0 фотографий</div>' +
+                                '</div>' +
+                                '<div class="collection-item app-icon app-icon-mt2">' +
+                                    '<i class="mdi mdi-calendar-start"></i>' +
+                                    '<div class="app-title">Начало</div>' +
+                                    '<div id="cloud-date-start">&nbsp;</div>' +
+                                '</div>' +
+                                '<div class="collection-item app-icon app-icon-mt2">' +
+                                    '<i class="mdi mdi-clock-start"></i>' +
+                                    '<div class="app-title">Прошло</div>' +
+                                    '<div id="cloud-date-passed">...</div>' +
+                                '</div>' +
+                                '<div class="collection-item app-icon app-icon-mt2">' +
+                                    '<i class="mdi mdi-clock-end"></i>' +
+                                    '<div class="app-title">Осталось</div>' +
+                                    '<div id="cloud-date-left">...</div>' +
+                                '</div>' +
+                                '<div class="collection-item app-icon app-icon-mt2">' +
+                                    '<i class="mdi mdi-calendar-end"></i>' +
+                                    '<div class="app-title">Окончание</div>' +
+                                    '<div id="cloud-date-end">...</div>' +
                                 '</div>' +
                             '</div>' +
+
                         '</div>' +
 
                     '</div>' +
@@ -226,6 +260,10 @@ app.scene.cloud = {
             setTimeout(() => {
 
                 let i = 0;
+                let dateStart = new Date();
+
+                document.getElementById('cloud-date-start').innerText = app.tool.format.date(dateStart, 'H:i:s d.m.Y');
+                document.getElementById('cloud-apply-info').style.display = '';
 
                 let status = (el, color, icon, html) => {
 
@@ -245,7 +283,26 @@ app.scene.cloud = {
 
                     i++;
 
-                    document.getElementById('cloud-sync-count').innerText = i.toString();
+                    let currentDate = new Date();
+                    let percent = Math.floor(i * 100 / app.scene.cloud.files.length);
+                    let ms = currentDate - dateStart;
+                    let end = Math.floor(ms * app.scene.cloud.files.length / i);
+
+                    document.getElementById('cloud-i').innerText = [
+                        i,
+                        app.tool.format.getUnitEnding(
+                            i,
+                            'фотография',
+                            'фотографии',
+                            'фотографий'
+                        )
+                    ].join(' ');
+
+                    document.getElementById('cloud-percent').innerText = percent + '%';
+                    document.getElementById('cloud-progress').style.width = percent + '%';
+                    document.getElementById('cloud-date-passed').innerText = app.tool.format.msToString(ms);
+                    document.getElementById('cloud-date-left').innerText = app.tool.format.msToString(end - ms);
+                    document.getElementById('cloud-date-end').innerText = app.tool.format.date(new Date(dateStart.getTime() + end), 'H:i:s d.m.Y');
 
                     if (i < app.scene.cloud.files.length) sync();
                     else document.getElementById('button-back').classList.remove('scale-out');
