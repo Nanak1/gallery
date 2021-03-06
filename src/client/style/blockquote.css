@@ -1,0 +1,15 @@
+blockquote {
+    border-left-color: #000000;
+}
+
+blockquote.app-primary {
+    color: initial;
+    background-color: initial;
+    border-left-color: #f44336;
+}
+
+blockquote.app-second {
+    color: initial;
+    background-color: initial;
+    border-left-color: #00e5ff;
+}

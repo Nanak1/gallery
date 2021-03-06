@@ -1155,6 +1155,14 @@ app.scene.gallery = {
                         ' из галереи и облака?' +
                     '</p>' +
 
+                    '<blockquote class="app-primary">' +
+                        'Сначала удаляется файл в облаке, а только потом запись о фотографии в галерее.' +
+                    '</blockquote>' +
+
+                    '<blockquote class="app-second">' +
+                        'Удаление займёт некоторое время, так как происходит синхронизация галереи с облаком.' +
+                    '</blockquote>' +
+
                     '<p id="modal-delete-percent" class="flow-text center-align">0%</p>' +
 
                     '<div class="progress">' +
@@ -1188,16 +1196,6 @@ app.scene.gallery = {
                             '<div id="modal-delete-date-end">...</div>' +
                         '</div>' +
                     '</div>' +
-
-                    '<p class="card-panel app-primary flow-text">' +
-                        'Сначала удаляется файл в облаке, ' +
-                        'а только потом запись о фотографии в галерее' +
-                    '</p>' +
-
-                    '<p class="card-panel app-second flow-text">' +
-                        'Удаление займёт некоторое время, ' +
-                        'так как происходит синхронизация галереи с облаком' +
-                    '</p>' +
 
                     '<div class="app-toolbar-space"></div>' +
 
