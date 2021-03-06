@@ -65,6 +65,7 @@ app.get('/', (req, res) => {
 app.use('/', require('./route/account'));
 app.use('/', require('./route/cloud'));
 app.use('/', require('./route/photo'));
+app.use('/', require('./route/tag'));
 app.use('/', require('./route/user'));
 
 module.exports = app;
