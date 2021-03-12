@@ -604,7 +604,7 @@ app.scene.gallery = {
                         'id="button-view-cancel" ' +
                         'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
                         '>' +
-                        '<i class="mdi mdi-close-thick"></i>' +
+                        '<i class="mdi mdi-undo"></i>' +
                         '</button>',
 
                         '<button ' +
@@ -842,7 +842,7 @@ app.scene.gallery = {
                             'id="button-calendar-cancel" ' +
                             'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
                         '>' +
-                            '<i class="mdi mdi-close-thick"></i>' +
+                            '<i class="mdi mdi-undo"></i>' +
                         '</button>',
 
                         '<button ' +
@@ -1209,7 +1209,7 @@ app.scene.gallery = {
                             'id="button-delete-cancel" ' +
                             'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out"' +
                         '>' +
-                            '<i class="mdi mdi-close-thick"></i>' +
+                            '<i class="mdi mdi-undo"></i>' +
                         '</button>',
 
                         '<button ' +
@@ -1546,7 +1546,7 @@ app.scene.gallery = {
                 'id="button-back" ' +
                 'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-primary"' +
             '>' +
-                '<i class="mdi mdi-close-thick"></i>' +
+                '<i class="mdi mdi-undo"></i>' +
             '</button>';
 
     },

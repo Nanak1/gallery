@@ -6,3 +6,14 @@
 .app-column-icon .mdi {
     font-size: 1.6rem;
 }
+
+tr.app-button {
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+tr.app-button:hover {
+    color: #ffeb3b;
+    background-color: #000000;
+}

@@ -59,4 +59,127 @@ router.get('/tag', (req, res) => {
 
 });
 
+/**
+ * Добавление
+ * @type {string} req.body.name
+ */
+router.post('/tag', (req, res) => {
+
+    if (req.account['access_tag_add']) {
+
+        if (req.body.name) {
+
+            let sql = 'INSERT INTO tag (name) VALUES ($1) RETURNING id;';
+
+            db.gallery.query(sql, [
+                req.body.name
+            ]).then(result => {
+
+                res.send({
+                    success: true,
+                    id: result.rows[0].id
+                });
+
+            }).catch(error => {
+
+                console.log(error);
+
+                res.send({
+                    success: false,
+                    message: error.code === '23505' ? 'Название тега уже используется' : 'Что-то пошло не так'
+                });
+
+            });
+
+        } else res.send({
+            success: false,
+            message: 'Название не может быть пустым'
+        });
+
+    } else res.send({
+        success: false,
+        message: 'Отказано в доступе на добавление тега'
+    });
+
+});
+
+/**
+ * Изменение
+ * @type {string} req.body.id
+ * @type {string} req.body.name
+ */
+router.put('/tag', (req, res) => {
+
+    if (req.account['access_tag_edit']) {
+
+        if (req.body.id && req.body.name) {
+
+            let sql = 'UPDATE tag SET name = $1 WHERE id = $2;';
+
+            db.gallery.query(sql, [
+                req.body.name,
+                req.body.id
+            ]).then(result => {
+
+                res.send({
+                    success: true
+                });
+
+            }).catch(error => {
+
+                console.log(error);
+
+                res.send({
+                    success: false,
+                    message: error.code === '23505' ? 'Название тега уже используется' : 'Что-то пошло не так'
+                });
+
+            });
+
+        } else res.send({
+            success: false,
+            message: 'Название не может быть пустым'
+        });
+
+    } else res.send({
+        success: false,
+        message: 'Отказано в доступе на изменение тега'
+    });
+
+});
+
+/**
+ * Удаление
+ * @type {string} req.body.id
+ */
+router.delete('/tag', (req, res) => {
+
+    if (req.account['access_tag_delete']) {
+
+        if (req.body.id) {
+
+            let sql = 'DELETE FROM tag WHERE id = $1;';
+
+            db.gallery.query(sql, [
+                req.body.id
+            ]).then(result => {
+
+                res.send({
+                    success: true
+                });
+
+            });
+
+        } else res.send({
+            success: false,
+            message: 'Не указан идентификатор удаляемого тега'
+        });
+
+    } else res.send({
+        success: false,
+        message: 'Отказано в доступе на удаление тега'
+    });
+
+});
+
 module.exports = router;

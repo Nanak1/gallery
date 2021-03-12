@@ -9,6 +9,7 @@ app.scene.menu = {
 
         document.getElementById('app').innerHTML = html;
 
+        app.scene.menu.initTag();
         app.scene.menu.initCloud();
         app.scene.menu.initBack();
 
@@ -52,7 +53,7 @@ app.scene.menu = {
                                 '<i class="mdi mdi-account"></i>' +
                                 '<div>Аккаунт</div>' +
                             '</div>' +
-                            '<div id="button-tag" class="collection-item app-icon app-button app-disabled">' +
+                            '<div id="button-tag" class="collection-item app-icon app-button">' +
                                 '<i class="mdi mdi-tag"></i>' +
                                 '<div>Теги</div>' +
                             '</div>' +
@@ -78,6 +79,25 @@ app.scene.menu = {
                 '</div>' +
             '</div>' +
             '<div class="app-toolbar-space"></div>';
+
+    },
+
+    // tag
+
+    initTag: () => {
+
+        document.getElementById('button-tag').addEventListener('click', () => {
+
+            document.getElementById('button-back').classList.add('scale-out');
+
+            setTimeout(() => {
+
+                app.scene.menu.close();
+                app.scene.tag.show();
+
+            }, 250);
+
+        });
 
     },
 
@@ -114,7 +134,7 @@ app.scene.menu = {
                 'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-primary" ' +
                 'style="position: fixed; left: 50%; bottom: ' + padding + 'px; margin-left: ' + left + 'px; z-index: 2;"' +
             '>' +
-                '<i class="mdi mdi-close-thick"></i>' +
+                '<i class="mdi mdi-undo"></i>' +
             '</button>';
 
     },

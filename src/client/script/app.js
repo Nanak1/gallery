@@ -19,7 +19,8 @@ window.app = {
         'account_login',
         'cloud',
         'gallery',
-        'menu'
+        'menu',
+        'tag'
     ],
 
     tool: {},

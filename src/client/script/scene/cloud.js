@@ -223,9 +223,7 @@ app.scene.cloud = {
                         '<th>Статус</th>' +
                     '</tr>' +
                 '</thead>' +
-                '<tbody>' +
-                    '<tr>' + html + '</tr>' +
-                '</tbody>' +
+                '<tbody>' + html + '</tbody>' +
             '</table>';
 
     },
@@ -397,7 +395,7 @@ app.scene.cloud = {
                 'id="button-back" ' +
                 'class="btn-floating btn-large waves-effect waves-light scale-transition scale-out app-primary"' +
             '>' +
-                '<i class="mdi mdi-close-thick"></i>' +
+                '<i class="mdi mdi-undo"></i>' +
             '</button>';
 
     },
