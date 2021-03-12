@@ -198,6 +198,7 @@ app.scene.tag = {
                     '</div>' +
                 '</div>' +
             '</div>' +
+            '<div class="app-toolbar-space"></div>' +
             app.tool.toolbar({
                 id: 'toolbar-tag',
                 buttons: buttons
